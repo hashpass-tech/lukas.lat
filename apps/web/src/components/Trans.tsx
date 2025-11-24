@@ -13,7 +13,7 @@ interface TransProps {
   children?: React.ReactNode
 }
 
-export function Trans({ i18nKey, id, fallback, message, className, as: Component = 'span', children }: TransProps) {
+export function Trans({ i18nKey, id, fallback, message, className, as: Component = 'span' }: TransProps) {
   const { t } = useTranslation()
   
   // Support both old format (id/message) and new format (i18nKey/fallback)

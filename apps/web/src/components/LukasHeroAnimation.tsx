@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import { Trans } from '@/lib/i18n';
+import { Trans } from '@/components/Trans';
 
 // Orb component for the background
 const Orb = ({ size, x, y, color, delay }: { size: number; x: number; y: number; color: string; delay: number }) => {
@@ -108,7 +108,7 @@ export const LukasHeroAnimation = () => {
                             opacity: subtitleVisible ? undefined : 0
                         }}
                     >
-                        <Trans id="hero.subtitle" message="The Gravity Center of LatAm Pesos" />
+                        <Trans i18nKey="hero.subtitle" fallback="The Center of Gravity for Latin American Weights" />
                     </div>
                 </div>
             </div>
@@ -125,7 +125,7 @@ export const LukasHeroAnimation = () => {
                     }
                 }}
             >
-                <Trans id="Scroll to explore" message="Scroll to explore" />
+                <Trans i18nKey="Scroll to explore" fallback="Scroll to explore" />
                 <span className="explore-arrow">
                     <svg width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg" className="arrow-svg">
                         <path d="M11 5V17" stroke="white" strokeWidth="2" strokeLinecap="round" />

@@ -19,11 +19,11 @@ type Currency = {
 };
 
 const currencies: Currency[] = [
-  { country: "🇧🇷", code: "BRL", name: "Brazilian Real", weight: 40, color: "from-emerald-400/80 to-green-700/80" },
-  { country: "🇲🇽", code: "MXN", name: "Mexican Peso", weight: 30, color: "from-rose-400/80 to-red-700/80" },
-  { country: "🇨🇴", code: "COP", name: "Colombian Peso", weight: 15, color: "from-amber-300/80 to-yellow-600/80" },
-  { country: "🇨🇱", code: "CLP", name: "Chilean Peso", weight: 10, color: "from-sky-300/80 to-blue-700/80" },
-  { country: "🇦🇷", code: "ARS", name: "Argentine Peso", weight: 5, color: "from-cyan-300/80 to-sky-600/80" },
+  { country: "🇧🇷", code: "BRL", name: "currency.brazilian_real", weight: 40, color: "from-emerald-400/80 to-green-700/80" },
+  { country: "🇲🇽", code: "MXN", name: "currency.mexican_peso", weight: 30, color: "from-rose-400/80 to-red-700/80" },
+  { country: "🇨🇴", code: "COP", name: "currency.colombian_peso", weight: 15, color: "from-amber-300/80 to-yellow-600/80" },
+  { country: "🇨🇱", code: "CLP", name: "currency.chilean_peso", weight: 10, color: "from-sky-300/80 to-blue-700/80" },
+  { country: "🇦🇷", code: "ARS", name: "currency.argentine_peso", weight: 5, color: "from-cyan-300/80 to-sky-600/80" },
 ];
 
 function CurrencyCard({ currency, onOpen }: { currency: Currency; onOpen: (c: Currency) => void }) {
@@ -73,7 +73,7 @@ function CurrencyCard({ currency, onOpen }: { currency: Currency; onOpen: (c: Cu
           <div className="flex items-center gap-3">
             <span className="text-xl sm:text-2xl font-black drop-shadow">{fillValue.toFixed(0)}%</span>
             <span className="text-[10px] uppercase tracking-[0.22em] font-semibold opacity-80">
-              <Trans id="basket" message="Basket" />
+              <Trans i18nKey="basket.title" fallback="Basket" />
             </span>
           </div>
           <div className="flex items-center gap-3 flex-wrap">
@@ -82,7 +82,7 @@ function CurrencyCard({ currency, onOpen }: { currency: Currency; onOpen: (c: Cu
               <span className="tracking-tight">{currency.code}</span>
             </span>
             <div className="flex flex-col">
-              <span className="text-sm font-medium opacity-85 leading-tight">{currency.name}</span>
+              <span className="text-sm font-medium opacity-85 leading-tight"><Trans i18nKey={currency.name} fallback={currency.name} /></span>
             </div>
           </div>
         </div>
@@ -121,7 +121,7 @@ function CurrencyModal({ currency, onClose }: { currency: Currency; onClose: () 
                 <span className="text-xl drop-shadow-sm">{currency.country}</span>
                 <span>{currency.code}</span>
               </div>
-              <h3 className="text-2xl font-bold text-white">{currency.name}</h3>
+              <h3 className="text-2xl font-bold text-white"><Trans i18nKey={currency.name} fallback={currency.name} /></h3>
             </div>
             <div className="px-5 pb-5 flex flex-col gap-5">
                 <div className="flex items-center gap-4">
@@ -130,13 +130,13 @@ function CurrencyModal({ currency, onClose }: { currency: Currency; onClose: () 
                   </div>
                 <div className="flex-1 text-white">
                   <div className="text-sm uppercase tracking-[0.18em] text-white/60">
-                    <Trans id="basket.weight" message="Basket Weight" />
+                    <Trans i18nKey="basket.weight" fallback="Basket Weight" />
                   </div>
                   <div className="text-4xl font-black leading-tight">{currency.weight}%</div>
                 </div>
               </div>
                 <div className="rounded-2xl border border-white/10 bg-white/5 p-4 text-white/80 text-sm leading-relaxed">
-                  {currency.name} contributes {currency.weight}% to the $LUKAS basket. The live fill animation mirrors its proportional share within the stabilized multi-coin mix.
+                  <Trans i18nKey={currency.name} fallback={currency.name} /> contributes {currency.weight}% to the $LUKAS basket. The live fill animation mirrors its proportional share within the stabilized multi-coin mix.
                 </div>
               <div className="flex items-center gap-3">
                 <button
@@ -144,7 +144,7 @@ function CurrencyModal({ currency, onClose }: { currency: Currency; onClose: () 
                   onClick={onClose}
                   className="flex-1 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-semibold py-3 transition-colors"
                 >
-                  <Trans id="close" message="Close" />
+                  <Trans i18nKey="close" fallback="Close" />
                 </button>
               </div>
             </div>
@@ -176,7 +176,7 @@ export default function CurrencyPageClient() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-10 w-full max-w-5xl mx-auto">
             <div className="bg-white/90 dark:bg-slate-900/40 backdrop-blur-xl rounded-3xl p-10 border border-slate-300/60 dark:border-slate-700/40 shadow-2xl hover:shadow-3xl transition-all duration-300 hover:-translate-y-1">
               <h2 className="text-3xl font-bold mb-8 text-slate-950 dark:text-slate-50 flex items-center gap-3">
-                <span className="text-4xl">⚖️</span> <Trans id="Currency Weights" message="Currency Weights" />
+                <span className="text-4xl">⚖️</span> <Trans i18nKey="Currency Weights" fallback="Currency Weights" />
               </h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {currencies.map((currency) => (
@@ -187,16 +187,16 @@ export default function CurrencyPageClient() {
 
             <div data-no-orbit className="bg-white/90 dark:bg-slate-900/40 backdrop-blur-xl rounded-3xl p-10 border border-slate-300/60 dark:border-slate-700/40 shadow-2xl hover:shadow-3xl transition-all duration-300 hover:-translate-y-1 flex flex-col justify-center">
               <h2 className="text-3xl font-bold mb-8 text-slate-950 dark:text-slate-50 flex items-center gap-3">
-                <span className="text-4xl">🚀</span> <Trans id="Join the Movement" message="Join the Movement" />
+                <span className="text-4xl">🚀</span> <Trans i18nKey="Join the Movement" fallback="Join the Movement" />
               </h2>
               <p className="text-lg text-slate-800 dark:text-slate-200 mb-10 leading-relaxed font-medium">
                 <Trans
-                  id="$LUKAS.description"
-                  message="$LUKAS is the first regional stable-basket meme coin designed to unify Latin American currency volatility into a single, gravity-centered asset."
+                  i18nKey="intro.description"
+                  fallback="$LUKAS is the first regional stable-basket meme coin designed to unify Latin American currency volatility into a single, gravity-centered asset."
                 />
               </p>
               <button className="w-full py-5 px-8 bg-gradient-to-r from-blue-700 to-cyan-600 hover:from-blue-600 hover:to-cyan-500 text-white text-xl font-bold rounded-2xl shadow-xl hover:shadow-cyan-500/40 transition-all duration-300 transform hover:scale-[1.02] active:scale-[0.98]">
-                <Trans id="connect.wallet" message="Connect Wallet" />
+                <Trans i18nKey="connect.wallet" fallback="Connect Wallet" />
               </button>
             </div>
           </div>

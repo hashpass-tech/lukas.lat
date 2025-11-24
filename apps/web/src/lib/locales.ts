@@ -1,11 +1,11 @@
-import en from "../../locales/en.json";
-import es from "../../locales/es.json";
-import pt from "../../locales/pt.json";
-import cl from "../../locales/cl.json";
+import enMessages from '../locales/en.json'
+import esMessages from '../locales/es.json'
+import ptMessages from '../locales/pt.json'
+import clMessages from '../locales/cl.json'
 
-export const localeMessages: Record<string, Record<string, string>> = {
-  en,
-  es,
-  pt,
-  cl,
+export const localeMessages = {
+  en: enMessages,
+  es: esMessages,
+  pt: ptMessages,
+  cl: clMessages,
 };
