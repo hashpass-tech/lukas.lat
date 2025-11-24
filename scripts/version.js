@@ -359,9 +359,19 @@ function gitCommit(version) {
         });
 
         log(`✓ Git commit created: chore(release): v${version}`, colors.green);
+        
+        // Auto-push to remote
+        log('\nPushing to remote repository...', colors.blue);
+        execSync('git push origin main', {
+            cwd: ROOT_DIR,
+            stdio: 'inherit'
+        });
+        
+        log('✓ Pushed to remote repository', colors.green);
+        
     } catch (error) {
-        log('✗ Failed to create git commit', colors.red);
-        log('You may need to commit manually', colors.yellow);
+        log('✗ Failed to create git commit or push', colors.red);
+        log('You may need to commit and push manually', colors.yellow);
     }
 }
 
@@ -403,7 +413,7 @@ function main() {
     versionData.buildMetadata.lastUpdated = timestamp;
     versionData.buildMetadata.buildNumber = (versionData.buildMetadata.buildNumber || 0) + 1;
 
-    // Git commit - check for changes but don't auto-commit
+    // Git commit - auto-commit if changes detected
     log('\nChecking for uncommitted changes...', colors.blue);
     
     const statusOutput = execSync('git status --porcelain', {
@@ -412,14 +422,8 @@ function main() {
     }).trim();
 
     if (statusOutput) {
-        log('Detected uncommitted changes. Please commit them first.', colors.yellow);
-        log('Changes detected:', colors.blue);
-        statusOutput.split('\n').forEach(line => {
-            if (line.trim()) {
-                log(`  ${line}`, colors.blue);
-            }
-        });
-        process.exit(1);
+        log('Detected uncommitted changes, auto-committing...', colors.yellow);
+        autoCommitChanges();
     }
     
     // Now update version files
