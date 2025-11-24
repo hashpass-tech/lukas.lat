@@ -407,9 +407,6 @@ function main() {
     log('\nChecking for uncommitted changes...', colors.blue);
     autoCommitChanges();
     
-    // Clean up empty changelog sections first
-    cleanupEmptySections();
-    
     // Now update version files after auto-commit
     writeVersion(versionData);
     updatePackageJson(ROOT_PACKAGE, newVersion);
@@ -418,6 +415,9 @@ function main() {
     copyToPublic(versionData);
     
     log('✓ Updated all version files', colors.green);
+    
+    // Clean up empty sections after changelog is updated
+    cleanupEmptySections();
     
     log('\nCreating version bump commit...', colors.blue);
     gitCommit(newVersion);
