@@ -8,6 +8,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+
+### Changed
+
+### Fixed
+
+## [0.1.28] - 2025-11-24
+### Added
 - Final version validation system
 - Prevention of empty releases
 - Enhanced changelog management
