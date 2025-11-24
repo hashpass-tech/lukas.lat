@@ -187,7 +187,7 @@ export function WalletHeader({ connectText = "Connect Wallet" }: WalletHeaderPro
   return (
     <Dialog open={isModalOpen} onOpenChange={handleModalOpenChange}>
       <DialogTrigger asChild>
-        <div className="relative group cursor-pointer w-full max-w-[200px]">
+        <div className="relative group cursor-pointer w-full max-w-[280px]">
           {/* Animated background with shader - responsive */}
           <div className="absolute inset-0 opacity-90 rounded-2xl overflow-hidden">
             <DitheringShader
@@ -197,7 +197,7 @@ export function WalletHeader({ connectText = "Connect Wallet" }: WalletHeaderPro
               colorFront="#3b82f6"
               pxSize={1}
               speed={1.2}
-              width={200}
+              width={280}
               height={40}
               className="w-full h-full"
             />

@@ -19,14 +19,8 @@ export function JoinMovementSection() {
       </p>
       
       {/* Enhanced Wallet Connect Button - Using WalletHeader for functionality */}
-      <div className="relative group">
-        {/* Primary mark card with extended overlay */}
-     
-        
-  
-          <WalletHeader connectText="Join now!" />
-       
- 
+      <div className="relative">
+        <WalletHeader connectText="Join now!" />
       </div>
     </div>
   );

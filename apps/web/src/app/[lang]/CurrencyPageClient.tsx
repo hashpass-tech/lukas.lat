@@ -6,7 +6,7 @@ import CyberneticGridShader from "@/components/CyberneticGridShader";
 import OrbitingSkills from "@/components/OrbitingSkills";
 import { PWAInstallPrompt } from "@/components/PWAInstallPrompt";
 import { useEffect, useState } from "react";
-import { DonutChartSection, CurrencyModal, JoinMovementSectionStatic } from "@/components/currency";
+import { DonutChartSection, CurrencyModal, JoinMovementSection } from "@/components/currency";
 import { SwapSection } from "@/components/currency/SwapSection";
 
 type Currency = {
@@ -30,7 +30,45 @@ function CurrencyPageContent() {
   const [hoveredSegment, setHoveredSegment] = useState<string | null>(null);
   const [selectedCurrency, setSelectedCurrency] = useState<string | null>(null);
   const [animationKey, setAnimationKey] = useState(0);
-  const [showSwap, setShowSwap] = useState(false);
+  const [isConnected, setIsConnected] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  // Handle wallet connection state
+  useEffect(() => {
+    setMounted(true);
+    
+    // Check wallet connection only on client side
+    const checkWalletConnection = () => {
+      try {
+        if (typeof window !== 'undefined' && window.ethereum) {
+          window.ethereum.request({ method: 'eth_accounts' }).then((accounts: string[]) => {
+            setIsConnected(accounts.length > 0);
+          }).catch(() => {
+            setIsConnected(false);
+          });
+        }
+      } catch (error) {
+        setIsConnected(false);
+      }
+    };
+
+    checkWalletConnection();
+
+    // Listen for account changes
+    if (typeof window !== 'undefined' && window.ethereum) {
+      const handleAccountsChanged = (accounts: string[]) => {
+        setIsConnected(accounts.length > 0);
+      };
+
+      window.ethereum.on('accountsChanged', handleAccountsChanged);
+      
+      return () => {
+        if (window.ethereum?.removeListener) {
+          window.ethereum.removeListener('accountsChanged', handleAccountsChanged);
+        }
+      };
+    }
+  }, []);
 
   // Reset donut chart animation on scroll
   useEffect(() => {
@@ -80,7 +118,7 @@ function CurrencyPageContent() {
                 onActiveCurrency={setActiveCurrency}
               />
               
-              <JoinMovementSectionStatic />
+              {mounted && isConnected ? <SwapSection /> : <JoinMovementSection />}
             </div>
           </div>
           </main>
