@@ -6,7 +6,7 @@ import CyberneticGridShader from "@/components/CyberneticGridShader";
 import OrbitingSkills from "@/components/OrbitingSkills";
 import { PWAInstallPrompt } from "@/components/PWAInstallPrompt";
 import { useEffect, useState } from "react";
-import { DonutChartSection, CurrencyModal, JoinMovementSection } from "@/components/currency";
+import { DonutChartSection, CurrencyModal, JoinMovementSectionStatic } from "@/components/currency";
 import { SwapSection } from "@/components/currency/SwapSection";
 
 type Currency = {
@@ -118,7 +118,7 @@ function CurrencyPageContent() {
                 onActiveCurrency={setActiveCurrency}
               />
               
-              {mounted && isConnected ? <SwapSection /> : <JoinMovementSection />}
+              {mounted && isConnected ? <SwapSection /> : <JoinMovementSectionStatic />}
             </div>
           </div>
           </main>
