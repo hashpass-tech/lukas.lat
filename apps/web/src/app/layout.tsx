@@ -5,13 +5,14 @@ import "./globals.css";
 const jetbrainsMono = JetBrains_Mono({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700", "800"],
-  variable: "--font-jetbrains-mono"
+  variable: "--font-jetbrains-mono",
 });
+
 import OrbitingSkills from "@/components/OrbitingSkills";
 import { LightPullThemeSwitcher } from "@/components/LightPullThemeSwitcher";
 import StyledComponentsRegistry from "@/lib/registry";
 import { Providers } from "./providers";
-import HashPassBranding from "@/components/HashPassBranding";
+import HashPassBrandingWrapper from "@/components/HashPassBrandingWrapper";
 
 export const metadata: Metadata = {
   title: "$LUKAS - LatAm Basket-Stable Meme Coin",
@@ -34,7 +35,7 @@ export default function RootLayout({
                 <LightPullThemeSwitcher />
               </div>
             </div>
-            <HashPassBranding />
+            <HashPassBrandingWrapper />
             {children}
           </Providers>
         </StyledComponentsRegistry>
