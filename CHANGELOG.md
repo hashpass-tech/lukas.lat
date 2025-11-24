@@ -13,6 +13,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+## [0.1.22] - 2025-11-24
+### Added
+
+### Changed
+
+### Fixed
+
 ## [0.1.21] - 2025-11-24
 ### Added
 
@@ -90,60 +97,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Layout hierarchy following Next.js best practices
 
 
-## [0.1.12] - 2025-11-24
-
-### Added
-
-### Changed
-
-### Fixed
-
-
-## [0.1.11] - 2025-11-24
-
-### Added
-
-### Changed
-
-### Fixed
-
-
-## [0.1.10] - 2025-11-24
-
-### Added
-
-### Changed
-
-### Fixed
-
-
-## [0.1.9] - 2025-11-24
-
-### Added
-
-### Changed
-
-### Fixed
-
-
-## [0.1.7] - 2025-11-24
-
-### Added
-
-### Changed
-
-### Fixed
-
-
-## [0.1.6] - 2025-11-24
-
-### Added
-
-### Changed
-
-### Fixed
-
-
 ## [0.1.5] - 2025-11-24
 
 ### Added
@@ -162,24 +115,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Theme switcher rope positioning to attach properly to the circle
 - Prevented users from accessing site without locale prefix
 - Rope now expands smoothly instead of appearing cut
-
-
-## [0.1.4] - 2025-11-24
-
-### Added
-
-### Changed
-
-### Fixed
-
-
-## [0.1.3] - 2025-11-24
-
-### Added
-
-### Changed
-
-### Fixed
 
 
 ## [0.1.2] - 2025-11-24
