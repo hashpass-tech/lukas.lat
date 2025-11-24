@@ -4,8 +4,7 @@ import { LightPullThemeSwitcher } from "@/components/LightPullThemeSwitcher";
 import StyledComponentsRegistry from "@/lib/registry";
 import { Providers } from "../providers/providers";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
-import { I18nProvider } from "@/lib/i18n";
-import { localeMessages } from "@/lib/locales";
+import { TranslationProvider } from "@/components/TranslationProvider";
 import HashPassBrandingWrapper from "@/components/HashPassBrandingWrapper";
 
 const jetbrainsMono = {
@@ -59,7 +58,7 @@ export default async function RootLayout(props: any) {
       <body className={jetbrainsMono.className}>
         <StyledComponentsRegistry>
           <Providers>
-            <I18nProvider locale={lang} messages={localeMessages[lang] ?? localeMessages.en}>
+            <TranslationProvider initialLocale={lang as any}>
               <div className="fixed top-0 left-0 w-full z-50 pointer-events-none">
                 <div className="pointer-events-auto w-full flex justify-between items-center px-4 py-2">
                   <div className="flex-1" />
@@ -71,7 +70,7 @@ export default async function RootLayout(props: any) {
               </div>
               <HashPassBrandingWrapper />
               {children}
-            </I18nProvider>
+            </TranslationProvider>
           </Providers>
         </StyledComponentsRegistry>
       </body>
