@@ -131,11 +131,12 @@ const OrbitingSkill = memo(({ config, angle, onClick }: OrbitingSkillProps & { o
         >
             <div
                 className={`
-          relative w - full h - full p - 1 pointer-events-none
-rounded - full flex items - center justify - center
-transition - all duration - 300 cursor - pointer
+          relative w-full h-full pointer-events-auto
+          rounded-full flex items-center justify-center
+          transition-all duration-300 cursor-pointer
+          bg-transparent
           ${isHovered ? 'scale-125 shadow-2xl' : 'shadow-lg hover:shadow-xl'}
-`}
+        `}
             >
                 <SkillIcon type={iconType} />
                 {isHovered && (
@@ -304,7 +305,7 @@ export default function OrbitingSkills() {
 
             {/* Central "Code" Icon with enhanced glow */}
             <div
-                className="w-20 h-20 bg-gradient-to-br from-gray-700 to-gray-900 rounded-full flex items-center justify-center z-10 relative shadow-2xl pointer-events-none cursor-default overflow-hidden"
+                className="w-20 h-20 rounded-full flex items-center justify-center z-10 relative shadow-2xl pointer-events-none cursor-default overflow-hidden"
             >
                 <div className="absolute inset-0 rounded-full bg-cyan-500/30 blur-xl animate-pulse"></div>
                 <div className="absolute inset-0 rounded-full bg-purple-500/20 blur-2xl animate-pulse" style={{ animationDelay: '1s' }}></div>

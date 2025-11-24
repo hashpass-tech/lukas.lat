@@ -20,7 +20,7 @@ const Orb = ({ size, x, y, color, delay }: { size: number; x: number; y: number;
     return (
         <div
             ref={orbRef}
-            className="absolute rounded-full filter blur-3xl opacity-50 animate-orb-float pointer-events-none"
+            className="absolute rounded-full filter blur-3xl opacity-50 light:opacity-30 animate-orb-float pointer-events-none"
             style={{
                 width: `var(--orb-size)`,
                 height: `var(--orb-size)`,
@@ -34,12 +34,58 @@ const Orb = ({ size, x, y, color, delay }: { size: number; x: number; y: number;
 };
 
 export const LukasHeroAnimation = () => {
-    const titleWords = '$LUKAS'.split(' ');
+    const titleWords = '$LUKAS'.split('');
     const [visibleWords, setVisibleWords] = useState(0);
     const [subtitleVisible, setSubtitleVisible] = useState(false);
     const [delays, setDelays] = useState<number[]>([]);
     const [subtitleDelay, setSubtitleDelay] = useState(0);
     const [orbs, setOrbs] = useState<any[]>([]);
+    const [mounted, setMounted] = useState(false);
+    const [themeKey, setThemeKey] = useState(0);
+
+    // Ensure component is mounted for proper theme detection
+    useEffect(() => {
+        setMounted(true);
+    }, []);
+
+    // Listen for theme changes
+    useEffect(() => {
+        const handleThemeChange = () => {
+            // Force re-render by updating theme key
+            setThemeKey(prev => prev + 1);
+        };
+
+        // Listen for theme changes
+        const observer = new MutationObserver((mutations) => {
+            mutations.forEach((mutation) => {
+                if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
+                    handleThemeChange();
+                }
+            });
+        });
+
+        // Also listen for storage changes (for theme persistence)
+        const handleStorageChange = (e: StorageEvent) => {
+            if (e.key === 'theme') {
+                handleThemeChange();
+            }
+        };
+
+        if (typeof window !== 'undefined') {
+            observer.observe(document.documentElement, {
+                attributes: true,
+                attributeFilter: ['class']
+            });
+            window.addEventListener('storage', handleStorageChange);
+        }
+
+        return () => {
+            if (typeof window !== 'undefined') {
+                observer.disconnect();
+                window.removeEventListener('storage', handleStorageChange);
+            }
+        };
+    }, []);
 
     // Generate random orbs
     useEffect(() => {
@@ -48,7 +94,7 @@ export const LukasHeroAnimation = () => {
             size: Math.random() * 100 + 150, // 150-250px
             x: Math.random() * 100,
             y: Math.random() * 100,
-            color: `hsl(${Math.random() * 360}, 70%, 50%)`,
+            color: `hsl(${Math.random() * 60 + 200}, 70%, 50%)`, // Blue-purple range for both themes
             delay: Math.random() * 5
         }));
         setOrbs(newOrbs);
@@ -70,7 +116,7 @@ export const LukasHeroAnimation = () => {
     }, [visibleWords, titleWords.length]);
 
     return (
-        <div className="h-svh relative overflow-hidden bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950">
+        <div key={`${mounted}-${themeKey}`} className="h-svh relative overflow-hidden bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 light:from-blue-100 light:via-gray-50 light:to-blue-100">
             {/* Background Orbs */}
             {orbs.map(orb => (
                 <Orb key={orb.id} {...orb} />
@@ -78,14 +124,14 @@ export const LukasHeroAnimation = () => {
 
             {/* Background Scanning Effect */}
             <div className="absolute inset-0 z-0 pointer-events-none">
-                <div className="absolute inset-0 bg-grid-pattern opacity-10 animate-grid-scan"></div>
-                <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-slate-950 opacity-50"></div>
+                <div className="absolute inset-0 bg-grid-pattern opacity-10 light:opacity-5 animate-grid-scan"></div>
+                <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-slate-950 light:to-blue-200 opacity-50"></div>
             </div>
 
             {/* Content */}
             <div className="h-svh uppercase items-center w-full absolute z-10 pointer-events-none px-10 flex justify-center flex-col">
                 <div className="text-3xl md:text-5xl xl:text-6xl 2xl:text-7xl font-extrabold">
-                    <div className="flex space-x-2 lg:space-x-6 overflow-hidden text-white drop-shadow-[0_0_30px_rgba(239,68,68,0.5)]">
+                    <div className="flex space-x-2 lg:space-x-6 overflow-hidden text-white light:text-foreground drop-shadow-[0_0_30px_rgba(239,68,68,0.5)]">
                         {titleWords.map((word, index) => (
                             <div
                                 key={index}
@@ -100,7 +146,7 @@ export const LukasHeroAnimation = () => {
                         ))}
                     </div>
                 </div>
-                <div className="text-xs md:text-xl xl:text-2xl 2xl:text-3xl mt-2 overflow-hidden text-white font-bold">
+                <div className="text-xs md:text-xl xl:text-2xl 2xl:text-3xl mt-2 overflow-hidden text-white light:text-foreground font-bold">
                     <div
                         className={subtitleVisible ? 'fade-in-subtitle' : ''}
                         style={{
@@ -128,8 +174,8 @@ export const LukasHeroAnimation = () => {
                 <Trans i18nKey="Scroll to explore" fallback="Scroll to explore" />
                 <span className="explore-arrow">
                     <svg width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg" className="arrow-svg">
-                        <path d="M11 5V17" stroke="white" strokeWidth="2" strokeLinecap="round" />
-                        <path d="M6 12L11 17L16 12" stroke="white" strokeWidth="2" strokeLinecap="round" />
+                        <path d="M11 5V17" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+                        <path d="M6 12L11 17L16 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
                     </svg>
                 </span>
             </button>

@@ -16,10 +16,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Changelog cleanup removing unreleased entries
 - Version script workflow issues
 - Wallet button functionality restored with SSR-safe handling
+- Card interaction issues by removing interfering orbiting elements
 
 ### Removed
 - Unused JoinMovementSectionStatic component
 - Redundant static component exports
+- Interfering orbiting elements from currency card
+
+### Reverted
+- OrbitingSkills and other interactive elements from DonutChartSection
+- Background effects that blocked card interactions
 
 ## [0.1.26] - 2025-11-24
 ### Added

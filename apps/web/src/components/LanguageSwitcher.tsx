@@ -18,15 +18,15 @@ export function LanguageSwitcher() {
   }
 
   return (
-    <div className="flex items-center gap-1 p-1 rounded-full backdrop-blur-md bg-white/10 dark:bg-black/20 border border-white/20 dark:border-white/10 shadow-lg">
+    <div className="flex items-center gap-1 p-1 rounded-full backdrop-blur-md bg-card/80 dark:bg-card/60 border border-border shadow-lg">
       {Object.entries(languages).map(([code, lang]) => (
         <button
           key={code}
           onClick={() => changeLanguage(code)}
           className={`px-3 py-1.5 text-sm font-medium rounded-full transition-all duration-300 ${
             locale === code
-              ? 'bg-white/30 dark:bg-white/20 text-slate-900 dark:text-white shadow-md backdrop-blur-sm border border-white/30 dark:border-white/20'
-              : 'text-white/70 hover:text-white hover:bg-white/10 dark:hover:bg-white/5'
+              ? 'bg-primary text-primary-foreground shadow-md backdrop-blur-sm border border-border'
+              : 'text-muted-foreground hover:text-foreground hover:bg-accent/50'
           }`}
           title={lang.fullName}
         >

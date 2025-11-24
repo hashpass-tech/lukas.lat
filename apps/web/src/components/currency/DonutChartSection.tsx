@@ -66,10 +66,10 @@ export function DonutChartSection({
   // Center content for the donut chart
   const centerContent = (
     <div className="text-center">
-      <div className="text-3xl font-black text-gray-900 dark:text-gray-100 drop-shadow-lg">
+      <div className="text-3xl font-black text-foreground drop-shadow-lg">
         {selectedCurrency ? `${currencies.find(c => c.code === selectedCurrency)?.weight}%` : '100%'}
       </div>
-      <div className="text-sm uppercase tracking-[0.22em] font-semibold text-gray-800 dark:text-gray-200 drop-shadow-md">
+      <div className="text-sm uppercase tracking-[0.22em] font-semibold text-foreground drop-shadow-md">
         {selectedCurrency ? selectedCurrency : <Trans i18nKey="Currency Weights" fallback="Currency Weights" />}
       </div>
     </div>
@@ -80,7 +80,7 @@ export function DonutChartSection({
     <div className="relative">
       <div 
         data-no-orbit
-        className="relative backdrop-blur-md bg-white/20 dark:bg-black/20 border border-white/30 dark:border-white/10 shadow-lg rounded-3xl"
+        className="relative bg-card/95 backdrop-blur-xl border border-border shadow-2xl hover:shadow-3xl rounded-3xl transition-all duration-300 cursor-pointer overflow-hidden"
       >
         {/* Static background effect */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
@@ -97,8 +97,8 @@ export function DonutChartSection({
         </div>
         
         {/* Card Content */}
-        <div className="p-10 rounded-3xl">
-          <h2 className="text-4xl font-bold mb-8 text-gray-900 dark:text-gray-100 flex items-center justify-center gap-3">
+        <div className="p-10 rounded-3xl bg-card/90 backdrop-blur-sm border border-border">
+          <h2 className="text-4xl font-bold mb-8 text-foreground flex items-center justify-center gap-3">
             <span className="text-5xl">⚖️</span> 
             <Trans i18nKey="Currency Weights" fallback="Currency Weights" />
           </h2>
@@ -153,10 +153,10 @@ function CurrencyLegend({
         }`}
         onClick={() => onCurrencySelect(null)}
       >
-        <div className={`relative aspect-[5/4] rounded-2xl overflow-hidden ${
+        <div className={`relative aspect-[5/4] rounded-2xl overflow-hidden border border-border ${
           !selectedCurrency
             ? 'bg-gradient-to-br from-emerald-500/90 to-green-600/90' 
-            : 'bg-slate-950/70'
+            : 'bg-card/90'
         }`}>
           {/* Progress Indicator */}
           <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
@@ -187,8 +187,8 @@ function CurrencyLegend({
               </div>
             </div>
             <div className="text-center">
-              <div className="text-sm font-bold text-gray-900 dark:text-gray-100">LUKAS</div>
-              <div className="text-xs opacity-80 text-gray-700 dark:text-gray-300">
+              <div className="text-sm font-bold text-foreground">LUKAS</div>
+              <div className="text-xs opacity-80 text-foreground">
                 <Trans i18nKey="all" fallback="All" />
               </div>
             </div>
@@ -237,10 +237,10 @@ function CurrencyCard({
       }`}
       onClick={() => onCurrencySelect(selectedCurrency === currency.code ? null : currency.code)}
     >
-      <div className="relative aspect-[5/4] bg-slate-950/70 rounded-2xl overflow-hidden group">
+      <div className="relative aspect-[5/4] bg-card/90 rounded-2xl overflow-hidden group border border-border">
         {/* Progress Bar Background */}
         <div className="absolute inset-0 bg-gradient-to-br opacity-0 group-hover:opacity-100 transition-opacity duration-300" 
-             style={{ backgroundImage: `linear-gradient(135deg, ${currency.color.split(' ')[0].replace('from-', '')}20, ${currency.color.split(' ')[1].replace('to-', '')}20)` }} />
+             style={{ backgroundImage: `linear-gradient(135deg, ${currency.color.split(' ')[0].replace('from-', '')}30, ${currency.color.split(' ')[1].replace('to-', '')}30)` }} />
         
         {/* Progress Fill - Fixed with Fluid Animation */}
         <div 
@@ -264,7 +264,7 @@ function CurrencyCard({
         </div>
         
         {/* Content */}
-        <div className="relative h-full p-3 flex flex-col justify-between text-gray-900 dark:text-gray-100">
+        <div className="relative h-full p-3 flex flex-col justify-between text-foreground">
           <div className="flex items-center justify-between">
             <span className="text-lg">{currency.country}</span>
             <button
@@ -274,7 +274,7 @@ function CurrencyCard({
               }}
               className="w-5 h-5 rounded-full bg-white/10 backdrop-blur-sm flex items-center justify-center hover:bg-white/20 transition-all duration-200 group/info"
             >
-              <svg className="w-3 h-3 text-gray-700 dark:text-gray-300 group-hover/info:text-gray-900 dark:group-hover/info:text-gray-100" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-3 h-3 text-foreground/60 group-hover/info:text-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12 a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
             </button>

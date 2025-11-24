@@ -120,12 +120,40 @@ export function WalletProvider({ children }: { children: ReactNode }) {
   };
 
   const disconnect = () => {
+    // Clear wallet connection data from storage
+    if (typeof window !== 'undefined') {
+      // Clear localStorage
+      localStorage.removeItem('walletconnected');
+      localStorage.removeItem('walletType');
+      localStorage.removeItem('walletAddress');
+      
+      // Clear sessionStorage
+      sessionStorage.removeItem('walletconnected');
+      sessionStorage.removeItem('walletType');
+      sessionStorage.removeItem('walletAddress');
+      
+      // Clear any wallet-related cookies
+      document.cookie.split(';').forEach(cookie => {
+        const eqPos = cookie.indexOf('=');
+        const name = eqPos > -1 ? cookie.substr(0, eqPos).trim() : '';
+        if (name.includes('wallet') || name.includes('connected')) {
+          document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/`;
+        }
+      });
+    }
+
+    // Reset wallet state
     setWalletState({
       address: null,
       isConnected: false,
       isConnecting: false,
       error: null,
     });
+
+    // Trigger a custom event for components to listen to
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new CustomEvent('walletDisconnected'));
+    }
   };
 
   const availableWallets = [

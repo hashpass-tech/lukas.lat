@@ -8,6 +8,7 @@ import { PWAInstallPrompt } from "@/components/PWAInstallPrompt";
 import { useEffect, useState } from "react";
 import { DonutChartSection, CurrencyModal, JoinMovementSection } from "@/components/currency";
 import { SwapSection } from "@/components/currency/SwapSection";
+import { useWallet } from "@/app/providers/wallet-provider";
 
 type Currency = {
   country: string;
@@ -30,44 +31,31 @@ function CurrencyPageContent() {
   const [hoveredSegment, setHoveredSegment] = useState<string | null>(null);
   const [selectedCurrency, setSelectedCurrency] = useState<string | null>(null);
   const [animationKey, setAnimationKey] = useState(0);
-  const [isConnected, setIsConnected] = useState(false);
   const [mounted, setMounted] = useState(false);
+  
+  // Use wallet provider state instead of local state
+  const { isConnected } = useWallet();
 
   // Handle wallet connection state
   useEffect(() => {
     setMounted(true);
-    
-    // Check wallet connection only on client side
-    const checkWalletConnection = () => {
-      try {
-        if (typeof window !== 'undefined' && window.ethereum) {
-          window.ethereum.request({ method: 'eth_accounts' }).then((accounts: string[]) => {
-            setIsConnected(accounts.length > 0);
-          }).catch(() => {
-            setIsConnected(false);
-          });
-        }
-      } catch (error) {
-        setIsConnected(false);
-      }
+  }, []);
+
+  // Listen for wallet disconnect events
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+
+    const handleWalletDisconnected = () => {
+      // Force re-render to show JoinMovementSection
+      setMounted(false);
+      setTimeout(() => setMounted(true), 100);
     };
 
-    checkWalletConnection();
-
-    // Listen for account changes
-    if (typeof window !== 'undefined' && window.ethereum) {
-      const handleAccountsChanged = (accounts: string[]) => {
-        setIsConnected(accounts.length > 0);
-      };
-
-      window.ethereum.on('accountsChanged', handleAccountsChanged);
-      
-      return () => {
-        if (window.ethereum?.removeListener) {
-          window.ethereum.removeListener('accountsChanged', handleAccountsChanged);
-        }
-      };
-    }
+    window.addEventListener('walletDisconnected', handleWalletDisconnected);
+    
+    return () => {
+      window.removeEventListener('walletDisconnected', handleWalletDisconnected);
+    };
   }, []);
 
   // Reset donut chart animation on scroll

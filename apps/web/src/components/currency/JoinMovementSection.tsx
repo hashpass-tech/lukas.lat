@@ -81,7 +81,7 @@ export function JoinMovementSection() {
   return (
     <div 
       ref={cardRef}
-      className="relative backdrop-blur-md bg-white/20 dark:bg-black/20 border border-white/30 dark:border-white/10 shadow-lg rounded-3xl p-10 flex flex-col justify-center cursor-pointer overflow-hidden hover:shadow-2xl transition-all duration-300 hover:-translate-y-1"
+      className="relative bg-card/95 backdrop-blur-xl border border-border shadow-2xl hover:shadow-3xl rounded-3xl p-10 flex flex-col justify-center cursor-pointer overflow-hidden transition-all duration-300 hover:-translate-y-1"
       style={{
         transformStyle: 'preserve-3d',
         transition: 'transform 0.15s ease-out'
@@ -89,9 +89,9 @@ export function JoinMovementSection() {
     >
       {/* Enhanced dynamic glare effect */}
       <div 
-        className="absolute inset-0 opacity-0 bg-gradient-to-r from-transparent via-white/30 to-transparent transition-opacity duration-200 pointer-events-none"
+        className="absolute inset-0 opacity-0 bg-gradient-to-r from-transparent via-white/40 to-transparent transition-opacity duration-200 pointer-events-none"
         style={{
-          background: `radial-gradient(circle 600px at var(--mouse-x, 50%) var(--mouse-y, 50%), hsl(var(--background) / 0.25) 0%, transparent 40%)`
+          background: `radial-gradient(circle 600px at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(255,255,255,0.3) 0%, transparent 40%)`
         }}
       />
       
@@ -109,16 +109,16 @@ export function JoinMovementSection() {
         <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/10 to-transparent animate-spin-slow" />
         {/* Additional floating particles effect */}
         <div className="absolute inset-0">
-          <div className="absolute top-1/4 left-1/4 w-2 h-2 bg-primary/30 rounded-full animate-ping" />
-          <div className="absolute top-3/4 right-1/4 w-3 h-3 bg-accent/30 rounded-full animate-ping" style={{ animationDelay: '1s' }} />
-          <div className="absolute bottom-1/4 left-1/2 w-2 h-2 bg-destructive/30 rounded-full animate-ping" style={{ animationDelay: '2s' }} />
+          <div className="absolute top-1/4 left-1/4 w-2 h-2 bg-blue-400/40 rounded-full animate-ping" />
+          <div className="absolute top-3/4 right-1/4 w-3 h-3 bg-purple-400/40 rounded-full animate-ping" style={{ animationDelay: '1s' }} />
+          <div className="absolute bottom-1/4 left-1/2 w-2 h-2 bg-pink-400/40 rounded-full animate-ping" style={{ animationDelay: '2s' }} />
         </div>
       </div>
-      <h2 className="text-3xl font-bold mb-8 text-gray-900 dark:text-gray-100 flex items-center gap-3">
+      <h2 className="text-3xl font-bold mb-8 text-foreground flex items-center gap-3">
         <span className="text-4xl">🚀</span> 
         <Trans i18nKey="Join the Movement" fallback="Join the Movement" />
       </h2>
-      <p className="text-lg text-gray-700 dark:text-gray-300 mb-10 leading-relaxed font-medium">
+      <p className="text-lg text-muted-foreground mb-10 leading-relaxed font-medium">
         <Trans
           i18nKey="intro.description"
           fallback="$LUKAS is the first regional stable-basket meme coin designed to unify Latin American currency volatility into a single, gravity-centered asset."
