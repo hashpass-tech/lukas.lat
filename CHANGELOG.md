@@ -13,6 +13,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+## [0.1.13] - 2025-11-24
+
+### Added
+- Shared HtmlLayout component for single source of truth HTML structure
+- Shared createMetadata function for centralized metadata generation
+- Proper wallet connection state handling in CurrencyPageClient
+- JoinMovementSectionStatic component for SSR compatibility
+
+### Changed
+- Refactored layouts to eliminate duplicate HTML code
+- Increased wallet connect button size from 200px to 280px
+- Simplified Join now button by removing unnecessary hover effects
+- Updated DitheringShader dimensions to match button container
+
+### Fixed
+- Wallet context SSR errors during static export
+- Wallet connect button cutoff on right side
+- TypeScript import errors (useSimpleWallet → useWallet)
+- Layout hierarchy following Next.js best practices
+
+
 ## [0.1.12] - 2025-11-24
 
 ### Added
