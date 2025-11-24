@@ -8,10 +8,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
-
-### Changed
+- Final version validation system
+- Prevention of empty releases
+- Enhanced changelog management
 
 ### Fixed
+- Changelog cleanup removing unreleased entries
+- Version script workflow issues
 
 ## [0.1.26] - 2025-11-24
 ### Added
