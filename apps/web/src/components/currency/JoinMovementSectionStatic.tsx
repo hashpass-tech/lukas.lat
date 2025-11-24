@@ -1,0 +1,27 @@
+"use client";
+
+import { Trans } from "@/components/Trans";
+
+export function JoinMovementSectionStatic() {
+  return (
+    <div data-no-orbit className="bg-card/90 backdrop-blur-xl rounded-3xl p-10 border border-border shadow-2xl hover:shadow-3xl transition-all duration-300 hover:-translate-y-1 flex flex-col justify-center">
+      <h2 className="text-3xl font-bold mb-8 text-foreground flex items-center gap-3">
+        <span className="text-4xl">🚀</span> 
+        <Trans i18nKey="Join the Movement" fallback="Join the Movement" />
+      </h2>
+      <p className="text-lg text-muted-foreground mb-10 leading-relaxed font-medium">
+        <Trans
+          i18nKey="intro.description"
+          fallback="$LUKAS is the first regional stable-basket meme coin designed to unify Latin American currency volatility into a single, gravity-centered asset."
+        />
+      </p>
+      
+      {/* Static button for build */}
+      <div className="relative group">
+        <div className="bg-primary text-primary-foreground px-6 py-3 rounded-xl font-semibold hover:bg-primary/90 transition-all duration-300 text-center cursor-pointer">
+          Join now!
+        </div>
+      </div>
+    </div>
+  );
+}

@@ -23,6 +23,19 @@ const nextConfig = {
       ...config.resolve.alias,
       '@': path.join(__dirname, 'src'),
     };
+    
+    // Handle dynamic imports for wallet connectors by aliasing them to false
+    config.module.rules.push({
+      test: /node_modules\/@wagmi\/connectors/,
+      resolve: {
+        alias: {
+          './coinbaseWallet': false,
+          './gemini': false,
+          './porto': false,
+        },
+      },
+    });
+    
     return config;
   },
 };
