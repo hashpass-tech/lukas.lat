@@ -60,7 +60,123 @@ function updatePackageJson(filePath, newVersion) {
     fs.writeFileSync(filePath, JSON.stringify(data, null, 2) + '\n');
 }
 
-// Update CHANGELOG.md
+// Get git commits since last version
+function getGitCommits() {
+    try {
+        // Get the last version tag or fallback to first commit
+        let lastTag;
+        try {
+            lastTag = execSync('git describe --tags --abbrev=0', { 
+                cwd: ROOT_DIR, 
+                encoding: 'utf8' 
+            }).trim();
+        } catch (e) {
+            // No tags found, get first commit
+            lastTag = execSync('git rev-list --max-parents=0 HEAD', { 
+                cwd: ROOT_DIR, 
+                encoding: 'utf8' 
+            }).trim();
+        }
+
+        // Get commits since last tag
+        const commitOutput = execSync(`git log ${lastTag}..HEAD --pretty=format:"%h|%s" --date=short`, {
+            cwd: ROOT_DIR,
+            encoding: 'utf8'
+        }).trim();
+        
+        if (!commitOutput) {
+            log('No commits found since last tag', colors.yellow);
+            return [];
+        }
+        
+        const commits = commitOutput.split('\n').filter(line => line.trim());
+
+        return commits.map(commit => {
+            const [hash, ...messageParts] = commit.split('|');
+            const message = messageParts.join('|').trim();
+            return { hash, message, author: '', date: '' };
+        });
+    } catch (error) {
+        log('Warning: Could not get git commits for changelog', colors.yellow);
+        return [];
+    }
+}
+
+// Categorize commits based on message patterns (supports conventional commits)
+function categorizeCommit(message) {
+    const lowerMessage = message.toLowerCase();
+    
+    // Check for conventional commit types first
+    if (message.match(/^(feat|feature)(\(.+\))?:/)) {
+        return 'added';
+    }
+    if (message.match(/^fix(\(.+\))?:/)) {
+        return 'fixed';
+    }
+    if (message.match(/^refactor(\(.+\))?:|^chore(\(.+\))?:|^perf(\(.+\))?:/)) {
+        return 'changed';
+    }
+    
+    // Fallback to pattern matching
+    // Added patterns
+    if (lowerMessage.includes('add') || lowerMessage.includes('create') || 
+        lowerMessage.includes('new') || lowerMessage.includes('implement')) {
+        return 'added';
+    }
+    
+    // Changed patterns
+    if (lowerMessage.includes('update') || lowerMessage.includes('modify') || 
+        lowerMessage.includes('refactor') || lowerMessage.includes('improve') ||
+        lowerMessage.includes('enhance') || lowerMessage.includes('change')) {
+        return 'changed';
+    }
+    
+    // Fixed patterns
+    if (lowerMessage.includes('fix') || lowerMessage.includes('bug') || 
+        lowerMessage.includes('error') || lowerMessage.includes('issue') ||
+        lowerMessage.includes('resolve') || lowerMessage.includes('patch')) {
+        return 'fixed';
+    }
+    
+    // Default to changed
+    return 'changed';
+}
+
+// Clean up commit message for changelog
+function formatCommitMessage(message, hash) {
+    // Remove conventional commit prefixes
+    let cleanMessage = message.replace(/^(feat|feature|fix|refactor|chore|perf|docs|style|test)(\(.+\))?:\s*/i, '');
+    
+    // Remove hash from the message if present
+    cleanMessage = cleanMessage.replace(/\s*\([a-f0-9]{7,}\)\s*$/, '');
+    
+    // Capitalize first letter
+    cleanMessage = cleanMessage.charAt(0).toUpperCase() + cleanMessage.slice(1);
+    
+    return `- ${cleanMessage} (${hash})`;
+}
+
+// Generate changelog from git commits
+function generateChangelogFromCommits() {
+    const commits = getGitCommits();
+    const categories = {
+        added: [],
+        changed: [],
+        fixed: []
+    };
+
+    commits.forEach(commit => {
+        const category = categorizeCommit(commit.message);
+        // Skip version bump commits and merge commits
+        if (!commit.message.includes('chore(release)') && !commit.message.startsWith('Merge')) {
+            categories[category].push(formatCommitMessage(commit.message, commit.hash));
+        }
+    });
+
+    return categories;
+}
+
+// Update CHANGELOG.md with auto-generated content
 function updateChangelog(newVersion, date) {
     let changelog = fs.readFileSync(CHANGELOG_FILE, 'utf8');
 
@@ -68,15 +184,39 @@ function updateChangelog(newVersion, date) {
     const unreleasedRegex = /## \[Unreleased\]([\s\S]*?)(?=\n## \[|$)/;
     const match = changelog.match(unreleasedRegex);
 
-    if (!match) {
-        log('Warning: Could not find [Unreleased] section in CHANGELOG.md', colors.yellow);
-        return;
+    let unreleasedContent = '';
+    
+    if (match && match[1].trim()) {
+        // Use existing unreleased content
+        unreleasedContent = match[1].trim();
+    } else {
+        // Generate from git commits
+        const categories = generateChangelogFromCommits();
+        
+        unreleasedContent = '\n### Added\n\n';
+        if (categories.added.length > 0) {
+            unreleasedContent += categories.added.join('\n') + '\n\n';
+        } else {
+            unreleasedContent += '\n\n';
+        }
+        
+        unreleasedContent += '### Changed\n\n';
+        if (categories.changed.length > 0) {
+            unreleasedContent += categories.changed.join('\n') + '\n\n';
+        } else {
+            unreleasedContent += '\n\n';
+        }
+        
+        unreleasedContent += '### Fixed\n\n';
+        if (categories.fixed.length > 0) {
+            unreleasedContent += categories.fixed.join('\n') + '\n\n';
+        } else {
+            unreleasedContent += '\n\n';
+        }
     }
 
-    const unreleasedContent = match[1].trim();
-
     // Create new version section
-    const newVersionSection = `## [${newVersion}] - ${date}\n\n${unreleasedContent}\n\n`;
+    const newVersionSection = `## [${newVersion}] - ${date}\n${unreleasedContent}\n`;
 
     // Reset [Unreleased] section
     const newUnreleasedSection = `## [Unreleased]\n\n### Added\n\n### Changed\n\n### Fixed\n\n`;
@@ -106,16 +246,72 @@ function getCurrentTimestamp() {
     return new Date().toISOString();
 }
 
+// Get git status and auto-commit changes
+function autoCommitChanges() {
+    try {
+        // Check if there are any changes to commit
+        const statusOutput = execSync('git status --porcelain', {
+            cwd: ROOT_DIR,
+            encoding: 'utf8'
+        }).trim();
+
+        if (!statusOutput) {
+            log('No changes to commit', colors.blue);
+            return;
+        }
+
+        log('Detected changes, auto-committing...', colors.blue);
+        
+        // Add all changes
+        execSync('git add .', {
+            cwd: ROOT_DIR,
+            stdio: 'inherit'
+        });
+
+        // Get list of changed files for commit message
+        const diffNamestat = execSync('git diff --cached --name-status', {
+            cwd: ROOT_DIR,
+            encoding: 'utf8'
+        }).trim();
+
+        // Create commit message based on changes
+        let commitMessage = 'chore: auto-commit changes before version bump\n\n';
+        commitMessage += 'Files changed:\n';
+        
+        diffNamestat.split('\n').forEach(line => {
+            if (line.trim()) {
+                const [status, ...filePathParts] = line.split('\t');
+                const filePath = filePathParts.join('\t');
+                const statusEmoji = status === 'A' ? '➕' : status === 'M' ? '📝' : status === 'D' ? '🗑️' : '🔄';
+                commitMessage += `${statusEmoji} ${filePath}\n`;
+            }
+        });
+
+        // Create the commit
+        execSync(`git commit -m "${commitMessage}"`, {
+            cwd: ROOT_DIR,
+            stdio: 'inherit'
+        });
+
+        log('✓ Auto-committed detected changes', colors.green);
+        
+    } catch (error) {
+        log('✗ Failed to auto-commit changes', colors.red);
+        log('You may need to commit manually', colors.yellow);
+        throw error;
+    }
+}
+
 // Execute git commands
 function gitCommit(version) {
     try {
-        // Stage all changes
+        // Stage all version-related files
         execSync('git add version.json apps/web/public/version.json CHANGELOG.md package.json apps/web/package.json', {
             cwd: ROOT_DIR,
             stdio: 'inherit'
         });
 
-        // Create commit
+        // Create version bump commit
         execSync(`git commit -m "chore(release): v${version}"`, {
             cwd: ROOT_DIR,
             stdio: 'inherit'
@@ -184,7 +380,10 @@ function main() {
     log('✓ Updated apps/web/public/version.json', colors.green);
 
     // Git commit
-    log('\nCreating git commit...', colors.blue);
+    log('\nChecking for uncommitted changes...', colors.blue);
+    autoCommitChanges();
+    
+    log('\nCreating version bump commit...', colors.blue);
     gitCommit(newVersion);
 
     log(`\n${colors.bright}${colors.green}Version bump complete!${colors.reset}`);
