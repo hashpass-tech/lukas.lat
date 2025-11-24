@@ -176,6 +176,46 @@ function generateChangelogFromCommits() {
     return categories;
 }
 
+// Validate changelog has actual content
+function validateChangelogContent(newVersion, date) {
+    let changelog = fs.readFileSync(CHANGELOG_FILE, 'utf8');
+    
+    // Find the new version section
+    const versionRegex = new RegExp(`## \\[${newVersion}\\] - ${date}\\n([\\s\\S]*?)(?=\\n## \\[|$)`);
+    const match = changelog.match(versionRegex);
+    
+    if (!match) {
+        throw new Error(`Could not find version section for v${newVersion} in changelog`);
+    }
+    
+    const versionContent = match[1];
+    
+    // Check if there are actual changes (not just empty sections)
+    const hasAdded = versionContent.includes('### Added') && 
+                    versionContent.split('### Added')[1]?.split('###')[0]?.trim().length > 0;
+    const hasChanged = versionContent.includes('### Changed') && 
+                      versionContent.split('### Changed')[1]?.split('###')[0]?.trim().length > 0;
+    const hasFixed = versionContent.includes('### Fixed') && 
+                    versionContent.split('### Fixed')[1]?.trim().length > 0;
+    
+    if (!hasAdded && !hasChanged && !hasFixed) {
+        throw new Error(`Cannot create version v${newVersion} without changelog entries. Please add changes to the [Unreleased] section or manually update the changelog.`);
+    }
+    
+    return true;
+}
+
+// Clean up empty version sections
+function cleanupEmptySections() {
+    let changelog = fs.readFileSync(CHANGELOG_FILE, 'utf8');
+    
+    // Remove empty version sections
+    changelog = changelog.replace(/## \[v?\d+\.\d+\.\d+\] - \d{4}-\d{2}-\d{2}\n\n### Added\n\n### Changed\n\n### Fixed\n\n*/g, '');
+    
+    fs.writeFileSync(CHANGELOG_FILE, changelog);
+    log('✓ Cleaned up empty changelog sections', colors.green);
+}
+
 // Update CHANGELOG.md with auto-generated content
 function updateChangelog(newVersion, date) {
     let changelog = fs.readFileSync(CHANGELOG_FILE, 'utf8');
@@ -228,9 +268,10 @@ function updateChangelog(newVersion, date) {
     );
 
     fs.writeFileSync(CHANGELOG_FILE, changelog);
+    
+    // Validate the changelog has content
+    validateChangelogContent(newVersion, date);
 }
-
-// Copy version to public directory
 function copyToPublic(versionData) {
     fs.writeFileSync(PUBLIC_VERSION_FILE, JSON.stringify(versionData, null, 2) + '\n');
 }
@@ -365,6 +406,9 @@ function main() {
     // Git commit - auto-commit changes first
     log('\nChecking for uncommitted changes...', colors.blue);
     autoCommitChanges();
+    
+    // Clean up empty changelog sections first
+    cleanupEmptySections();
     
     // Now update version files after auto-commit
     writeVersion(versionData);
