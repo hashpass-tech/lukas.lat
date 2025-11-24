@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { useState, useEffect } from 'react';
 import { useTheme } from 'next-themes';
 
+
 type ColorKey =
     | 'color1'
     | 'color2'
