@@ -8,7 +8,7 @@ import { Progress } from "@/components/ui/progress";
 import { PWAInstallPrompt } from "@/components/PWAInstallPrompt";
 import { AnimatePresence, motion } from "motion/react";
 import { useEffect, useRef, useState } from "react";
-import { Trans } from "@/lib/i18n";
+import { Trans } from "@/components/Trans";
 
 type Currency = {
   country: string;

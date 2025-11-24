@@ -1,7 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import { useTranslation, translator } from '@/lib/translator'
+import { useTranslation } from '@/lib/translator'
 
 export function LanguageSwitcher() {
   const { locale, setLocale } = useTranslation()
@@ -14,7 +13,7 @@ export function LanguageSwitcher() {
   }
 
   const changeLanguage = (lang: string) => {
-    console.log('Changing to', lang)
+    console.log('LanguageSwitcher: Changing to', lang, 'from', locale)
     setLocale(lang as any)
   }
 

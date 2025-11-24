@@ -4,7 +4,7 @@ import { LightPullThemeSwitcher } from "@/components/LightPullThemeSwitcher";
 import StyledComponentsRegistry from "@/lib/registry";
 import { Providers } from "../providers/providers";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
-import { TranslationProvider } from "@/components/TranslationProvider";
+import { TranslationProvider } from "@/lib/simple-translator";
 import HashPassBrandingWrapper from "@/components/HashPassBrandingWrapper";
 
 const jetbrainsMono = {
