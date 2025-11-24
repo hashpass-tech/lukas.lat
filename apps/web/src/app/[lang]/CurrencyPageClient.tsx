@@ -35,8 +35,8 @@ function CurrencyPageContent() {
   const [mounted, setMounted] = useState(false);
   
   // Only use wallet on client side
-  const wallet = useWallet();
-  const { isConnected } = isClient ? wallet : { isConnected: false };
+  const wallet = isClient ? useWallet() : { isConnected: false, address: null, connect: async () => {}, disconnect: async () => {} };
+  const { isConnected } = wallet;
 
   // Handle wallet connection state
   useEffect(() => {
