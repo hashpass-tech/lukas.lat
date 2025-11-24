@@ -432,7 +432,7 @@ function main() {
     log('✓ Updated all version files', colors.green);
     
     // Clean up empty sections after changelog is updated
-    cleanupEmptySections();
+    // cleanupEmptySections(); // Disabled for now
     
     log('\nCreating version bump commit...', colors.blue);
     gitCommit(newVersion);
