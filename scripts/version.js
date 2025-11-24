@@ -354,40 +354,26 @@ function main() {
     const newVersion = bumpVersion(currentVersion, bumpType);
     log(`New version: v${newVersion}`, colors.green);
 
-    // Update version.json
+    // Update version data
     const date = getCurrentDate();
     const timestamp = getCurrentTimestamp();
     versionData.version = newVersion;
     versionData.releaseDate = date;
     versionData.buildMetadata.lastUpdated = timestamp;
     versionData.buildMetadata.buildNumber = (versionData.buildMetadata.buildNumber || 0) + 1;
-    writeVersion(versionData);
-    log('✓ Updated version.json', colors.green);
 
-    // Update package.json files
-    updatePackageJson(ROOT_PACKAGE, newVersion);
-    log('✓ Updated package.json', colors.green);
-
-    updatePackageJson(WEB_PACKAGE, newVersion);
-    log('✓ Updated apps/web/package.json', colors.green);
-
-    // Update CHANGELOG.md
-    updateChangelog(newVersion, date);
-    log('✓ Updated CHANGELOG.md', colors.green);
-
-    // Copy to public directory
-    copyToPublic(versionData);
-    log('✓ Updated apps/web/public/version.json', colors.green);
-
-    // Git commit
+    // Git commit - auto-commit changes first
     log('\nChecking for uncommitted changes...', colors.blue);
     autoCommitChanges();
     
-    // Ensure version files are modified after auto-commit
+    // Now update version files after auto-commit
     writeVersion(versionData);
     updatePackageJson(ROOT_PACKAGE, newVersion);
     updatePackageJson(WEB_PACKAGE, newVersion);
+    updateChangelog(newVersion, date);
     copyToPublic(versionData);
+    
+    log('✓ Updated all version files', colors.green);
     
     log('\nCreating version bump commit...', colors.blue);
     gitCommit(newVersion);
