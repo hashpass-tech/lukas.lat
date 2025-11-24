@@ -403,11 +403,26 @@ function main() {
     versionData.buildMetadata.lastUpdated = timestamp;
     versionData.buildMetadata.buildNumber = (versionData.buildMetadata.buildNumber || 0) + 1;
 
-    // Git commit - auto-commit changes first
+    // Git commit - check for changes but don't auto-commit
     log('\nChecking for uncommitted changes...', colors.blue);
-    autoCommitChanges();
     
-    // Now update version files after auto-commit
+    const statusOutput = execSync('git status --porcelain', {
+        cwd: ROOT_DIR,
+        encoding: 'utf8'
+    }).trim();
+
+    if (statusOutput) {
+        log('Detected uncommitted changes. Please commit them first.', colors.yellow);
+        log('Changes detected:', colors.blue);
+        statusOutput.split('\n').forEach(line => {
+            if (line.trim()) {
+                log(`  ${line}`, colors.blue);
+            }
+        });
+        process.exit(1);
+    }
+    
+    // Now update version files
     writeVersion(versionData);
     updatePackageJson(ROOT_PACKAGE, newVersion);
     updatePackageJson(WEB_PACKAGE, newVersion);
