@@ -116,7 +116,14 @@ export const LukasHeroAnimation = () => {
             <button
                 className="explore-btn z-20"
                 style={{ animationDelay: '2.2s' }}
-                onClick={() => window.scrollTo({ top: window.innerHeight, behavior: 'smooth' })}
+                onClick={() => {
+                    const content = document.getElementById('content');
+                    if (content) {
+                        content.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    } else {
+                        window.scrollTo({ top: window.innerHeight, behavior: 'smooth' });
+                    }
+                }}
             >
                 Scroll to explore
                 <span className="explore-arrow">

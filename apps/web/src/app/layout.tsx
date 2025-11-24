@@ -8,7 +8,6 @@ const jetbrainsMono = JetBrains_Mono({
   variable: "--font-jetbrains-mono",
 });
 
-import OrbitingSkills from "@/components/OrbitingSkills";
 import { LightPullThemeSwitcher } from "@/components/LightPullThemeSwitcher";
 import StyledComponentsRegistry from "@/lib/registry";
 import { Providers } from "./providers";
@@ -28,8 +27,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={jetbrainsMono.className}>
         <StyledComponentsRegistry>
-          <Providers>
-            <OrbitingSkills />
+            <Providers>
             <div className="fixed top-0 left-0 w-full z-50 pointer-events-none">
               <div className="pointer-events-auto w-full flex justify-center">
                 <LightPullThemeSwitcher />

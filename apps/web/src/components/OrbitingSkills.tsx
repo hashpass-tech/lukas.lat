@@ -118,7 +118,7 @@ const OrbitingSkill = memo(({ config, angle, onClick }: OrbitingSkillProps & { o
 
     return (
         <div
-            className="absolute top-1/2 left-1/2 transition-all duration-300 ease-out pointer-events-auto"
+            className="absolute top-1/2 left-1/2 transition-all duration-300 ease-out pointer-events-none"
             style={{
                 width: `${size}px`,
                 height: `${size}px`,
@@ -131,7 +131,7 @@ const OrbitingSkill = memo(({ config, angle, onClick }: OrbitingSkillProps & { o
         >
             <div
                 className={`
-          relative w - full h - full p - 1
+          relative w - full h - full p - 1 pointer-events-none
 rounded - full flex items - center justify - center
 transition - all duration - 300 cursor - pointer
           ${isHovered ? 'scale-125 shadow-2xl' : 'shadow-lg hover:shadow-xl'}
@@ -203,7 +203,8 @@ GlowingOrbitPath.displayName = 'GlowingOrbitPath';
 export default function OrbitingSkills() {
     const [time, setTime] = useState(0);
     const containerRef = useRef<HTMLDivElement>(null);
-    const isFollowing = useRef(true);
+    // Start stationary; only follow the cursor after the user clicks a coin
+    const isFollowing = useRef(false);
     const [isPaused, setIsPaused] = useState(false);
 
     useEffect(() => {
@@ -238,10 +239,18 @@ export default function OrbitingSkills() {
         window.addEventListener('mousemove', handleMouseMove);
         // Use bubble phase (default) so we can stop propagation from the component
         window.addEventListener('click', handleGlobalClick);
+        // If the user scrolls, begin following the cursor (so scroll CTA works then tracking starts)
+        const handleScrollOrWheel = () => {
+            isFollowing.current = true;
+        };
+        window.addEventListener('scroll', handleScrollOrWheel, { passive: true });
+        window.addEventListener('wheel', handleScrollOrWheel, { passive: true });
 
         return () => {
             window.removeEventListener('mousemove', handleMouseMove);
             window.removeEventListener('click', handleGlobalClick);
+            window.removeEventListener('scroll', handleScrollOrWheel);
+            window.removeEventListener('wheel', handleScrollOrWheel);
         };
     }, []);
 
@@ -282,22 +291,20 @@ export default function OrbitingSkills() {
     return (
         <div
             ref={containerRef}
-            className="fixed z-50 flex items-center justify-center pointer-events-none"
+            className="fixed inset-0 z-30 flex items-center justify-center pointer-events-none"
             style={{
-                left: '50%',
-                top: '50%',
-                transform: 'translate(-50%, -50%)',
+                // Start slightly above the page center to sit near the $LUKAS title
+                top: '40%',
                 width: '450px',
-                height: '450px'
+                height: '450px',
+                transform: 'translate(-50%, -50%)',
+                left: '50%'
             }}
         >
 
             {/* Central "Code" Icon with enhanced glow */}
             <div
-                className="w-20 h-20 bg-gradient-to-br from-gray-700 to-gray-900 rounded-full flex items-center justify-center z-10 relative shadow-2xl pointer-events-auto cursor-pointer overflow-hidden"
-                onMouseEnter={() => setIsPaused(true)}
-                onMouseLeave={() => setIsPaused(false)}
-                onClick={handleResumeFollow}
+                className="w-20 h-20 bg-gradient-to-br from-gray-700 to-gray-900 rounded-full flex items-center justify-center z-10 relative shadow-2xl pointer-events-none cursor-default overflow-hidden"
             >
                 <div className="absolute inset-0 rounded-full bg-cyan-500/30 blur-xl animate-pulse"></div>
                 <div className="absolute inset-0 rounded-full bg-purple-500/20 blur-2xl animate-pulse" style={{ animationDelay: '1s' }}></div>
