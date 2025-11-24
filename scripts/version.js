@@ -21,6 +21,7 @@ function log(message, color = colors.reset) {
 // Paths
 const ROOT_DIR = path.resolve(__dirname, '..');
 const VERSION_FILE = path.join(ROOT_DIR, 'version.json');
+const PUBLIC_VERSION_FILE = path.join(ROOT_DIR, 'apps/web/public/version.json');
 const CHANGELOG_FILE = path.join(ROOT_DIR, 'CHANGELOG.md');
 const ROOT_PACKAGE = path.join(ROOT_DIR, 'package.json');
 const WEB_PACKAGE = path.join(ROOT_DIR, 'apps/web/package.json');
@@ -89,6 +90,11 @@ function updateChangelog(newVersion, date) {
     fs.writeFileSync(CHANGELOG_FILE, changelog);
 }
 
+// Copy version to public directory
+function copyToPublic(versionData) {
+    fs.writeFileSync(PUBLIC_VERSION_FILE, JSON.stringify(versionData, null, 2) + '\n');
+}
+
 // Get current date in YYYY-MM-DD format
 function getCurrentDate() {
     const now = new Date();
@@ -104,7 +110,7 @@ function getCurrentTimestamp() {
 function gitCommit(version) {
     try {
         // Stage all changes
-        execSync('git add version.json CHANGELOG.md package.json apps/web/package.json', {
+        execSync('git add version.json apps/web/public/version.json CHANGELOG.md package.json apps/web/package.json', {
             cwd: ROOT_DIR,
             stdio: 'inherit'
         });
@@ -172,6 +178,10 @@ function main() {
     // Update CHANGELOG.md
     updateChangelog(newVersion, date);
     log('✓ Updated CHANGELOG.md', colors.green);
+
+    // Copy to public directory
+    copyToPublic(versionData);
+    log('✓ Updated apps/web/public/version.json', colors.green);
 
     // Git commit
     log('\nCreating git commit...', colors.blue);
