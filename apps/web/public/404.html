@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Redirecting...</title>
+    <script>
+        // Supported locales
+        const locales = ['en', 'es', 'pt', 'cl'];
+        const defaultLocale = 'en';
+
+        // Function to detect user's preferred language
+        function detectLocale() {
+            // 1. Check localStorage
+            const storedLocale = localStorage.getItem('language');
+            if (storedLocale && locales.includes(storedLocale)) {
+                return storedLocale;
+            }
+
+            // 2. Check browser language
+            if (navigator.language) {
+                const browserLang = navigator.language.split('-')[0];
+                if (locales.includes(browserLang)) {
+                    return browserLang;
+                }
+            }
+
+            // 3. Fallback to default
+            return defaultLocale;
+        }
+
+        // Redirect to detected locale
+        const detectedLocale = detectLocale();
+        const currentPath = window.location.pathname;
+        const newPath = currentPath === '/' || currentPath === '/index.html' 
+            ? `/${detectedLocale}/`
+            : `/${detectedLocale}${currentPath}`;
+
+        window.location.href = newPath;
+    </script>
+</head>
+<body>
+    <div style="display: flex; justify-content: center; align-items: center; height: 100vh; font-family: system-ui, sans-serif;">
+        <div style="text-align: center;">
+            <div style="border: 4px solid #f3f4f6; border-top: 4px solid white; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 0 auto 20px;"></div>
+            <p style="color: #666; margin: 0;">Redirecting...</p>
+        </div>
+    </div>
+    <style>
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        body {
+            background: linear-gradient(135deg, #065f46 0%, #0f766e 50%, #0e7490 100%);
+            margin: 0;
+            min-height: 100vh;
+        }
+    </style>
+</body>
+</html>

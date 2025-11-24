@@ -16,10 +16,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.1.5] - 2025-11-24
 
 ### Added
+- Automatic language detection based on browser Accept-Language header
+- Middleware for locale-based routing and redirection
+- Cookie-based language preference persistence
+- Client-side language detection fallback
+- Dynamic theme switcher rope animation that expands with pull gesture
 
 ### Changed
+- Enhanced theme switcher with smooth rope expansion animation
+- Improved language switcher with Next.js router integration
+- Better user experience with automatic locale detection
 
 ### Fixed
+- Theme switcher rope positioning to attach properly to the circle
+- Prevented users from accessing site without locale prefix
+- Rope now expands smoothly instead of appearing cut
 
 
 ## [0.1.4] - 2025-11-24

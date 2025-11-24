@@ -8,6 +8,7 @@ export function LightPullThemeSwitcher() {
     const { theme, setTheme } = useTheme();
     const [mounted, setMounted] = useState(false);
     const controls = useAnimation();
+    const [lineHeight, setLineHeight] = useState(20); // Initial line height in rem (h-20 = 5rem = 80px)
 
     useEffect(() => {
         setMounted(true);
@@ -17,6 +18,7 @@ export function LightPullThemeSwitcher() {
         setTheme(theme === 'dark' ? 'light' : 'dark');
         // Animate back to starting position
         await controls.start({ y: 0 });
+        setLineHeight(20); // Reset line height
     };
 
     if (!mounted) return null;
@@ -30,12 +32,18 @@ export function LightPullThemeSwitcher() {
                     drag="y"
                     dragDirectionLock
                     animate={controls}
+                    onDrag={(_, info) => {
+                        // Update line height based on drag position
+                        const newHeight = Math.max(20, Math.min(40, 20 + info.offset.y / 4)); // Scale drag to reasonable height range
+                        setLineHeight(newHeight);
+                    }}
                     onDragEnd={async (event, info) => {
                         if (Math.abs(info.offset.y) > 30) {
                             await toggleDarkMode();
                         } else {
                             // Pull back if not enough drag
                             await controls.start({ y: 0 });
+                            setLineHeight(20); // Reset line height
                         }
                     }}
                     dragConstraints={{ top: 0, right: 0, bottom: 80, left: 0 }}
@@ -56,9 +64,14 @@ export function LightPullThemeSwitcher() {
                             <div className="absolute bottom-2 right-2 w-1.5 h-1.5 rounded-full bg-gray-800/30"></div>
                         </>
                     )}
+                    {/* String/Rope attached to the circle */}
+                    <motion.div 
+                        animate={{ height: `${lineHeight * 0.25}rem` }}
+                        transition={{ duration: 0.2, ease: "easeOut" }}
+                        className="absolute bottom-full left-1/2 -translate-x-1/2 w-0.5 bg-gradient-to-b from-neutral-400 to-neutral-300 dark:from-neutral-500 dark:to-neutral-600 z-[-1] pointer-events-none shadow-sm"
+                        style={{ transformOrigin: 'bottom center' }}
+                    ></motion.div>
                 </motion.div>
-                {/* String/Rope */}
-                <div className="absolute -top-20 left-1/2 -translate-x-1/2 w-0.5 h-20 bg-gradient-to-b from-neutral-400 to-neutral-300 dark:from-neutral-500 dark:to-neutral-600 z-10 pointer-events-none shadow-sm"></div>
             </div>
         </div>
     );
