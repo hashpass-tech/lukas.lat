@@ -383,6 +383,12 @@ function main() {
     log('\nChecking for uncommitted changes...', colors.blue);
     autoCommitChanges();
     
+    // Ensure version files are modified after auto-commit
+    writeVersion(versionData);
+    updatePackageJson(ROOT_PACKAGE, newVersion);
+    updatePackageJson(WEB_PACKAGE, newVersion);
+    copyToPublic(versionData);
+    
     log('\nCreating version bump commit...', colors.blue);
     gitCommit(newVersion);
 
