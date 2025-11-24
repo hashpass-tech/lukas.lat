@@ -32,37 +32,32 @@ The architecture is intentionally modular, censorship-resistant, and audit-frien
 
 # 🏗 Repository Structure
 
+This is a **Turborepo** monorepo containing:
+
 ```
-/contracts
-  /feeds
-    BRZAdapter.sol
-    COPMAdapter.sol
-    MXNRemoteFeed.sol
-    ARSRemoteFeed.sol
-    CLPOracle.sol
-  LatAmBasketIndex.sol
-  LukasHook.sol
-  StabilizerVault.sol
-  LukasToken.sol
-
-/scripts
-  deploy/
-  update-price-feeds/
-
-/test
-  unit/
-  integration/
-
-/docs
-  architecture.md
-  audits/
-  economic-model.pdf
-  peg-design.md
-
-README.md
-LICENSE
-CONTRIBUTING.md
+.
+├── apps
+│   ├── web          # Next.js web application with Three.js animations
+│   └── docs         # Docusaurus documentation site
+├── packages
+│   └── contracts    # Foundry smart contracts (LukasToken, oracles, hooks)
+├── turbo.json       # Turborepo configuration
+├── pnpm-workspace.yaml
+└── package.json
 ```
+
+### Apps
+
+- **web**: Next.js 14 app with cybernetic grid shader background
+- **docs**: Comprehensive documentation built with Docusaurus
+
+### Packages
+
+- **contracts**: Foundry-based smart contracts including:
+  - `LukasToken.sol` - Main ERC-20 token
+  - Price feed adapters (BRZ, COPM, MXN, ARS, CLP)
+  - Uniswap v4 hooks for peg stabilization
+  - Stabilizer vault module
 
 ---
 
@@ -185,7 +180,67 @@ function getPriceUSD() external view returns (uint256 price1e8, uint256 lastUpda
 
 ---
 
-# 🧪 Testing
+# 🚀 Getting Started
+
+## Prerequisites
+
+- Node.js 18+
+- pnpm 8+
+- Foundry (for smart contracts)
+
+## Installation
+
+```bash
+pnpm install
+```
+
+## Development
+
+Run all apps in development mode:
+
+```bash
+pnpm dev
+```
+
+This will start:
+- Web app at `http://localhost:3000`
+- Docs at `http://localhost:3001`
+
+## Build
+
+Build all apps and packages:
+
+```bash
+pnpm build
+```
+
+## Working with Smart Contracts
+
+Navigate to the contracts package:
+
+```bash
+cd packages/contracts
+```
+
+Install Foundry dependencies:
+
+```bash
+forge install
+```
+
+Build contracts:
+
+```bash
+forge build
+```
+
+Run tests:
+
+```bash
+forge test
+```
+
+## 🧪 Testing
 
 Unit tests are included for:
 
@@ -202,12 +257,6 @@ Integration tests simulate:
 * MXN devaluation
 * Multi-feed delays
 * Off-peg liquidity drains
-
-Run:
-
-```
-forge test
-```
 
 ---
 
