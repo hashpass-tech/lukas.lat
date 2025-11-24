@@ -4,7 +4,7 @@ const path = require('path');
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  output: 'export',
+  output: 'export', //IMPORTANT: This is required for static export GITHUB ACTIONS DEPLOYMENT
   basePath: '',
   assetPrefix: '',
   outputFileTracingRoot: path.join(__dirname, '../../'),

@@ -5,3 +5,7 @@ export default function Home() {
 }
 
 export const dynamic = 'force-dynamic';
+
+export function generateStaticParams() {
+  return ["en", "es", "pt", "cl"].map((lang) => ({ lang }));
+}

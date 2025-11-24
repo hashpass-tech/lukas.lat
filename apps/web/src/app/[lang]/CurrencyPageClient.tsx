@@ -27,18 +27,20 @@ const currencies: Currency[] = [
 ];
 
 function CurrencyPageContent() {
+  const [isClient, setIsClient] = useState(false);
   const [activeCurrency, setActiveCurrency] = useState<Currency | null>(null);
-  const [hoveredSegment, setHoveredSegment] = useState<string | null>(null);
   const [selectedCurrency, setSelectedCurrency] = useState<string | null>(null);
+  const [hoveredSegment, setHoveredSegment] = useState<string | null>(null);
   const [animationKey, setAnimationKey] = useState(0);
   const [mounted, setMounted] = useState(false);
   
-  // Use wallet provider state instead of local state
-  const { isConnected } = useWallet();
+  // Only use wallet on client side
+  const wallet = useWallet();
+  const { isConnected } = isClient ? wallet : { isConnected: false };
 
   // Handle wallet connection state
   useEffect(() => {
-    setMounted(true);
+    setIsClient(true);
   }, []);
 
   // Listen for wallet disconnect events
