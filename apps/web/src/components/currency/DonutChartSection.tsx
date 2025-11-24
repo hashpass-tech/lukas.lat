@@ -34,7 +34,6 @@ export function DonutChartSection({
   onActiveCurrency,
 }: DonutChartSectionProps) {
   const { locale } = useTranslation(); // Ensure re-render on language change
-  const cardRef = useRef<HTMLDivElement>(null);
 
   // Create donut chart data - either all currencies or just selected one
   const donutData: DonutChartSegment[] = selectedCurrency 
@@ -67,72 +66,29 @@ export function DonutChartSection({
   // Center content for the donut chart
   const centerContent = (
     <div className="text-center">
-      <div className="text-3xl font-black text-slate-950 dark:text-white drop-shadow-lg">
+      <div className="text-3xl font-black text-gray-900 dark:text-gray-100 drop-shadow-lg">
         {selectedCurrency ? `${currencies.find(c => c.code === selectedCurrency)?.weight}%` : '100%'}
       </div>
-      <div className="text-sm uppercase tracking-[0.22em] font-semibold text-slate-900/90 dark:text-white/90 drop-shadow-md">
+      <div className="text-sm uppercase tracking-[0.22em] font-semibold text-gray-800 dark:text-gray-200 drop-shadow-md">
         {selectedCurrency ? selectedCurrency : <Trans i18nKey="Currency Weights" fallback="Currency Weights" />}
       </div>
     </div>
   );
 
-  useEffect(() => {
-    const card = cardRef.current;
-    if (!card) return;
-
-    const handleMouseMove = (e: MouseEvent) => {
-      const rect = card.getBoundingClientRect();
-      const x = e.clientX - rect.left;
-      const y = e.clientY - rect.top;
-      const centerX = rect.width / 2;
-      const centerY = rect.height / 2;
-
-      const rotateY = (x - centerX) / centerX * 10;
-      const rotateX = (y - centerY) / centerY * -10;
-
-      card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
-      card.style.setProperty('--mouse-x', `${x}px`);
-      card.style.setProperty('--mouse-y', `${y}px`);
-    };
-
-    const handleMouseLeave = () => {
-      card.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg)';
-    };
-
-    card.addEventListener('mousemove', handleMouseMove);
-    card.addEventListener('mouseleave', handleMouseLeave);
-
-    return () => {
-      card.removeEventListener('mousemove', handleMouseMove);
-      card.removeEventListener('mouseleave', handleMouseLeave);
-    };
-  }, []);
 
   return (
     <div className="relative">
       <div 
-        ref={cardRef}
-        className="relative bg-white/90 dark:bg-slate-900/40 backdrop-blur-xl rounded-3xl shadow-2xl hover:shadow-3xl transition-all duration-300 cursor-pointer overflow-hidden"
-        style={{
-          transformStyle: 'preserve-3d',
-          transition: 'transform 0.2s ease-out'
-        }}
+        data-no-orbit
+        className="relative backdrop-blur-md bg-white/20 dark:bg-black/20 border border-white/30 dark:border-white/10 shadow-lg rounded-3xl"
       >
-        {/* Dynamic glare effect */}
-        <div 
-          className="absolute inset-0 opacity-0 bg-gradient-to-r from-transparent via-white/20 to-transparent transition-opacity duration-300 pointer-events-none"
-          style={{
-            background: `radial-gradient(circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(255,255,255,0.15) 0%, transparent 50%)`
-          }}
-        />
-        
-        {/* Animated background movement effect */}
+        {/* Static background effect */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           <div className="absolute inset-0 bg-gradient-to-br from-blue-400/10 via-purple-400/10 to-pink-400/10 animate-pulse" />
           <div 
             className="absolute inset-0 opacity-50"
             style={{
-              background: 'linear-gradient(45deg, rgba(59, 130, 246, 0.1) 0%, rgba(147, 51, 234, 0.1) 25%, rgba(236, 72, 153, 0.1) 50%, rgba(34, 197, 94, 0.1) 75%, rgba(59, 130, 246, 0.1) 100%)',
+              background: 'linear-gradient(45deg, hsl(var(--primary) / 0.1) 0%, hsl(var(--accent) / 0.1) 25%, hsl(var(--destructive) / 0.1) 50%, hsl(var(--success) / 0.1) 75%, hsl(var(--primary) / 0.1) 100%)',
               animation: 'gradient-shift 8s ease infinite',
               backgroundSize: '200% 200%',
             }}
@@ -141,8 +97,8 @@ export function DonutChartSection({
         </div>
         
         {/* Card Content */}
-        <div className="p-10 border border-slate-300/60 dark:border-slate-700/40 rounded-3xl">
-          <h2 className="text-4xl font-bold mb-8 text-slate-950 dark:text-slate-50 flex items-center justify-center gap-3">
+        <div className="p-10 rounded-3xl">
+          <h2 className="text-4xl font-bold mb-8 text-gray-900 dark:text-gray-100 flex items-center justify-center gap-3">
             <span className="text-5xl">⚖️</span> 
             <Trans i18nKey="Currency Weights" fallback="Currency Weights" />
           </h2>
@@ -231,8 +187,8 @@ function CurrencyLegend({
               </div>
             </div>
             <div className="text-center">
-              <div className="text-sm font-bold">LUKAS</div>
-              <div className="text-xs opacity-80">
+              <div className="text-sm font-bold text-gray-900 dark:text-gray-100">LUKAS</div>
+              <div className="text-xs opacity-80 text-gray-700 dark:text-gray-300">
                 <Trans i18nKey="all" fallback="All" />
               </div>
             </div>
@@ -308,7 +264,7 @@ function CurrencyCard({
         </div>
         
         {/* Content */}
-        <div className="relative h-full p-3 flex flex-col justify-between text-white">
+        <div className="relative h-full p-3 flex flex-col justify-between text-gray-900 dark:text-gray-100">
           <div className="flex items-center justify-between">
             <span className="text-lg">{currency.country}</span>
             <button
@@ -318,8 +274,8 @@ function CurrencyCard({
               }}
               className="w-5 h-5 rounded-full bg-white/10 backdrop-blur-sm flex items-center justify-center hover:bg-white/20 transition-all duration-200 group/info"
             >
-              <svg className="w-3 h-3 text-white/80 group-hover/info:text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              <svg className="w-3 h-3 text-gray-700 dark:text-gray-300 group-hover/info:text-gray-900 dark:group-hover/info:text-gray-100" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12 a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
             </button>
           </div>
