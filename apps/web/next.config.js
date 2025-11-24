@@ -8,6 +8,8 @@ const nextConfig = {
   basePath: '',
   assetPrefix: '',
   outputFileTracingRoot: path.join(__dirname, '../../'),
+  trailingSlash: true,
+  skipTrailingSlashRedirect: false,
   images: {
     unoptimized: true,
   },
@@ -16,9 +18,6 @@ const nextConfig = {
     return crypto.randomBytes(6).toString('hex');
   },
   serverExternalPackages: [],
-  // Exclude service worker from static generation
-  trailingSlash: false,
-  skipTrailingSlashRedirect: true,
   webpack: (config) => {
     config.resolve.alias = {
       ...config.resolve.alias,

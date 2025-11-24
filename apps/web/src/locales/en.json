@@ -20,5 +20,21 @@
   "currency.mexican_peso": "Mexican Peso",
   "currency.colombian_peso": "Colombian Peso",
   "currency.chilean_peso": "Chilean Peso",
-  "currency.argentine_peso": "Argentine Peso"
+  "currency.argentine_peso": "Argentine Peso",
+  "lukas.token.title": "LUKAS Token",
+  "lukas.token.subtitle": "Regional Stable-Basket Meme Coin",
+  "lukas.what_is_title": "What is LUKAS?",
+  "lukas.key_features": "Key Features",
+  "lukas.regional_focus": "Regional Focus:",
+  "lukas.stable_basket": "Stable Basket:",
+  "lukas.gravity_centered": "Gravity-Centered:",
+  "lukas.community_driven": "Community Driven:",
+  "lukas.regional_focus_desc": "Optimized for Latin American markets",
+  "lukas.stable_basket_desc": "Backed by BRL, MXN, COP, CLP, and ARS",
+  "lukas.gravity_centered_desc": "Algorithmically balanced for stability",
+  "lukas.community_driven_desc": "Meme coin culture with real utility",
+  "lukas.currency_basket": "Currency Basket",
+  "lukas.description": "$LUKAS is the first regional stable-basket meme coin designed to unify Latin American currency volatility into a single, gravity-centered asset. It combines the stability of a basket of major Latin American currencies with the community-driven nature of meme coins.",
+  "currency.weight": "Currency Weight",
+  "all": "All"
 }

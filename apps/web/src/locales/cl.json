@@ -20,5 +20,21 @@
   "currency.mexican_peso": "Peso Mexicano",
   "currency.colombian_peso": "Peso Colombiano",
   "currency.chilean_peso": "Peso Chileno",
-  "currency.argentine_peso": "Peso Argentino"
+  "currency.argentine_peso": "Peso Argentino",
+  "lukas.token.title": "Token LUKAS",
+  "lukas.token.subtitle": "Moneda Meme de Canasta Estable Regional",
+  "lukas.what_is_title": "¿Qué es LUKAS?",
+  "lukas.key_features": "Características Clave",
+  "lukas.regional_focus": "Enfoque Regional:",
+  "lukas.stable_basket": "Canasta Estable:",
+  "lukas.gravity_centered": "Centrado en Gravedad:",
+  "lukas.community_driven": "Impulsado por la Comunidad:",
+  "lukas.regional_focus_desc": "Optimizado para mercados latinoamericanos",
+  "lukas.stable_basket_desc": "Respaldo por BRL, MXN, COP, CLP y ARS",
+  "lukas.gravity_centered_desc": "Balanceado algorítmicamente para estabilidad",
+  "lukas.community_driven_desc": "Cultura de moneda meme con utilidad real",
+  "lukas.currency_basket": "Canasta de Monedas",
+  "lukas.description": "$LUKAS es la primera moneda meme de canasta estable regional diseñada para unificar la volatilidad de las monedas latinoamericanas en un único activo centrado en la gravedad. Combina la estabilidad de una canasta de las principales monedas latinoamericanas con la naturaleza impulsada por la comunidad de las monedas meme.",
+  "currency.weight": "Peso de Moneda",
+  "all": "Todos"
 }
