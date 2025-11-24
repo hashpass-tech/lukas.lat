@@ -34,7 +34,7 @@ export default function RootPage() {
     // Immediate redirect for GitHub Pages compatibility
     if (typeof window !== 'undefined') {
       const detectedLocale = detectClientLocale()
-      const newPath = `/${detectedLocale}/`
+      const newPath = `/${detectedLocale}`
       
       // Use window.location for immediate redirect (more reliable on static hosting)
       window.location.href = newPath

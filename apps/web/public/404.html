@@ -33,7 +33,7 @@
         const detectedLocale = detectLocale();
         const currentPath = window.location.pathname;
         const newPath = currentPath === '/' || currentPath === '/index.html' 
-            ? `/${detectedLocale}/`
+            ? `/${detectedLocale}`
             : `/${detectedLocale}${currentPath}`;
 
         window.location.href = newPath;
