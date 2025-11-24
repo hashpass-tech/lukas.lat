@@ -205,12 +205,12 @@ function validateChangelogContent(newVersion, date) {
     return true;
 }
 
-// Clean up empty version sections
+// Clean up empty version sections (but keep unreleased)
 function cleanupEmptySections() {
     let changelog = fs.readFileSync(CHANGELOG_FILE, 'utf8');
     
-    // Remove empty version sections
-    changelog = changelog.replace(/## \[v?\d+\.\d+\.\d+\] - \d{4}-\d{2}-\d{2}\n\n### Added\n\n### Changed\n\n### Fixed\n\n*/g, '');
+    // Remove empty version sections, but skip [Unreleased]
+    changelog = changelog.replace(/## \[(?!Unreleased)v?\d+\.\d+\.\d+\] - \d{4}-\d{2}-\d{2}\n\n### Added\n\n### Changed\n\n### Fixed\n\n*/g, '');
     
     fs.writeFileSync(CHANGELOG_FILE, changelog);
     log('✓ Cleaned up empty changelog sections', colors.green);
