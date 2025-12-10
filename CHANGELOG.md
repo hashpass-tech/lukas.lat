@@ -13,6 +13,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Restricted orbiting currency cursor animation to first section only
+- Hidden orbiting animation completely when scrolling to second section
+
+## [0.1.31] - 2025-12-10
+### Added
+
+### Changed
+
+### Fixed
+
 ## [0.1.30] - 2025-11-24
 ### Added
 
