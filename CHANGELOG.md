@@ -11,6 +11,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+### Fixed
+
+## [0.1.34] - 2025-12-10
+### Added
+
+### Changed
+
 - Added GitHub repository link to version badge in Footer component
 - Made version pill clickable with external link indicator
 
