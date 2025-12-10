@@ -3,7 +3,8 @@
   "version": "0.1.32",
   "private": true,
   "workspaces": [
-    "apps/web"
+    "apps/web",
+    "apps/docs"
   ],
   "engines": {
     "node": "22.18.0"

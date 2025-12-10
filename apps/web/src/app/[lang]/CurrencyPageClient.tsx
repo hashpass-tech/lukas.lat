@@ -4,6 +4,7 @@ import LukasGravityCenter from "@/components/LukasGravityCenter";
 import LukasHeroAnimation from "@/components/LukasHeroAnimation";
 import CyberneticGridShader from "@/components/CyberneticGridShader";
 import OrbitingSkills from "@/components/OrbitingSkills";
+import Footer from "@/components/Footer";
 import { PWAInstallPrompt } from "@/components/PWAInstallPrompt";
 import { useEffect, useState } from "react";
 import { DonutChartSection, CurrencyModal, JoinMovementSection } from "@/components/currency";
@@ -123,6 +124,8 @@ function CurrencyPageContent() {
         )}
 
         <PWAInstallPrompt />
+
+        <Footer version="0.1.32" />
       </>
   );
 }
