@@ -92,7 +92,7 @@ function CurrencyPageContent() {
           </div>
         </section>
 
-        <section id="content" className="relative overflow-hidden bg-slate-950">
+        <section id="content" className="relative overflow-hidden bg-slate-950" data-no-orbit>
           <CyberneticGridShader />
           <div className="absolute inset-0 pointer-events-none bg-gradient-to-br from-slate-950/70 via-slate-900/60 to-slate-950/80 z-0" />
           <main className="flex min-h-screen flex-col items-center justify-center p-4 sm:p-24 relative overflow-x-hidden z-10">

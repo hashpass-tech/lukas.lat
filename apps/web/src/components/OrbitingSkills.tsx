@@ -207,6 +207,7 @@ export default function OrbitingSkills() {
     // Start stationary; only follow the cursor after the user clicks a coin
     const isFollowing = useRef(false);
     const [isPaused, setIsPaused] = useState(false);
+    const [isVisible, setIsVisible] = useState(true);
 
     useEffect(() => {
         const handleMouseMove = (e: MouseEvent) => {
@@ -214,8 +215,15 @@ export default function OrbitingSkills() {
                 // Check if the mouse is over an element with data-no-orbit attribute
                 const elementUnderCursor = document.elementFromPoint(e.clientX, e.clientY);
                 const isOverNoOrbitZone = elementUnderCursor?.closest('[data-no-orbit]');
+                
+                // Check if cursor is within the hero section
+                const heroSection = document.getElementById('hero');
+                const isInHeroSection = heroSection && (
+                    e.clientY >= heroSection.offsetTop && 
+                    e.clientY <= heroSection.offsetTop + heroSection.offsetHeight
+                );
 
-                if (!isOverNoOrbitZone) {
+                if (!isOverNoOrbitZone && isInHeroSection) {
                     containerRef.current.style.left = `${e.clientX}px`;
                     containerRef.current.style.top = `${e.clientY}px`;
                 }
@@ -227,8 +235,15 @@ export default function OrbitingSkills() {
                 // Check if clicking on a no-orbit zone - if so, don't drop
                 const elementUnderCursor = document.elementFromPoint(e.clientX, e.clientY);
                 const isOverNoOrbitZone = elementUnderCursor?.closest('[data-no-orbit]');
+                
+                // Check if cursor is within the hero section
+                const heroSection = document.getElementById('hero');
+                const isInHeroSection = heroSection && (
+                    e.clientY >= heroSection.offsetTop && 
+                    e.clientY <= heroSection.offsetTop + heroSection.offsetHeight
+                );
 
-                if (!isOverNoOrbitZone) {
+                if (!isOverNoOrbitZone && isInHeroSection) {
                     isFollowing.current = false;
                     containerRef.current.style.position = 'absolute';
                     containerRef.current.style.left = `${e.pageX}px`;
@@ -237,20 +252,34 @@ export default function OrbitingSkills() {
             }
         };
 
+        const handleScroll = () => {
+            const heroSection = document.getElementById('hero');
+            if (heroSection) {
+                const scrollY = window.scrollY;
+                const heroBottom = heroSection.offsetTop + heroSection.offsetHeight;
+                
+                // Hide animation when scrolled past hero section
+                setIsVisible(scrollY < heroBottom);
+            }
+        };
+
         window.addEventListener('mousemove', handleMouseMove);
         // Use bubble phase (default) so we can stop propagation from the component
         window.addEventListener('click', handleGlobalClick);
+        window.addEventListener('scroll', handleScroll, { passive: true });
         // If the user scrolls, begin following the cursor (so scroll CTA works then tracking starts)
         const handleScrollOrWheel = () => {
             isFollowing.current = true;
         };
-        window.addEventListener('scroll', handleScrollOrWheel, { passive: true });
         window.addEventListener('wheel', handleScrollOrWheel, { passive: true });
+
+        // Initial visibility check
+        handleScroll();
 
         return () => {
             window.removeEventListener('mousemove', handleMouseMove);
             window.removeEventListener('click', handleGlobalClick);
-            window.removeEventListener('scroll', handleScrollOrWheel);
+            window.removeEventListener('scroll', handleScroll);
             window.removeEventListener('wheel', handleScrollOrWheel);
         };
     }, []);
@@ -292,7 +321,7 @@ export default function OrbitingSkills() {
     return (
         <div
             ref={containerRef}
-            className="fixed inset-0 z-30 flex items-center justify-center pointer-events-none"
+            className={`fixed inset-0 z-30 flex items-center justify-center pointer-events-none transition-opacity duration-300 ${isVisible ? 'opacity-100' : 'opacity-0'}`}
             style={{
                 // Start slightly above the page center to sit near the $LUKAS title
                 top: '40%',
