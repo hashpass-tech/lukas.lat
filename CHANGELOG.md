@@ -13,6 +13,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+## [0.1.51] - 2025-12-11
+### Added
+
+### Changed
+
+### Fixed
+
  - Unified wallet connection loading state across desktop and mobile connect buttons, showing consistent spinners and disabled states while any wallet is connecting
 
 ## [0.1.50] - 2025-12-11
