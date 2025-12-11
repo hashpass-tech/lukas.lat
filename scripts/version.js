@@ -167,8 +167,13 @@ function generateChangelogFromCommits() {
 
     commits.forEach(commit => {
         const category = categorizeCommit(commit.message);
-        // Skip version bump commits and merge commits
-        if (!commit.message.includes('chore(release)') && !commit.message.startsWith('Merge')) {
+        // Skip version bump commits, auto-commit helper commits, and merge commits
+        const msg = commit.message;
+        const isRelease = msg.includes('chore(release)');
+        const isAutoCommitHelper = msg.toLowerCase().includes('auto-commit changes before version bump');
+        const isMerge = msg.startsWith('Merge');
+
+        if (!isRelease && !isAutoCommitHelper && !isMerge) {
             categories[category].push(formatCommitMessage(commit.message, commit.hash));
         }
     });
