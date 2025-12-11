@@ -9,6 +9,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+### Changed
+
+### Fixed
+
+## [0.1.41] - 2025-12-11
+### Added
+
 - WalletConnect v3 integration using project ID env config and Ethereum provider
 - Advanced swap card and Join Movement swap flow improvements when wallet is connected
 
