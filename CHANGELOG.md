@@ -9,6 +9,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- WalletConnect v3 integration using project ID env config and Ethereum provider
+- Advanced swap card and Join Movement swap flow improvements when wallet is connected
+
+### Changed
+
+- Refined wallet header and mobile wallet button UX for clearer connect/disconnect states
+
+### Fixed
+
+- Wallet connect modal not appearing due to missing WalletConnect provider setup
+
+## [0.1.40] - 2025-12-11
+### Added
+
 ### Changed
 
 ### Fixed
