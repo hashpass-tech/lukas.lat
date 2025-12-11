@@ -36,40 +36,38 @@ export default function Footer({ version = versionInfo.version }: FooterProps) {
   // Parse changelog data - in a real app, this would come from the actual changelog file
   const changelogData: ChangelogEntry[] = [
     {
-      version: "0.1.32",
-      date: "2025-12-10",
+      version: "0.1.45",
+      date: "2025-12-11",
       changes: {
         fixed: [
-          "Restricted orbiting currency cursor animation to first section only",
-          "Hidden orbiting animation completely when scrolling to second section"
+          "Aligned Join Movement and Swap cards to share the same minimum height for a stable layout",
+          "Updated footer version badge to read from generated version.json so it always matches the current release"
         ]
       }
     },
     {
-      version: "0.1.30", 
-      date: "2025-11-24",
+      version: "0.1.44", 
+      date: "2025-12-11",
+      changes: {
+        // Placeholder: no specific entries recorded in summary
+        added: [],
+        changed: [],
+        fixed: []
+      }
+    },
+    {
+      version: "0.1.43",
+      date: "2025-12-11", 
       changes: {
         added: [
-          "Auto-commit and auto-push functionality to version bump script",
-          "Enhanced theme switching reliability in hero background animation"
+          "WalletConnect v3 integration using project ID env config and Ethereum provider",
+          "Advanced swap card and Join Movement swap flow improvements when wallet is connected"
         ],
         changed: [
-          "Improved version script to handle uncommitted changes automatically"
-        ]
-      }
-    },
-    {
-      version: "0.1.28",
-      date: "2025-11-24", 
-      changes: {
-        added: [
-          "Final version validation system",
-          "Prevention of empty releases",
-          "Enhanced changelog management"
+          "Refined wallet header and mobile wallet button UX for clearer connect/disconnect states"
         ],
         fixed: [
-          "Changelog cleanup removing unreleased entries",
-          "Version script workflow issues"
+          "Wallet connect modal not appearing due to missing WalletConnect provider setup"
         ]
       }
     }

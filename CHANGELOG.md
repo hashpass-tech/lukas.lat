@@ -13,6 +13,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Added CI check to validate NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID before building/deploying
+
 ## [0.1.45] - 2025-12-11
 ### Added
 

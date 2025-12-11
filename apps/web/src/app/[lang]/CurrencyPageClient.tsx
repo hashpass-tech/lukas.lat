@@ -93,7 +93,7 @@ function CurrencyPageContent() {
 
         <PWAInstallPrompt />
 
-        <Footer version="0.1.32" />
+        <Footer />
       </>
   );
 }
