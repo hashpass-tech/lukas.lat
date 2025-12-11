@@ -18,7 +18,8 @@ export function HeaderClient() {
           <div className="flex items-center gap-3 min-w-0">
             <div className="flex items-center gap-2 rounded-md px-2 py-1 hover:bg-accent/60 transition-colors">
               <span className="text-lg sm:text-xl font-mono font-bold tracking-tight">
-                $LUKAS
+                <span className="sm:hidden">$LUKAS</span>
+                <span className="hidden sm:inline">$(LKS) LUKAS</span>
               </span>
             </div>
             <div className="hidden sm:flex items-center gap-2">

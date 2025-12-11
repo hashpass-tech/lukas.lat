@@ -34,7 +34,8 @@ const Orb = ({ size, x, y, color, delay }: { size: number; x: number; y: number;
 };
 
 export const LukasHeroAnimation = () => {
-    const titleWords = '$LUKAS'.split('');
+    const [isMobile, setIsMobile] = useState(false);
+    const titleWords = (isMobile ? '$LUKAS' : '$(LKS) LUKAS').split('');
     const [visibleWords, setVisibleWords] = useState(0);
     const [subtitleVisible, setSubtitleVisible] = useState(false);
     const [delays, setDelays] = useState<number[]>([]);
@@ -46,6 +47,18 @@ export const LukasHeroAnimation = () => {
     // Ensure component is mounted for proper theme detection
     useEffect(() => {
         setMounted(true);
+    }, []);
+
+    // Detect mobile screen size
+    useEffect(() => {
+        const checkMobile = () => {
+            setIsMobile(window.innerWidth < 768); // md breakpoint
+        };
+        
+        checkMobile();
+        window.addEventListener('resize', checkMobile);
+        
+        return () => window.removeEventListener('resize', checkMobile);
     }, []);
 
     // Listen for theme changes
