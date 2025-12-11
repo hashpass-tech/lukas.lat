@@ -13,6 +13,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+## [0.1.43] - 2025-12-11
+### Added
+
+### Changed
+
+### Fixed
+
 ## [0.1.42] - 2025-12-11
 ### Added
 
@@ -21,6 +28,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - Aligned Join Movement and Swap cards to share the same minimum height for a stable layout
+
+## [Unreleased]
+
+### Added
+
+### Changed
+
+### Fixed
+
+- Updated footer version badge to read from generated version.json so it always matches the current release
 
 ## [0.1.41] - 2025-12-11
 ### Added
