@@ -9,6 +9,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+### Changed
+
+### Fixed
+
+## [0.1.53] - 2025-12-11
+### Added
+
 - Added `--check-build` flag to versioning script to run production build before bumping version
 
 ### Changed
