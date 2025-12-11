@@ -4,10 +4,14 @@ import { Trans } from "@/components/Trans";
 import { DitheringShader } from "@/components/DitheringShader";
 import { WalletHeader } from "@/components/WalletHeader";
 import { useState, useEffect, useRef } from "react";
+import { useWallet } from "@/app/providers/wallet-provider";
+import { SwapSection } from "@/components/currency/SwapSection";
 
 export function JoinMovementSection() {
   const [isClient, setIsClient] = useState(false);
   const cardRef = useRef<HTMLDivElement>(null);
+  const wallet = useWallet();
+  const { isConnected } = wallet;
 
   useEffect(() => {
     setIsClient(true);
@@ -76,6 +80,10 @@ export function JoinMovementSection() {
         </div>
       </div>
     );
+  }
+
+  if (isConnected) {
+    return <SwapSection />;
   }
 
   return (

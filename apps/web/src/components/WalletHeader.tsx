@@ -204,7 +204,7 @@ export function WalletHeader({ connectText = "Connect Wallet" }: WalletHeaderPro
           </div>
           
           {/* Button content overlay */}
-          <div className="relative z-10 px-3 py-2 flex items-center justify-center gap-2 text-white font-medium transition-all duration-300 w-full">
+          <div className="relative z-10 px-3 py-2 flex items-center justify-start sm:justify-center gap-1.5 text-white font-medium transition-all duration-300 w-full">
             <Wallet className="w-4 h-4 transition-transform duration-200 group-hover:scale-110 flex-shrink-0" />
             {isConnecting && selectedWallet ? (
               <>
@@ -214,7 +214,7 @@ export function WalletHeader({ connectText = "Connect Wallet" }: WalletHeaderPro
             ) : (
               <>
                 <span className="text-sm truncate">{connectText}</span>
-                <ArrowRight className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1 flex-shrink-0" />
+                <ArrowRight className="w-3 h-3 transition-transform duration-200 group-hover:translate-x-1 flex-shrink-0" />
               </>
             )}
           </div>

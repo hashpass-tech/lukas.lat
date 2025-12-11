@@ -19,10 +19,10 @@ export default async function RootLayout(props: any) {
   const children = props?.children;
   const resolvedParams = params instanceof Promise ? await params : params;
   const lang = resolvedParams?.lang ?? "en";
-  
+
   return (
-    <HtmlLayout 
-      lang={lang} 
+    <HtmlLayout
+      lang={lang}
       className={jetbrainsMono.className}
       bodyClassName="min-h-screen"
     >

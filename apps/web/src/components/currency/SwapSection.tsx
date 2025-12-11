@@ -1,27 +1,46 @@
 "use client";
 
 import { Trans } from "@/components/Trans";
-import { SwapCard } from "@/components/ui/swap-card";
+import { AdvancedSwapCard, AdvancedSwapToken } from "@/components/ui/advanced-swap-card";
 
-// Mock token icons for the swap card
-const EthereumIcon = ({ className }: { className?: string }) => (
-  <svg className={className} viewBox="0 0 24 24" fill="currentColor">
-    <circle cx="12" cy="12" r="10" fill="#627EEA"/>
-    <path d="M12 4L8 12L12 20L16 12L12 4Z" fill="white"/>
-  </svg>
-);
-
-const AaveIcon = ({ className }: { className?: string }) => (
-  <svg className={className} viewBox="0 0 24 24" fill="currentColor">
-    <circle cx="12" cy="12" r="10" fill="#B6509E"/>
-    <path d="M8 8L12 16L16 8L12 12L8 8Z" fill="white"/>
-  </svg>
-);
-
-// Mock tokens
-const tokens = [
-  { symbol: "ETH", name: "Ethereum" as const, icon: EthereumIcon },
-  { symbol: "AAVE", name: "Aave" as const, icon: AaveIcon },
+// Mock tokens for AdvancedSwapCard – using $LUKAS and common stables
+const advancedTokens: AdvancedSwapToken[] = [
+  {
+    symbol: "LUKAS",
+    name: "$LUKAS",
+    icon: "🪙",
+    balance: "1,000.00",
+    price: 1.0,
+    change24h: 0.0,
+    address: "0x0000000000000000000000000000000000000001",
+  },
+  {
+    symbol: "USDC",
+    name: "USD Coin",
+    icon: "💵",
+    balance: "5,000.00",
+    price: 1.0,
+    change24h: 0.0,
+    address: "0x0000000000000000000000000000000000000002",
+  },
+  {
+    symbol: "USDT",
+    name: "Tether",
+    icon: "💵",
+    balance: "5,000.00",
+    price: 1.0,
+    change24h: 0.0,
+    address: "0x0000000000000000000000000000000000000003",
+  },
+  {
+    symbol: "DAI",
+    name: "Dai",
+    icon: "💰",
+    balance: "5,000.00",
+    price: 1.0,
+    change24h: 0.0,
+    address: "0x0000000000000000000000000000000000000004",
+  },
 ];
 
 export function SwapSection() {
@@ -38,15 +57,12 @@ export function SwapSection() {
         />
       </p>
       
-      {/* Swap Card */}
+      {/* Advanced Swap Card */}
       <div className="w-full max-w-md mx-auto">
-        <SwapCard
-          tokens={tokens}
-          initialSellToken={tokens[0]} // ETH
-          initialBuyToken={tokens[1]}   // AAVE
-          onSwap={(data) => {
-            console.log("Swap executed:", data);
-          }}
+        <AdvancedSwapCard
+          tokens={advancedTokens}
+          initialFromToken={advancedTokens[0]} // LUKAS
+          initialToToken={advancedTokens[1]}   // USDC
         />
       </div>
     </div>

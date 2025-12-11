@@ -308,6 +308,7 @@ export default function HashPassBranding() {
     return (
         <button
             className="fixed right-3 sm:right-6 bottom-32 sm:bottom-16 z-40 group cursor-pointer"
+            aria-label="Back to top"
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
             onClick={handleClick}
@@ -319,7 +320,7 @@ export default function HashPassBranding() {
                 </div>
 
                 {/* Content */}
-                <div className="relative z-10 w-full h-full flex items-center justify-center gap-2 px-3 sm:px-4">
+                <div className="relative z-10 w-full h-full flex items-center justify-between gap-2 px-3 sm:px-4">
                     <div className="flex items-center gap-1 sm:gap-1.5">
                         <span className={`${isDark ? 'text-black' : 'text-white'} font-bold text-[10px] sm:text-xs tracking-wide`}>By</span>
                         <img
@@ -327,6 +328,18 @@ export default function HashPassBranding() {
                             alt="HashPass"
                             className="h-4 sm:h-5 w-auto object-contain"
                         />
+                    </div>
+                    <div className="flex items-center justify-center rounded-full bg-black/40 dark:bg-white/30 text-white dark:text-black w-5 h-5 sm:w-6 sm:h-6">
+                        <svg
+                            viewBox="0 0 24 24"
+                            className="w-3 h-3 sm:w-4 sm:h-4"
+                            aria-hidden="true"
+                        >
+                            <path
+                                d="M7.41 14.59 12 10l4.59 4.59L18 13l-6-6-6 6z"
+                                fill="currentColor"
+                            />
+                        </svg>
                     </div>
                 </div>
             </div>

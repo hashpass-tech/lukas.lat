@@ -24,8 +24,10 @@ export function HtmlLayout({
         <meta name="application-name" content="Lukas" />
         <meta name="msapplication-TileColor" content="#10b981" />
         <meta name="theme-color" content="#10b981" />
-        <link rel="apple-touch-icon" href="/logos/logo-full-hashpass-white.svg" />
-        <link rel="icon" type="image/svg+xml" href="/logos/logo-full-hashpass-white.svg" />
+        <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+        <link rel="icon" href="/favicon.ico" />
       </head>
       <body className={bodyClassName} suppressHydrationWarning>
         {children}

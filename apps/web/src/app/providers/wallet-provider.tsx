@@ -1,6 +1,7 @@
 "use client";
 
 import { ReactNode, createContext, useContext, useState, useEffect } from 'react';
+import EthereumProvider from '@walletconnect/ethereum-provider';
 import { MetamaskIcon, CoinbaseWalletIcon, WalletConnectIcon } from '@/components/ui/connect-wallet-modal';
 
 interface WalletState {
@@ -77,8 +78,35 @@ export function WalletProvider({ children }: { children: ReactNode }) {
   };
 
   const connectWalletConnect = async () => {
-    // WalletConnect connection logic (simplified - would need full implementation)
-    throw new Error('WalletConnect requires additional setup');
+    if (typeof window === 'undefined') {
+      throw new Error('WalletConnect is only available in the browser');
+    }
+
+    const projectId = process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID;
+
+    if (!projectId) {
+      throw new Error('WalletConnect project ID is not configured');
+    }
+
+    const mainnetRpc = process.env.NEXT_PUBLIC_MAINNET_RPC_URL;
+
+    const provider = await EthereumProvider.init({
+      projectId,
+      // Use Ethereum mainnet by default; extend this if you add more chains later
+      chains: [1],
+      showQrModal: true,
+      ...(mainnetRpc
+        ? { rpcMap: { 1: mainnetRpc } as Record<number, string> }
+        : {}),
+    });
+
+    const accounts = await provider.enable();
+
+    if (!accounts || accounts.length === 0) {
+      throw new Error('No accounts returned from WalletConnect');
+    }
+
+    return accounts[0] as string;
   };
 
   const connect = async (walletType?: string) => {

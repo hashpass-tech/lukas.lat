@@ -8,8 +8,6 @@ import Footer from "@/components/Footer";
 import { PWAInstallPrompt } from "@/components/PWAInstallPrompt";
 import { useEffect, useState } from "react";
 import { DonutChartSection, CurrencyModal, JoinMovementSection } from "@/components/currency";
-import { SwapSection } from "@/components/currency/SwapSection";
-import { useWallet } from "@/app/providers/wallet-provider";
 
 type Currency = {
   country: string;
@@ -33,8 +31,6 @@ function CurrencyPageContent() {
   const [hoveredSegment, setHoveredSegment] = useState<string | null>(null);
   const [animationKey, setAnimationKey] = useState(0);
   const [mounted, setMounted] = useState(false);
-  const wallet = useWallet();
-  const { isConnected } = wallet;
 
   // Listen for wallet disconnect events
   useEffect(() => {
@@ -81,7 +77,7 @@ function CurrencyPageContent() {
                 onActiveCurrency={setActiveCurrency}
               />
               
-              {mounted && isConnected ? <SwapSection /> : <JoinMovementSection />}
+              <JoinMovementSection />
             </div>
           </div>
           </main>
