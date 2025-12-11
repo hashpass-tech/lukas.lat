@@ -9,9 +9,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Added `--check-build` flag to versioning script to run production build before bumping version
+
 ### Changed
 
 ### Fixed
+
+- Fixed WalletConnect project ID configuration to use correct AppKit-enabled project
+- Fixed TypeScript build error in wallet-provider by including connectingWalletId in all state updates
 
 ## [0.1.52] - 2025-12-11
 

@@ -87,6 +87,9 @@ export function WalletProvider({ children }: { children: ReactNode }) {
 
     const projectId = process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID;
 
+    // Debug: log the project ID being used (remove after debugging)
+    console.log('[WalletConnect] Using projectId:', projectId, 'length:', projectId?.length);
+
     if (!projectId) {
       throw new Error('WalletConnect project ID is not configured');
     }
