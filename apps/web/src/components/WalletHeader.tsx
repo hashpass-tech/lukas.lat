@@ -37,7 +37,8 @@ export function WalletHeader({ connectText = "Connect Wallet" }: WalletHeaderPro
   const { 
     address, 
     isConnected, 
-    isConnecting, 
+    isConnecting,
+    connectingWalletId,
     connect, 
     disconnect, 
     availableWallets,
@@ -206,7 +207,7 @@ export function WalletHeader({ connectText = "Connect Wallet" }: WalletHeaderPro
           {/* Button content overlay */}
           <div className="relative z-10 px-3 py-2 flex items-center justify-start sm:justify-center gap-1.5 text-white font-medium transition-all duration-300 w-full">
             <Wallet className="w-4 h-4 transition-transform duration-200 group-hover:scale-110 flex-shrink-0" />
-            {isConnecting && selectedWallet ? (
+            {isConnecting ? (
               <>
                 <Loader2 className="w-4 h-4 animate-spin flex-shrink-0" />
                 <span className="text-sm truncate">Connecting...</span>
@@ -247,7 +248,7 @@ export function WalletHeader({ connectText = "Connect Wallet" }: WalletHeaderPro
                 wallet.disabled 
                   ? 'opacity-50 cursor-not-allowed border-border/50' 
                   : 'border-border hover:border-primary/50 hover:bg-accent/50 cursor-pointer'
-              }`}
+              } ${connectingWalletId === wallet.id ? 'bg-accent/50' : ''}`}
             >
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-slate-100 to-slate-200 dark:from-slate-800 dark:to-slate-700 flex items-center justify-center">
@@ -265,7 +266,7 @@ export function WalletHeader({ connectText = "Connect Wallet" }: WalletHeaderPro
                   </div>
                 </div>
               </div>
-              {isConnecting && selectedWallet === wallet.id ? (
+              {isConnecting && connectingWalletId === wallet.id ? (
                 <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
               ) : wallet.disabled ? (
                 <div className="h-4 w-4 text-muted-foreground opacity-50">

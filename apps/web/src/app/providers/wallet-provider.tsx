@@ -8,6 +8,8 @@ interface WalletState {
   address: string | null;
   isConnected: boolean;
   isConnecting: boolean;
+  // Which wallet type is currently attempting to connect (e.g. 'metamask', 'walletconnect')
+  connectingWalletId: string | null;
   error: string | null;
 }
 
@@ -37,6 +39,7 @@ export function WalletProvider({ children }: { children: ReactNode }) {
     address: null,
     isConnected: false,
     isConnecting: false,
+    connectingWalletId: null,
     error: null,
   });
 
@@ -110,12 +113,18 @@ export function WalletProvider({ children }: { children: ReactNode }) {
   };
 
   const connect = async (walletType?: string) => {
-    setWalletState(prev => ({ ...prev, isConnecting: true, error: null }));
+    const targetWallet = walletType || 'metamask';
+    setWalletState(prev => ({ 
+      ...prev, 
+      isConnecting: true, 
+      connectingWalletId: targetWallet,
+      error: null 
+    }));
 
     try {
       let address: string | null = null;
 
-      switch (walletType) {
+      switch (targetWallet) {
         case 'metamask':
           address = await connectMetaMask();
           break;
@@ -135,6 +144,7 @@ export function WalletProvider({ children }: { children: ReactNode }) {
         address,
         isConnected: true,
         isConnecting: false,
+        connectingWalletId: null,
         error: null,
       });
     } catch (error) {
@@ -142,6 +152,7 @@ export function WalletProvider({ children }: { children: ReactNode }) {
         address: null,
         isConnected: false,
         isConnecting: false,
+        connectingWalletId: null,
         error: error instanceof Error ? error.message : 'Failed to connect wallet',
       });
     }
@@ -175,6 +186,7 @@ export function WalletProvider({ children }: { children: ReactNode }) {
       address: null,
       isConnected: false,
       isConnecting: false,
+      connectingWalletId: null,
       error: null,
     });
 

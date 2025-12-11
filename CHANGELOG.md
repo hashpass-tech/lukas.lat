@@ -13,21 +13,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+ - Unified wallet connection loading state across desktop and mobile connect buttons, showing consistent spinners and disabled states while any wallet is connecting
+
 ## [0.1.50] - 2025-12-11
 
 ### Added
 
-
+ - Internal improvements to the versioning tooling to better support auto-generated changelog entries
 
 ### Changed
 
-
+ - Refined auto-changelog behavior when using `--auto-changelog` so that it can proceed with empty sections when appropriate
 
 ### Fixed
 
-
-
-
+ - Cleaned up duplicate 0.1.49 sections and removed noisy auto-commit entries from the changelog history
 
 ## [0.1.49] - 2025-12-11
 
