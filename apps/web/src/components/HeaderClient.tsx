@@ -1,7 +1,6 @@
 "use client";
 
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
-import { WalletHeader } from "@/components/WalletHeader";
 import { LightPullThemeSwitcher } from "@/components/LightPullThemeSwitcher";
 
 export function HeaderClient() {
@@ -13,9 +12,8 @@ export function HeaderClient() {
           <LanguageSwitcher />
         </div>
 
-        {/* Right: wallet connect + theme switcher */}
+        {/* Right: theme switcher */}
         <div className="flex items-center gap-2 sm:gap-3 min-w-0 justify-end">
-          <WalletHeader />
           <LightPullThemeSwitcher />
         </div>
       </div>

@@ -299,11 +299,18 @@ export default function HashPassBranding() {
         color17: '#1d4ed8',
     };
 
+    const handleClick = () => {
+        if (typeof window !== 'undefined') {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    };
+
     return (
         <button
             className="fixed right-3 sm:right-6 bottom-32 sm:bottom-16 z-40 group cursor-pointer"
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
+            onClick={handleClick}
         >
             <div className="relative w-36 h-10 sm:w-48 sm:h-14 overflow-hidden rounded-full">
                 {/* Liquid gradient background */}

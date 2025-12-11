@@ -3,7 +3,6 @@
 import React from "react";
 import { useTheme } from "next-themes";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
-import { WalletHeader } from "@/components/WalletHeader";
 import { LightPullThemeSwitcher } from "@/components/LightPullThemeSwitcher";
 
 const Navbar: React.FC = () => {
@@ -20,10 +19,9 @@ const Navbar: React.FC = () => {
   return (
     <div className="flex justify-center w-full py-2 px-2 sm:py-4 sm:px-4 pointer-events-auto">
       <div className={containerClasses}>
-        {/* Left: wallet + theme */}
+        {/* Left: theme */}
         <div className="flex items-center gap-2 sm:gap-3 flex-1 min-w-0">
           <div className="flex items-center gap-2 sm:gap-3 flex-wrap sm:flex-nowrap min-w-0">
-            <WalletHeader />
             <LightPullThemeSwitcher />
           </div>
         </div>
