@@ -45,7 +45,7 @@ const advancedTokens: AdvancedSwapToken[] = [
 
 export function SwapSection() {
   return (
-    <div data-no-orbit className="bg-card/90 backdrop-blur-xl rounded-3xl p-10 border border-border shadow-2xl hover:shadow-3xl transition-all duration-300 hover:-translate-y-1 flex flex-col">
+    <div data-no-orbit className="bg-card/90 backdrop-blur-xl rounded-3xl p-10 border border-border shadow-2xl hover:shadow-3xl transition-all duration-300 hover:-translate-y-1 flex flex-col min-h-[420px]">
       <h2 className="text-3xl font-bold mb-8 text-foreground flex items-center gap-3">
         <span className="text-4xl">💱</span> 
         <Trans i18nKey="Swap Tokens" fallback="Swap Tokens" />
