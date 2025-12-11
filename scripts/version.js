@@ -197,9 +197,10 @@ function validateChangelogContent(newVersion, date) {
                       versionContent.split('### Changed')[1]?.split('###')[0]?.trim().length > 0;
     const hasFixed = versionContent.includes('### Fixed') && 
                     versionContent.split('### Fixed')[1]?.trim().length > 0;
-    
+
     if (!hasAdded && !hasChanged && !hasFixed) {
-        throw new Error(`Cannot create version v${newVersion} without changelog entries. Please add changes to the [Unreleased] section or manually update the changelog.`);
+        log(`No changelog entries found for v${newVersion}. Skipping version bump to avoid empty release.`, colors.yellow);
+        return false;
     }
     
     return true;
@@ -269,8 +270,13 @@ function updateChangelog(newVersion, date) {
 
     fs.writeFileSync(CHANGELOG_FILE, changelog);
     
-    // Validate the changelog has content
-    validateChangelogContent(newVersion, date);
+    // Validate the changelog has content; if not, signal caller to skip bump
+    const isValid = validateChangelogContent(newVersion, date);
+    if (!isValid) {
+        return false;
+    }
+
+    return true;
 }
 function copyToPublic(versionData) {
     fs.writeFileSync(PUBLIC_VERSION_FILE, JSON.stringify(versionData, null, 2) + '\n');
@@ -426,11 +432,18 @@ function main() {
         autoCommitChanges();
     }
     
+    // Before mutating version files, ensure there will be real changelog content
+    const changelogUpdated = updateChangelog(newVersion, date);
+    if (!changelogUpdated) {
+        log('No relevant changes detected for changelog. Version bump has been skipped.', colors.yellow);
+        log('Tip: Add entries under [Unreleased] in CHANGELOG.md before running version:patch, or make code changes that generate changelog entries.', colors.blue);
+        process.exit(0);
+    }
+
     // Now update version files
     writeVersion(versionData);
     updatePackageJson(ROOT_PACKAGE, newVersion);
     updatePackageJson(WEB_PACKAGE, newVersion);
-    updateChangelog(newVersion, date);
     copyToPublic(versionData);
     
     log('✓ Updated all version files', colors.green);
