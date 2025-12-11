@@ -13,6 +13,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Resolved React hook order warning on Currency page by making wallet hook usage consistent
+
+## [0.1.35] - 2025-12-10
+### Added
+
+### Changed
+
+### Fixed
+
 ## [0.1.34] - 2025-12-10
 ### Added
 

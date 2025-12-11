@@ -1,34 +1,24 @@
 "use client";
 
-import { LightPullThemeSwitcher } from "@/components/LightPullThemeSwitcher";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { WalletHeader } from "@/components/WalletHeader";
-import { useWallet } from "@/app/providers/wallet-provider";
+import { LightPullThemeSwitcher } from "@/components/LightPullThemeSwitcher";
 
 export function HeaderClient() {
-  try {
-    const { isConnected } = useWallet();
-    
-    return (
-      <div className="pointer-events-auto w-full flex justify-between items-center px-4 py-2">
-        <div className="flex-1" />
-        <LanguageSwitcher />
-        <div className="flex-1 flex justify-end items-center gap-3">
+  return (
+    <div className="pointer-events-auto w-full px-3 sm:px-4 py-2">
+      <div className="mx-auto flex w-full max-w-5xl items-center justify-between gap-2 sm:gap-3">
+        {/* Left: language switcher */}
+        <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
+          <LanguageSwitcher />
+        </div>
+
+        {/* Right: wallet connect + theme switcher */}
+        <div className="flex items-center gap-2 sm:gap-3 min-w-0 justify-end">
           <WalletHeader />
           <LightPullThemeSwitcher />
         </div>
       </div>
-    );
-  } catch (error) {
-    // Fallback if wallet context is not available
-    return (
-      <div className="pointer-events-auto w-full flex justify-between items-start px-4 py-2">
-        <div className="flex-1" />
-        <LanguageSwitcher />
-        <div className="flex-1 flex justify-end items-start gap-3">
-          <LightPullThemeSwitcher />
-        </div>
-      </div>
-    );
-  }
+    </div>
+  );
 }

@@ -28,21 +28,13 @@ const currencies: Currency[] = [
 ];
 
 function CurrencyPageContent() {
-  const [isClient, setIsClient] = useState(false);
   const [activeCurrency, setActiveCurrency] = useState<Currency | null>(null);
   const [selectedCurrency, setSelectedCurrency] = useState<string | null>(null);
   const [hoveredSegment, setHoveredSegment] = useState<string | null>(null);
   const [animationKey, setAnimationKey] = useState(0);
   const [mounted, setMounted] = useState(false);
-  
-  // Only use wallet on client side
-  const wallet = isClient ? useWallet() : { isConnected: false, address: null, connect: async () => {}, disconnect: async () => {} };
+  const wallet = useWallet();
   const { isConnected } = wallet;
-
-  // Handle wallet connection state
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
 
   // Listen for wallet disconnect events
   useEffect(() => {
@@ -61,27 +53,7 @@ function CurrencyPageContent() {
     };
   }, []);
 
-  // Reset donut chart animation on scroll
-  useEffect(() => {
-    let scrollTimeout: NodeJS.Timeout;
-    
-    const handleScroll = () => {
-      // Clear existing timeout
-      clearTimeout(scrollTimeout);
-      
-      // Set a new timeout to reset animation after scroll stops
-      scrollTimeout = setTimeout(() => {
-        setAnimationKey(prev => prev + 1);
-      }, 150); // Reset after 150ms of no scroll
-    };
-
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-      clearTimeout(scrollTimeout);
-    };
-  }, []);
+  // Donut chart animation is now independent from scroll; no scroll listener
 
   return (
       <>

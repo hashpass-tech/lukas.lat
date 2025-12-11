@@ -265,8 +265,6 @@ const Liquid: React.FC<LiquidProps> = ({ isHovered, colors }) => {
 
 export default function HashPassBranding() {
     const [isHovered, setIsHovered] = useState(false);
-    const [showVersion, setShowVersion] = useState(false);
-    const [version, setVersion] = useState('');
     const { theme, resolvedTheme } = useTheme();
     const [mounted, setMounted] = useState(false);
 
@@ -274,20 +272,6 @@ export default function HashPassBranding() {
     useEffect(() => {
         setMounted(true);
     }, []);
-
-    // Fetch version on mount
-    useEffect(() => {
-        fetch('/version.json')
-            .then(res => res.json())
-            .then(data => setVersion(data.version))
-            .catch(() => setVersion('0.1.0'));
-    }, []);
-
-    const handleClick = (e: React.MouseEvent) => {
-        e.preventDefault();
-        setShowVersion(true);
-        setTimeout(() => setShowVersion(false), 3000);
-    };
 
     // Determine if we're in dark mode
     const isDark = mounted && (resolvedTheme === 'dark' || theme === 'dark');
@@ -317,36 +301,28 @@ export default function HashPassBranding() {
 
     return (
         <button
-            onClick={handleClick}
-            className="fixed bottom-6 right-6 z-40 group cursor-pointer"
+            className="fixed right-3 sm:right-6 bottom-32 sm:bottom-16 z-40 group cursor-pointer"
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
         >
-            <div className="relative w-48 h-14 overflow-hidden rounded-full">
+            <div className="relative w-36 h-10 sm:w-48 sm:h-14 overflow-hidden rounded-full">
                 {/* Liquid gradient background */}
                 <div className="absolute inset-0">
                     <Liquid isHovered={isHovered} colors={colors} />
                 </div>
 
                 {/* Content */}
-                <div className="relative z-10 w-full h-full flex items-center justify-center gap-2 px-4">
-                    <div className="flex items-center gap-1.5">
-                        <span className={`${isDark ? 'text-black' : 'text-white'} font-bold text-xs tracking-wide`}>By</span>
+                <div className="relative z-10 w-full h-full flex items-center justify-center gap-2 px-3 sm:px-4">
+                    <div className="flex items-center gap-1 sm:gap-1.5">
+                        <span className={`${isDark ? 'text-black' : 'text-white'} font-bold text-[10px] sm:text-xs tracking-wide`}>By</span>
                         <img
                             src={logoSrc}
                             alt="HashPass"
-                            className="h-5 w-auto object-contain"
+                            className="h-4 sm:h-5 w-auto object-contain"
                         />
                     </div>
                 </div>
             </div>
-
-            {/* Version tooltip */}
-            {showVersion && (
-                <div className="absolute bottom-full right-0 mb-2 px-3 py-2 bg-slate-900 dark:bg-slate-800 text-white text-sm font-mono rounded-lg shadow-xl border border-slate-700 whitespace-nowrap">
-                    v{version}
-                </div>
-            )}
         </button>
     );
 }
