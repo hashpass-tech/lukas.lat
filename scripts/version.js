@@ -177,7 +177,7 @@ function generateChangelogFromCommits() {
 }
 
 // Validate changelog has actual content
-function validateChangelogContent(newVersion, date) {
+function validateChangelogContent(newVersion, date, { allowEmpty } = { allowEmpty: false }) {
     let changelog = fs.readFileSync(CHANGELOG_FILE, 'utf8');
     
     // Find the new version section
@@ -199,6 +199,11 @@ function validateChangelogContent(newVersion, date) {
                     versionContent.split('### Fixed')[1]?.trim().length > 0;
 
     if (!hasAdded && !hasChanged && !hasFixed) {
+        if (allowEmpty) {
+            log(`No categorized changelog entries found for v${newVersion}. Proceeding with empty sections due to --auto-changelog.`, colors.yellow);
+            return true;
+        }
+
         log(`No changelog entries found for v${newVersion}. Skipping version bump to avoid empty release.`, colors.yellow);
         return false;
     }
@@ -218,7 +223,7 @@ function cleanupEmptySections() {
 }
 
 // Update CHANGELOG.md with auto-generated content
-function updateChangelog(newVersion, date) {
+function updateChangelog(newVersion, date, { autoChangelog } = { autoChangelog: false }) {
     let changelog = fs.readFileSync(CHANGELOG_FILE, 'utf8');
 
     // Find the [Unreleased] section
@@ -227,8 +232,8 @@ function updateChangelog(newVersion, date) {
 
     let unreleasedContent = '';
     
-    if (match && match[1].trim()) {
-        // Use existing unreleased content
+    if (match && match[1].trim() && !autoChangelog) {
+        // Use existing unreleased content when not forcing auto-changelog
         unreleasedContent = match[1].trim();
     } else {
         // Generate from git commits
@@ -271,7 +276,7 @@ function updateChangelog(newVersion, date) {
     fs.writeFileSync(CHANGELOG_FILE, changelog);
     
     // Validate the changelog has content; if not, signal caller to skip bump
-    const isValid = validateChangelogContent(newVersion, date);
+    const isValid = validateChangelogContent(newVersion, date, { allowEmpty: autoChangelog });
     if (!isValid) {
         return false;
     }
@@ -385,9 +390,11 @@ function gitCommit(version) {
 function main() {
     const args = process.argv.slice(2);
     const bumpType = args[0];
+    const flags = args.slice(1);
+    const autoChangelog = flags.includes('--auto-changelog');
 
     if (!bumpType) {
-        log('Usage: node scripts/version.js <major|minor|patch>', colors.yellow);
+        log('Usage: node scripts/version.js <major|minor|patch> [--auto-changelog]', colors.yellow);
         log('\nCurrent version:', colors.blue);
         const versionData = readVersion();
         log(`  v${versionData.version}`, colors.bright);
@@ -433,7 +440,7 @@ function main() {
     }
     
     // Before mutating version files, ensure there will be real changelog content
-    const changelogUpdated = updateChangelog(newVersion, date);
+    const changelogUpdated = updateChangelog(newVersion, date, { autoChangelog });
     if (!changelogUpdated) {
         log('No relevant changes detected for changelog. Version bump has been skipped.', colors.yellow);
         log('Tip: Add entries under [Unreleased] in CHANGELOG.md before running version:patch, or make code changes that generate changelog entries.', colors.blue);
