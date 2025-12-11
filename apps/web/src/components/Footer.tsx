@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import versionInfo from "../../public/version.json";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -29,7 +30,7 @@ interface FooterProps {
   version?: string;
 }
 
-export default function Footer({ version = "0.1.32" }: FooterProps) {
+export default function Footer({ version = versionInfo.version }: FooterProps) {
   const [isChangelogOpen, setIsChangelogOpen] = useState(false);
 
   // Parse changelog data - in a real app, this would come from the actual changelog file
