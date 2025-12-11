@@ -232,6 +232,7 @@ export function WalletProvider({ children }: { children: ReactNode }) {
             address: accounts[0],
             isConnected: true,
             isConnecting: false,
+            connectingWalletId: null,
             error: null,
           });
         }

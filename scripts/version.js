@@ -397,9 +397,10 @@ function main() {
     const bumpType = args[0];
     const flags = args.slice(1);
     const autoChangelog = flags.includes('--auto-changelog');
+    const checkBuild = flags.includes('--check-build');
 
     if (!bumpType) {
-        log('Usage: node scripts/version.js <major|minor|patch> [--auto-changelog]', colors.yellow);
+        log('Usage: node scripts/version.js <major|minor|patch> [--auto-changelog] [--check-build]', colors.yellow);
         log('\nCurrent version:', colors.blue);
         const versionData = readVersion();
         log(`  v${versionData.version}`, colors.bright);
@@ -413,6 +414,21 @@ function main() {
     }
 
     log(`\n${colors.bright}Starting ${bumpType} version bump...${colors.reset}\n`);
+
+    // Optional pre-build check
+    if (checkBuild) {
+        log('Running pre-build check for apps/web (npm run build --workspace=apps/web)...', colors.blue);
+        try {
+            execSync('npm run build --workspace=apps/web', {
+                cwd: ROOT_DIR,
+                stdio: 'inherit',
+            });
+            log('✓ Pre-build check succeeded', colors.green);
+        } catch (error) {
+            log('✗ Pre-build check failed. Aborting version bump.', colors.red);
+            process.exit(1);
+        }
+    }
 
     // Read current version
     const versionData = readVersion();
