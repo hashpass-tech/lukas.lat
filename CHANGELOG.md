@@ -21,6 +21,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - Added CI check to validate NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID before building/deploying
+ - Logged masked WalletConnect project ID in GitHub Actions to help verify configuration without exposing secrets
 
 ## [0.1.45] - 2025-12-11
 ### Added

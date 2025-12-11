@@ -55,6 +55,15 @@ jobs:
         run: |
           echo "Checking critical environment variables..."
 
+          # Show masked WalletConnect project ID so we can verify which one is used in CI
+          wc_pid="${NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID}"
+          wc_pid_len=${#wc_pid}
+          if [ "$wc_pid_len" -ge 8 ]; then
+            echo "WalletConnect project ID (masked): ${wc_pid:0:4}****${wc_pid: -4} (len=${wc_pid_len})"
+          else
+            echo "WalletConnect project ID (masked): ${wc_pid} (len=${wc_pid_len})"
+          fi
+
           # WalletConnect Project ID must be provided and not left as the example placeholder
           if [ -z "${NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID}" ]; then
             echo "::error::NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID is not set. Configure it in GitHub Actions secrets or environment." >&2
