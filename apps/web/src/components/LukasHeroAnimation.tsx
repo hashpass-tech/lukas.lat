@@ -172,39 +172,26 @@ export const LukasHeroAnimation = () => {
                 </div>
             </div>
 
-            {/* Action Buttons */}
-            <div className="hero-buttons z-20" style={{ animationDelay: '2.2s' }}>
-                <a
-                    href="/docs/whitepaper-lukas-v0.1.0.pdf"
-                    download
-                    className="whitepaper-btn"
-                >
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M12 3V15M12 15L7 10M12 15L17 10" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                        <path d="M3 17V19C3 20.1046 3.89543 21 5 21H19C20.1046 21 21 20.1046 21 19V17" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+            <button
+                className="explore-btn z-20"
+                style={{ animationDelay: '2.2s' }}
+                onClick={() => {
+                    const content = document.getElementById('content');
+                    if (content) {
+                        content.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    } else {
+                        window.scrollTo({ top: window.innerHeight, behavior: 'smooth' });
+                    }
+                }}
+            >
+                <Trans i18nKey="Scroll to explore" fallback="Scroll to explore" />
+                <span className="explore-arrow">
+                    <svg width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg" className="arrow-svg">
+                        <path d="M11 5V17" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+                        <path d="M6 12L11 17L16 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
                     </svg>
-                    <Trans i18nKey="hero.whitepaper" fallback="Whitepaper" />
-                </a>
-                <button
-                    className="explore-btn"
-                    onClick={() => {
-                        const content = document.getElementById('content');
-                        if (content) {
-                            content.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                        } else {
-                            window.scrollTo({ top: window.innerHeight, behavior: 'smooth' });
-                        }
-                    }}
-                >
-                    <Trans i18nKey="Scroll to explore" fallback="Scroll to explore" />
-                    <span className="explore-arrow">
-                        <svg width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg" className="arrow-svg">
-                            <path d="M11 5V17" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-                            <path d="M6 12L11 17L16 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-                        </svg>
-                    </span>
-                </button>
-            </div>
+                </span>
+            </button>
 
             {/* Global styles for animations (ideally in a global CSS file) */}
             <style jsx global>{`
@@ -236,7 +223,7 @@ export const LukasHeroAnimation = () => {
                     animation: fade-in-subtitle 0.8s ease-out forwards;
                 }
 
-                @keyframes hero-buttons-appear {
+                @keyframes explore-btn-appear {
                     from {
                         opacity: 0;
                         transform: translateY(20px);
@@ -246,46 +233,13 @@ export const LukasHeroAnimation = () => {
                         transform: translateY(0);
                     }
                 }
-                .hero-buttons {
+                .explore-btn {
                     position: absolute;
                     bottom: 50px;
                     left: 50%;
                     transform: translateX(-50%);
-                    display: flex;
-                    flex-direction: column;
-                    align-items: center;
-                    gap: 12px;
                     opacity: 0;
-                    animation: hero-buttons-appear 0.8s ease-out forwards;
-                }
-                @media (min-width: 640px) {
-                    .hero-buttons {
-                        flex-direction: row;
-                        gap: 16px;
-                    }
-                }
-                .whitepaper-btn {
-                    padding: 12px 24px;
-                    background: linear-gradient(135deg, rgba(59, 130, 246, 0.8), rgba(147, 51, 234, 0.8));
-                    border: 1px solid rgba(255, 255, 255, 0.3);
-                    border-radius: 30px;
-                    color: white;
-                    font-weight: bold;
-                    cursor: pointer;
-                    display: flex;
-                    align-items: center;
-                    gap: 8px;
-                    text-decoration: none;
-                    transition: all 0.3s ease;
-                    box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4);
-                }
-                .whitepaper-btn:hover {
-                    background: linear-gradient(135deg, rgba(59, 130, 246, 1), rgba(147, 51, 234, 1));
-                    border-color: rgba(255, 255, 255, 0.6);
-                    box-shadow: 0 6px 20px rgba(59, 130, 246, 0.6);
-                    transform: translateY(-2px);
-                }
-                .explore-btn {
+                    animation: explore-btn-appear 0.8s ease-out forwards;
                     padding: 12px 24px;
                     background-color: rgba(255, 255, 255, 0.1);
                     border: 1px solid rgba(255, 255, 255, 0.3);
