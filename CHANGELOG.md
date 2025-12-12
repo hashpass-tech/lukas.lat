@@ -13,6 +13,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+## [0.1.55] - 2025-12-12
+
+### Added
+
+
+
+### Changed
+
+
+
+### Fixed
+
+- Use android-chrome-512x512.png for Twitter/OG image compatibility (a794501)
+
+
+
 ## [0.1.54] - 2025-12-11
 
 ### Added
