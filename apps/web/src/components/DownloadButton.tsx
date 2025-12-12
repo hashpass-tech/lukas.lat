@@ -2,14 +2,17 @@
 
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { Trans } from '@/components/Trans';
 
 interface DownloadButtonProps {
   href: string;
   label?: string;
+  i18nKey?: string;
 }
 
-export const DownloadButton = ({ href, label = 'Download' }: DownloadButtonProps) => {
+export const DownloadButton = ({ href, label = 'Download', i18nKey }: DownloadButtonProps) => {
   const [isDownloading, setIsDownloading] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
 
   const handleDownloadClick = () => {
     if (isDownloading) return;
@@ -27,100 +30,164 @@ export const DownloadButton = ({ href, label = 'Download' }: DownloadButtonProps
     // Reset after animation
     setTimeout(() => {
       setIsDownloading(false);
-    }, 3500);
+    }, 2500);
   };
 
   return (
     <motion.button
       onClick={handleDownloadClick}
-      className={`relative flex items-center border-2 rounded-full overflow-hidden transition-all
-        ${isDownloading ? 'cursor-wait border-blue-500' : 'cursor-pointer border-blue-500'}`}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      className={`relative flex items-center rounded-full overflow-hidden
+        ${isDownloading 
+          ? 'cursor-wait' 
+          : 'cursor-pointer'
+        }
+        bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-500
+        dark:from-emerald-600 dark:via-teal-600 dark:to-cyan-600
+        shadow-md hover:shadow-lg hover:shadow-emerald-500/25 dark:hover:shadow-emerald-400/20
+        transition-shadow duration-300`}
       animate={{
-        width: isDownloading ? 48 : 140,
-        borderRadius: '9999px'
+        width: isDownloading ? 34 : 130,
+        scale: isHovered && !isDownloading ? 1.02 : 1,
       }}
-      transition={{ duration: 0.4, ease: 'easeInOut' }}
-      style={{ minWidth: isDownloading ? '48px' : '140px', height: 48 }}
+      transition={{ 
+        duration: 0.35, 
+        ease: [0.4, 0, 0.2, 1],
+        scale: { duration: 0.2 }
+      }}
+      style={{ minWidth: isDownloading ? '34px' : '130px', height: 34 }}
     >
+      {/* Shimmer effect on hover */}
+      <motion.div
+        className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent"
+        initial={{ x: '-100%' }}
+        animate={{ x: isHovered && !isDownloading ? '100%' : '-100%' }}
+        transition={{ duration: 0.6, ease: 'easeInOut' }}
+      />
+
       {/* Spinner animation inside circle */}
       <AnimatePresence>
         {isDownloading && (
           <motion.div
-            className="absolute inset-0 w-2 h-2 bg-white rounded-full m-auto z-20"
-            initial={{ opacity: 1 }}
-            animate={{
-              rotate: 360,
-              x: [0, 20, 0, -20, 0],
-              y: [0, -20, 0, 20, 0]
-            }}
-            exit={{ opacity: 0 }}
-            transition={{
-              duration: 3,
-              ease: 'easeInOut',
-              times: [0, 0.25, 0.5, 0.75, 1]
-            }}
-          />
+            className="absolute inset-0 flex items-center justify-center z-20"
+            initial={{ opacity: 0, scale: 0.5 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.5 }}
+            transition={{ duration: 0.25 }}
+          >
+            <motion.div
+              className="w-1.5 h-1.5 bg-white rounded-full"
+              animate={{
+                x: [0, 10, 0, -10, 0],
+                y: [0, -10, 0, 10, 0],
+              }}
+              transition={{
+                duration: 2,
+                ease: 'easeInOut',
+                times: [0, 0.25, 0.5, 0.75, 1],
+                repeat: Infinity,
+              }}
+            />
+          </motion.div>
         )}
       </AnimatePresence>
 
       {/* Circular button with icon */}
       <motion.div
-        className="h-12 w-12 rounded-full bg-blue-500 flex justify-center items-center relative shadow-lg z-10 flex-shrink-0"
+        className="h-8 w-8 rounded-full bg-white/20 dark:bg-white/10 backdrop-blur-sm flex justify-center items-center relative z-10 flex-shrink-0 ml-px"
         animate={isDownloading ? {
-          rotate: 180,
-          scale: [0.95, 1, 0.95],
-        } : {}}
+          rotate: 360,
+        } : {
+          rotate: 0,
+        }}
         transition={{
-          duration: isDownloading ? 1 : 0.4,
-          times: isDownloading ? [0, 0.7, 1] : undefined
+          duration: isDownloading ? 2 : 0.3,
+          ease: isDownloading ? 'linear' : 'easeOut',
+          repeat: isDownloading ? Infinity : 0,
         }}
       >
-        {/* Progress fill */}
-        <motion.div
-          className="absolute top-0 left-0 w-full bg-blue-800 rounded-full"
-          initial={{ height: '0%' }}
-          animate={isDownloading ? { height: '100%' } : { height: '0%' }}
-          transition={{ duration: 3, ease: 'easeInOut' }}
-          style={{ zIndex: 1 }}
-        />
+        {/* Progress ring */}
+        <svg className="absolute inset-0 w-full h-full -rotate-90" viewBox="0 0 32 32">
+          <motion.circle
+            cx="16"
+            cy="16"
+            r="13"
+            fill="none"
+            stroke="rgba(255,255,255,0.3)"
+            strokeWidth="2"
+          />
+          <motion.circle
+            cx="16"
+            cy="16"
+            r="13"
+            fill="none"
+            stroke="white"
+            strokeWidth="2"
+            strokeLinecap="round"
+            initial={{ pathLength: 0 }}
+            animate={{ pathLength: isDownloading ? 1 : 0 }}
+            transition={{ duration: 2, ease: 'easeInOut' }}
+            style={{ 
+              strokeDasharray: '81.7',
+              strokeDashoffset: '0',
+            }}
+          />
+        </svg>
 
         {/* Download icon */}
         <motion.svg
-          className="w-5 h-5 text-white z-20"
+          className="w-4 h-4 text-white z-20"
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
-          initial={{ opacity: 1 }}
-          animate={{ opacity: isDownloading ? 0 : 1 }}
+          animate={{ 
+            opacity: isDownloading ? 0 : 1,
+            y: isDownloading ? 10 : 0,
+          }}
           transition={{ duration: 0.2 }}
         >
           <path
             strokeLinecap="round"
             strokeLinejoin="round"
-            strokeWidth={1.5}
-            d="M12 19V5m0 14-4-4m4 4 4-4"
+            strokeWidth={2}
+            d="M12 4v12m0 0l-4-4m4 4l4-4M4 18h16"
           />
         </motion.svg>
 
-        {/* Loading block */}
-        <motion.div
-          className="w-3 h-3 rounded-full bg-white absolute z-20"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: isDownloading ? 1 : 0 }}
+        {/* Checkmark on complete */}
+        <motion.svg
+          className="w-5 h-5 text-white absolute z-20"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          initial={{ opacity: 0, scale: 0.5 }}
+          animate={{ 
+            opacity: isDownloading ? 0 : 0,
+            scale: isDownloading ? 0.5 : 0.5,
+          }}
           transition={{ duration: 0.2 }}
-        />
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M5 13l4 4L19 7"
+          />
+        </motion.svg>
       </motion.div>
 
       {/* Download label */}
-      <AnimatePresence>
+      <AnimatePresence mode="wait">
         {!isDownloading && (
           <motion.span
-            className="ml-2 pr-3 text-white text-sm font-medium select-none z-10 whitespace-nowrap"
-            initial={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.4 }}
+            className="ml-1.5 pr-3 text-white text-sm font-medium select-none z-10 whitespace-nowrap drop-shadow-sm"
+            initial={{ opacity: 0, x: -10 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: 10 }}
+            transition={{ duration: 0.25, ease: 'easeOut' }}
           >
-            {label}
+            {i18nKey ? <Trans i18nKey={i18nKey} fallback={label} /> : label}
           </motion.span>
         )}
       </AnimatePresence>

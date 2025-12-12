@@ -26,7 +26,7 @@ export function HeaderClient() {
             </div>
             <div className="hidden sm:flex items-center gap-2">
               <LanguageSwitcher />
-              <DownloadButton href="/docs/whitepaper-lukas-v0.1.0.pdf" label="Whitepaper" />
+              <DownloadButton href="/docs/whitepaper-lukas-v0.1.0.pdf" label="Whitepaper" i18nKey="hero.whitepaper" />
             </div>
           </div>
 
@@ -65,7 +65,7 @@ export function HeaderClient() {
               <div>
                 <LanguageSwitcher />
               </div>
-              <DownloadButton href="/docs/whitepaper-lukas-v0.1.0.pdf" label="Whitepaper" />
+              <DownloadButton href="/docs/whitepaper-lukas-v0.1.0.pdf" label="Whitepaper" i18nKey="hero.whitepaper" />
               <div>
                 <MobileThemeSwitcher />
               </div>
