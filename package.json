@@ -1,6 +1,6 @@
 {
   "name": "lukas-latam-monorepo",
-  "version": "0.1.61",
+  "version": "0.1.62",
   "private": true,
   "workspaces": [
     "apps/web",
