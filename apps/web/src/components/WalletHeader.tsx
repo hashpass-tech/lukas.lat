@@ -229,9 +229,9 @@ export function WalletHeader({ connectText = "Connect Wallet", connectTextKey }:
         </div>
       </DialogTrigger>
       
-      <DialogContent className="bg-card/95 dark:bg-card/95 backdrop-blur-2xl rounded-2xl p-6 max-w-md w-full border border-border shadow-2xl">
-        <DialogHeader>
-          <DialogTitle className="text-xl font-bold text-center">Connect Wallet</DialogTitle>
+      <DialogContent className="bg-card/95 dark:bg-card/95 backdrop-blur-2xl rounded-2xl p-4 sm:p-6 w-[calc(100vw-2rem)] sm:w-full max-w-sm sm:max-w-md border border-border shadow-2xl max-h-[85vh] sm:max-h-[90vh] overflow-y-auto">
+        <DialogHeader className="pb-2 sm:pb-4">
+          <DialogTitle className="text-lg sm:text-xl font-bold text-center">{displayText}</DialogTitle>
         </DialogHeader>
 
         {error && (
