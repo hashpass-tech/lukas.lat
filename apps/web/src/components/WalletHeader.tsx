@@ -28,12 +28,16 @@ import {
   Check
 } from 'lucide-react';
 import { DitheringShader } from '@/components/ui/dithering-shader';
+import { useTranslation } from '@/lib/translator';
 
 interface WalletHeaderProps {
   connectText?: string;
+  connectTextKey?: string;
 }
 
-export function WalletHeader({ connectText = "Connect Wallet" }: WalletHeaderProps) {
+export function WalletHeader({ connectText = "Connect Wallet", connectTextKey }: WalletHeaderProps) {
+  const { t } = useTranslation();
+  const displayText = connectTextKey ? t(connectTextKey) : connectText;
   const { 
     address, 
     isConnected, 
@@ -214,7 +218,7 @@ export function WalletHeader({ connectText = "Connect Wallet" }: WalletHeaderPro
               </>
             ) : (
               <>
-                <span className="text-sm truncate">{connectText}</span>
+                <span className="text-sm truncate">{displayText}</span>
                 <ArrowRight className="w-3 h-3 transition-transform duration-200 group-hover:translate-x-1 flex-shrink-0" />
               </>
             )}

@@ -36,5 +36,8 @@
   "lukas.currency_basket": "Cesta de Monedas",
   "lukas.description": "$LUKAS es la primera moneda meme de cesta estable regional diseñada para unificar la volatilidad de las monedas latinoamericanas en un único activo centrado en la gravedad. Combina la estabilidad de una cesta de las principales monedas latinoamericanas con la naturaleza impulsada por la comunidad de las monedas meme.",
   "currency.weight": "Peso de Moneda",
-  "all": "Todos"
+  "all": "Todos",
+  "hero.whitepaper": "Libro Blanco",
+  "brand.name": "LA LUKA",
+  "brand.name.full": "$(LKS) LA LUKA"
 }

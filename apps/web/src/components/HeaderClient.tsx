@@ -20,8 +20,8 @@ export function HeaderClient() {
           <div className="flex items-center gap-3 min-w-0">
             <div className="flex items-center gap-2 rounded-md px-2 py-1 hover:bg-accent/60 transition-colors">
               <span className="text-lg sm:text-xl font-mono font-bold tracking-tight">
-                <span className="sm:hidden">$LUKAS</span>
-                <span className="hidden sm:inline">$(LKS) LUKAS</span>
+                <span className="sm:hidden"><Trans i18nKey="brand.name" fallback="$LUKAS" /></span>
+                <span className="hidden sm:inline"><Trans i18nKey="brand.name.full" fallback="$(LKS) LUKAS" /></span>
               </span>
             </div>
             <div className="hidden sm:flex items-center gap-2">
@@ -35,7 +35,7 @@ export function HeaderClient() {
               <LightPullThemeSwitcher />
             </div>
             <div className="hidden sm:flex flex-shrink-0">
-              <WalletHeader connectText="Connect Wallet" />
+              <WalletHeader connectTextKey="connect.wallet" />
             </div>
             <button
               type="button"
@@ -52,7 +52,7 @@ export function HeaderClient() {
         <div className="fixed inset-0 z-50 flex sm:hidden">
           <div className="w-3/4 max-w-xs h-full bg-background/95 backdrop-blur-xl border-r border-border flex flex-col p-4 gap-4">
             <div className="flex items-center justify-between mb-2">
-              <span className="text-base font-mono font-bold">$LUKAS</span>
+              <span className="text-base font-mono font-bold"><Trans i18nKey="brand.name" fallback="$LUKAS" /></span>
               <button
                 type="button"
                 className="flex h-8 w-8 items-center justify-center rounded-md border border-border bg-background/80"
@@ -71,7 +71,7 @@ export function HeaderClient() {
               </div>
             </div>
             <div className="pt-2 border-t border-border/60">
-              <WalletHeader connectText="Connect Wallet" />
+              <WalletHeader connectTextKey="connect.wallet" />
             </div>
           </div>
           <button

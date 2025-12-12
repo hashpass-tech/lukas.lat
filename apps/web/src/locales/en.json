@@ -36,5 +36,8 @@
   "lukas.currency_basket": "Currency Basket",
   "lukas.description": "$LUKAS is the first regional stable-basket meme coin designed to unify Latin American currency volatility into a single, gravity-centered asset. It combines the stability of a basket of major Latin American currencies with the community-driven nature of meme coins.",
   "currency.weight": "Currency Weight",
-  "all": "All"
+  "all": "All",
+  "hero.whitepaper": "Whitepaper",
+  "brand.name": "$LUKAS",
+  "brand.name.full": "$(LKS) LUKAS"
 }
