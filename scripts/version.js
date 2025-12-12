@@ -384,10 +384,25 @@ function gitCommit(version) {
         });
         
         log('✓ Pushed to remote repository', colors.green);
+
+        // Create and push git tag
+        log('\nCreating git tag...', colors.blue);
+        execSync(`git tag v${version}`, {
+            cwd: ROOT_DIR,
+            stdio: 'inherit'
+        });
+        log(`✓ Created tag: v${version}`, colors.green);
+
+        log('\nPushing tag to remote...', colors.blue);
+        execSync(`git push origin v${version}`, {
+            cwd: ROOT_DIR,
+            stdio: 'inherit'
+        });
+        log('✓ Pushed tag to remote repository', colors.green);
         
     } catch (error) {
-        log('✗ Failed to create git commit or push', colors.red);
-        log('You may need to commit and push manually', colors.yellow);
+        log('✗ Failed to create git commit, tag, or push', colors.red);
+        log('You may need to commit/tag and push manually', colors.yellow);
     }
 }
 
