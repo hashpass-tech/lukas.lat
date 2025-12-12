@@ -5,8 +5,9 @@ import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { LightPullThemeSwitcher } from "@/components/LightPullThemeSwitcher";
 import { WalletHeader } from "@/components/WalletHeader";
 import { MobileThemeSwitcher } from "@/components/MobileThemeSwitcher";
-import { Menu, X, Download } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import { Trans } from "@/components/Trans";
+import { DownloadButton } from "@/components/DownloadButton";
 
 export function HeaderClient() {
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -25,14 +26,7 @@ export function HeaderClient() {
             </div>
             <div className="hidden sm:flex items-center gap-2">
               <LanguageSwitcher />
-              <a
-                href="/docs/whitepaper-lukas-v0.1.0.pdf"
-                download
-                className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium rounded-lg bg-gradient-to-r from-blue-500/80 to-purple-600/80 text-white hover:from-blue-500 hover:to-purple-600 transition-all shadow-md hover:shadow-lg hover:-translate-y-0.5"
-              >
-                <Download className="h-4 w-4" />
-                <span className="hidden lg:inline"><Trans i18nKey="hero.whitepaper" fallback="Whitepaper" /></span>
-              </a>
+              <DownloadButton href="/docs/whitepaper-lukas-v0.1.0.pdf" label="Whitepaper" />
             </div>
           </div>
 
@@ -71,14 +65,7 @@ export function HeaderClient() {
               <div>
                 <LanguageSwitcher />
               </div>
-              <a
-                href="/docs/whitepaper-lukas-v0.1.0.pdf"
-                download
-                className="flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg bg-gradient-to-r from-blue-500/80 to-purple-600/80 text-white hover:from-blue-500 hover:to-purple-600 transition-all"
-              >
-                <Download className="h-4 w-4" />
-                <Trans i18nKey="hero.whitepaper" fallback="Whitepaper" />
-              </a>
+              <DownloadButton href="/docs/whitepaper-lukas-v0.1.0.pdf" label="Whitepaper" />
               <div>
                 <MobileThemeSwitcher />
               </div>
