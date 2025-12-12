@@ -4,7 +4,7 @@ const siteUrl = "https://lukas.lat";
 const defaultTitle = "$LUKAS - LatAm Basket-Stable Meme Coin";
 const defaultDescription =
   "The first regional Latin American basket-stable meme coin designed to unify Latin American currency volatility into a single, gravity-centered asset.";
-const defaultImage = "/logos/logo-full-hashpass-white.svg";
+const defaultImage = "/android-chrome-512x512.png";
 
 export const createMetadata = (
   title?: string,
@@ -40,14 +40,14 @@ export const createMetadata = (
       images: [
         {
           url: defaultImage,
-          width: 1200,
-          height: 630,
+          width: 512,
+          height: 512,
           alt: resolvedTitle,
         },
       ],
     },
     twitter: {
-      card: "summary_large_image",
+      card: "summary",
       title: resolvedTitle,
       description: resolvedDescription,
       images: [defaultImage],
