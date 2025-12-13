@@ -38,6 +38,12 @@
   "currency.weight": "Currency Weight",
   "all": "All",
   "hero.whitepaper": "Whitepaper",
+  "download.button": "Download",
+  "download.title": "Download",
+  "download.choose_format": "Choose format",
+  "download.whitepaper": "Whitepaper",
+  "download.manifesto": "Manifesto",
+  "download.or_share": "or share",
   "brand.name": "$LUKAS",
   "brand.name.full": "$(LKS) LUKAS"
 }

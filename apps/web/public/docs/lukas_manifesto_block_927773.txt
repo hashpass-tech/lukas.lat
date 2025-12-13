@@ -1,0 +1,70 @@
+LUKAS MANIFESTO
+================
+
+1. Money should serve people, not borders.
+   Latin America is one region, one economic story, and millions of lives in motion.
+   Our currencies were never designed for this reality. LUKAS is.
+
+2. LUKAS is a LatAm basket, not a single flag.
+   1 LUKA tracks the blended strength of BRL, MXN, COP, CLP, and ARS.
+   No single government, bank, or crisis should define the future of everyone else.
+
+3. Stability is a public good, not a luxury product.
+   Stable money is the foundation for saving, building, and planning.
+   It must be programmable, transparent, and available to anyone with a phone.
+
+4. The peg lives in code, not in promises.
+   LUKAS is stabilized by open-source algorithms:
+   - On-chain FX prices
+   - Public index math
+   - Uniswap v4 hooks that defend the peg
+   If the code changes, the world can see it. If the peg moves, the math explains why.
+
+5. Liquidity is our central bank.
+   Instead of closed balance sheets, we use open liquidity:
+   - AMMs as real-time FX engines
+   - On-chain vaults as reserves
+   - Arbitrage, not decree, to keep prices honest.
+
+6. Memes are our language, not our excuse.
+   We embrace the meme to spread the idea, not to hide from responsibility.
+   LUKAS is fun on the surface and rigorous underneath:
+   - Serious collateral
+   - Serious risk controls
+   - Serious respect for users’ savings.
+
+7. LatAm is not an afterthought market.
+   We refuse the narrative that Latin America must wait for global finance to notice it.
+   We build first for Bogotá, São Paulo, Mexico City, Santiago, Buenos Aires — and beyond.
+
+8. Open source or it doesn’t count.
+   - The index is open.
+   - The hooks are open.
+   - The vault logic is open.
+   Anyone can inspect, fork, improve, or challenge our design.
+
+9. Users are not exit liquidity.
+   The goal is not speculation; the goal is usable, dependable money.
+   - For merchants who accept small payments every day.
+   - For workers who cross borders physically and financially.
+   - For communities that deserve better tools than inflation and capital controls.
+
+10. We are early, not alone.
+    LUKAS stands on the shoulders of many:
+    - Local stablecoins across LatAm
+    - Builders of DeFi primitives
+    - Researchers of FX, risk, and governance
+    Our role is to connect these pieces into one regional monetary layer.
+
+Commitment
+----------
+We will:
+- Ship in the open.
+- Favor simplicity over fragility.
+- Treat users’ trust as the scarcest asset we have.
+- Iterate with caution where it touches people’s savings, and with courage where it expands their options.
+
+This text is not a legal contract, but a public commitment:
+a reference point the community can use to hold us accountable.
+
+Signed at block 927773.
