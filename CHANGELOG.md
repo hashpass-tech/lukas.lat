@@ -8,6 +8,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Download modal with PDF/TXT format selection
+- Share buttons for Twitter/X, Telegram, and copy link
+- Enhanced download button with modal integration
+
+### Changed
+- Download button now opens modal instead of direct download
+- Updated button text from "Whitepaper" to "Download" with translations
+- Improved download UX with format selection and sharing options
+
+### Fixed
+
+## [0.1.63] - 2025-12-13
+### Added
 
 ### Changed
 
