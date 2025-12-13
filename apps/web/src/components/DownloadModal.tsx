@@ -54,7 +54,7 @@ export const DownloadModal = ({ isOpen, onClose }: DownloadModalProps) => {
           
           {/* Modal */}
           <motion.div
-            className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-50 w-[90%] max-w-md"
+            className="fixed left-4 right-4 top-1/2 -translate-y-1/2 z-50 max-w-md max-h-[calc(100vh-4rem)] overflow-y-auto mx-auto"
             initial={{ opacity: 0, scale: 0.9, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.9, y: 20 }}
@@ -75,21 +75,21 @@ export const DownloadModal = ({ isOpen, onClose }: DownloadModalProps) => {
               </div>
 
               {/* Content */}
-              <div className="p-4 space-y-4">
+              <div className="p-3 sm:p-4 space-y-3 sm:space-y-4">
                 {/* Download Options */}
                 <div className="space-y-2">
                   <p className="text-sm text-muted-foreground font-medium">
                     <Trans i18nKey="download.choose_format" fallback="Choose format" />
                   </p>
-                  <div className="grid grid-cols-2 gap-3">
+                  <div className="grid grid-cols-2 gap-2 sm:gap-3">
                     <button
                       onClick={() => handleDownload('pdf')}
-                      className="flex flex-col items-center gap-2 p-4 rounded-xl border border-border bg-accent/30 hover:bg-accent/60 transition-colors group"
+                      className="flex flex-col items-center gap-2 p-3 sm:p-4 rounded-xl border border-border bg-accent/30 hover:bg-accent/60 transition-colors group"
                     >
-                      <div className="p-3 rounded-full bg-red-500/10 group-hover:bg-red-500/20 transition-colors">
-                        <FileText className="w-6 h-6 text-red-500" />
+                      <div className="p-2 sm:p-3 rounded-full bg-red-500/10 group-hover:bg-red-500/20 transition-colors">
+                        <FileText className="w-5 h-5 sm:w-6 sm:h-6 text-red-500" />
                       </div>
-                      <span className="text-sm font-medium">
+                      <span className="text-xs sm:text-sm font-medium text-center">
                         <Trans i18nKey="download.whitepaper" fallback="Whitepaper" />
                       </span>
                       <span className="text-xs text-muted-foreground">PDF</span>
@@ -97,12 +97,12 @@ export const DownloadModal = ({ isOpen, onClose }: DownloadModalProps) => {
                     
                     <button
                       onClick={() => handleDownload('txt')}
-                      className="flex flex-col items-center gap-2 p-4 rounded-xl border border-border bg-accent/30 hover:bg-accent/60 transition-colors group"
+                      className="flex flex-col items-center gap-2 p-3 sm:p-4 rounded-xl border border-border bg-accent/30 hover:bg-accent/60 transition-colors group"
                     >
-                      <div className="p-3 rounded-full bg-emerald-500/10 group-hover:bg-emerald-500/20 transition-colors">
-                        <File className="w-6 h-6 text-emerald-500" />
+                      <div className="p-2 sm:p-3 rounded-full bg-emerald-500/10 group-hover:bg-emerald-500/20 transition-colors">
+                        <File className="w-5 h-5 sm:w-6 sm:h-6 text-emerald-500" />
                       </div>
-                      <span className="text-sm font-medium">
+                      <span className="text-xs sm:text-sm font-medium text-center">
                         <Trans i18nKey="download.manifesto" fallback="Manifesto" />
                       </span>
                       <span className="text-xs text-muted-foreground">TXT</span>
@@ -120,32 +120,32 @@ export const DownloadModal = ({ isOpen, onClose }: DownloadModalProps) => {
                 </div>
 
                 {/* Share Options */}
-                <div className="flex justify-center gap-3">
+                <div className="flex justify-center gap-2 sm:gap-3">
                   <button
                     onClick={() => handleShare('twitter')}
-                    className="p-3 rounded-full border border-border bg-accent/30 hover:bg-[#1DA1F2]/20 hover:border-[#1DA1F2]/50 transition-colors group"
+                    className="p-2 sm:p-3 rounded-full border border-border bg-accent/30 hover:bg-[#1DA1F2]/20 hover:border-[#1DA1F2]/50 transition-colors group"
                     title="Share on X"
                   >
-                    <Twitter className="w-5 h-5 text-muted-foreground group-hover:text-[#1DA1F2] transition-colors" />
+                    <Twitter className="w-4 h-4 sm:w-5 sm:h-5 text-muted-foreground group-hover:text-[#1DA1F2] transition-colors" />
                   </button>
                   
                   <button
                     onClick={() => handleShare('telegram')}
-                    className="p-3 rounded-full border border-border bg-accent/30 hover:bg-[#0088cc]/20 hover:border-[#0088cc]/50 transition-colors group"
+                    className="p-2 sm:p-3 rounded-full border border-border bg-accent/30 hover:bg-[#0088cc]/20 hover:border-[#0088cc]/50 transition-colors group"
                     title="Share on Telegram"
                   >
-                    <Send className="w-5 h-5 text-muted-foreground group-hover:text-[#0088cc] transition-colors" />
+                    <Send className="w-4 h-4 sm:w-5 sm:h-5 text-muted-foreground group-hover:text-[#0088cc] transition-colors" />
                   </button>
                   
                   <button
                     onClick={() => handleShare('copy')}
-                    className="p-3 rounded-full border border-border bg-accent/30 hover:bg-accent/60 transition-colors group"
+                    className="p-2 sm:p-3 rounded-full border border-border bg-accent/30 hover:bg-accent/60 transition-colors group"
                     title="Copy link"
                   >
                     {copied ? (
-                      <Check className="w-5 h-5 text-emerald-500" />
+                      <Check className="w-4 h-4 sm:w-5 sm:h-5 text-emerald-500" />
                     ) : (
-                      <Link2 className="w-5 h-5 text-muted-foreground group-hover:text-foreground transition-colors" />
+                      <Link2 className="w-4 h-4 sm:w-5 sm:h-5 text-muted-foreground group-hover:text-foreground transition-colors" />
                     )}
                   </button>
                 </div>

@@ -173,7 +173,7 @@ export const LukasHeroAnimation = () => {
             </div>
 
             <button
-                className="explore-btn z-20"
+                className="explore-btn"
                 style={{ animationDelay: '2.2s' }}
                 onClick={() => {
                     const content = document.getElementById('content');

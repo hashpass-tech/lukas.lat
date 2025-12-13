@@ -49,7 +49,7 @@ export function HeaderClient() {
       </header>
 
       {mobileOpen && (
-        <div className="fixed inset-0 z-50 flex sm:hidden">
+        <div className="fixed inset-0 z-[60] flex sm:hidden">
           <div className="w-3/4 max-w-xs h-full bg-background/95 backdrop-blur-xl border-r border-border flex flex-col p-4 gap-4">
             <div className="flex items-center justify-between mb-2">
               <span className="text-base font-mono font-bold"><Trans i18nKey="brand.name" fallback="$LUKAS" /></span>

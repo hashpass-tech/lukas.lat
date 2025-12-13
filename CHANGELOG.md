@@ -8,10 +8,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Optimized mobile modal positioning and responsiveness
 
 ### Changed
+- Improved download modal mobile layout with proper viewport constraints
+- Enhanced mobile modal spacing and button sizing for better UX
 
 ### Fixed
+- Fixed mobile modal centering and overflow issues
+- Fixed scroll button z-index to stay behind mobile sidebar
+- Fixed mobile modal layout to prevent overlap with other elements
 
 ## [0.1.63] - 2025-12-13
 ### Added
@@ -23,13 +29,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Download button now opens modal instead of direct download
 - Updated button text from "Whitepaper" to "Download" with translations
 - Improved download UX with format selection and sharing options
-
-### Fixed
-
-## [0.1.63] - 2025-12-13
-### Added
-
-### Changed
 
 ### Fixed
 
