@@ -8,6 +8,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+
+### Changed
+
+### Fixed
+
+## [0.1.63] - 2025-12-13
+### Added
 - Download modal with PDF/TXT format selection
 - Share buttons for Twitter/X, Telegram, and copy link
 - Enhanced download button with modal integration
