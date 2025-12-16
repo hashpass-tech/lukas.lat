@@ -2,6 +2,8 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { Trans } from '@/components/Trans';
+import { Dialog, DialogContent } from '@/components/ui/dialog';
+import { Play } from 'lucide-react';
 
 // Orb component for the background
 const Orb = ({ size, x, y, color, delay }: { size: number; x: number; y: number; color: string; delay: number }) => {
@@ -43,23 +45,71 @@ export const LukasHeroAnimation = () => {
     const [orbs, setOrbs] = useState<any[]>([]);
     const [mounted, setMounted] = useState(false);
     const [themeKey, setThemeKey] = useState(0);
+    const [coinAnchored, setCoinAnchored] = useState(false);
+    const [coinVisible, setCoinVisible] = useState(false);
+    const [videoModalOpen, setVideoModalOpen] = useState(false);
+    const [currentLanguage, setCurrentLanguage] = useState('en');
+    const [isHoveringCoin, setIsHoveringCoin] = useState(false);
+    const [countdown, setCountdown] = useState(0);
+    const [isCountingDown, setIsCountingDown] = useState(false);
 
     // Ensure component is mounted for proper theme detection
     useEffect(() => {
         setMounted(true);
     }, []);
 
-    // Detect mobile screen size
+    // Detect mobile screen size and language
     useEffect(() => {
         const checkMobile = () => {
             setIsMobile(window.innerWidth < 768); // md breakpoint
         };
         
+        const detectLanguage = () => {
+            // Get language from URL path or browser
+            const pathLang = window.location.pathname.split('/')[1];
+            const browserLang = navigator.language.split('-')[0];
+            
+            // Determine if Spanish (es, pt, cl) or English
+            const spanishLangs = ['es', 'pt', 'cl'];
+            const detectedLang = spanishLangs.includes(pathLang) ? pathLang : 
+                               spanishLangs.includes(browserLang) ? browserLang : 'en';
+            
+            setCurrentLanguage(detectedLang);
+        };
+        
         checkMobile();
+        detectLanguage();
+        
         window.addEventListener('resize', checkMobile);
         
-        return () => window.removeEventListener('resize', checkMobile);
-    }, []);
+        // Listen for language changes (for i18n context changes)
+        const handleLanguageChange = () => {
+            detectLanguage();
+        };
+        
+        // Listen for popstate events (browser navigation)
+        window.addEventListener('popstate', handleLanguageChange);
+        
+        // Set up an interval to check for language context changes
+        const languageCheckInterval = setInterval(() => {
+            const currentPathLang = window.location.pathname.split('/')[1];
+            const spanishLangs = ['es', 'pt', 'cl'];
+            const expectedLang = spanishLangs.includes(currentPathLang) ? currentPathLang : 'en';
+            
+            console.log('Language check - Path:', currentPathLang, 'Expected:', expectedLang, 'Current:', currentLanguage);
+            
+            if (expectedLang !== currentLanguage) {
+                console.log('Language changed from', currentLanguage, 'to', expectedLang);
+                setCurrentLanguage(expectedLang);
+            }
+        }, 1000); // Check every second
+        
+        return () => {
+            window.removeEventListener('resize', checkMobile);
+            window.removeEventListener('popstate', handleLanguageChange);
+            clearInterval(languageCheckInterval);
+        };
+    }, [currentLanguage]);
 
     // Listen for theme changes
     useEffect(() => {
@@ -123,10 +173,77 @@ export const LukasHeroAnimation = () => {
             const timeout = setTimeout(() => setVisibleWords(visibleWords + 1), 600);
             return () => clearTimeout(timeout);
         } else {
-            const timeout = setTimeout(() => setSubtitleVisible(true), 800);
+            const timeout = setTimeout(() => {
+                setSubtitleVisible(true);
+                // Show coin anchor after subtitle appears
+                setTimeout(() => setCoinVisible(true), 500);
+            }, 800);
             return () => clearTimeout(timeout);
         }
     }, [visibleWords, titleWords.length]);
+
+    const handleCoinClick = () => {
+        if (coinAnchored) {
+            // Pick up the coin and stop countdown
+            setCoinAnchored(false);
+            setIsCountingDown(false);
+            setCountdown(0);
+        } else {
+            // Put down/anchor the coin and start countdown
+            setCoinAnchored(true);
+            setIsCountingDown(true);
+            setCountdown(3);
+        }
+    };
+
+    // Countdown effect
+    useEffect(() => {
+        if (isCountingDown && countdown > 0) {
+            const timer = setTimeout(() => setCountdown(countdown - 1), 1000);
+            return () => clearTimeout(timer);
+        } else if (isCountingDown && countdown === 0) {
+            // Start video when countdown reaches 0
+            setVideoModalOpen(true);
+            setIsCountingDown(false);
+            setCountdown(0);
+        }
+    }, [isCountingDown, countdown]);
+
+    const handleCoinMouseEnter = () => {
+        console.log('Coin mouse enter detected');
+        setIsHoveringCoin(true);
+    };
+
+    const handleCoinMouseLeave = () => {
+        console.log('Coin mouse leave detected');
+        setIsHoveringCoin(false);
+    };
+
+    const handlePlayButtonClick = (e: React.MouseEvent) => {
+        e.stopPropagation(); // Prevent coin anchor toggle
+        setVideoModalOpen(true);
+    };
+
+    const getVideoUrl = () => {
+        // Return language-specific YouTube video URLs
+        const spanishLangs = ['es', 'pt', 'cl'];
+        console.log('Current language for video:', currentLanguage);
+        if (spanishLangs.includes(currentLanguage)) {
+            console.log('Using Spanish video');
+            return 'https://www.youtube.com/embed/_endxVObD4U'; // Spanish video
+        }
+        console.log('Using English video');
+        return 'https://www.youtube.com/embed/g9Wi6E5re8g'; // English video (https://youtu.be/g9Wi6E5re8g)
+    };
+
+    const getCountdownText = () => {
+        // Return language-specific countdown text
+        const spanishLangs = ['es', 'pt', 'cl'];
+        if (spanishLangs.includes(currentLanguage)) {
+            return `Iniciando en ${countdown}...`; // Spanish
+        }
+        return `Starting in ${countdown}...`; // English
+    };
 
     return (
         <div key={`${mounted}-${themeKey}`} className="h-svh relative overflow-hidden bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 light:from-blue-100 light:via-gray-50 light:to-blue-100">
@@ -170,6 +287,109 @@ export const LukasHeroAnimation = () => {
                         <Trans i18nKey="hero.subtitle" fallback="The Center of Gravity for Latin American Weights" />
                     </div>
                 </div>
+
+                {/* Interactive LUKAS Coin Anchor Area */}
+                {coinVisible && (
+                    <div className="flex justify-center mt-8">
+                        <div
+                            className={`relative cursor-pointer transition-all duration-500 transform group pointer-events-auto ${
+                                coinAnchored 
+                                    ? 'scale-100 opacity-100' 
+                                    : 'scale-90 opacity-60 hover:scale-95 hover:opacity-80'
+                            }`}
+                            onClick={handleCoinClick}
+                            onMouseEnter={handleCoinMouseEnter}
+                            onMouseLeave={handleCoinMouseLeave}
+                            role="button"
+                            tabIndex={0}
+                            aria-label={coinAnchored ? "Pick up LUKAS coin" : "Put down LUKAS coin"}
+                            onKeyDown={(e) => {
+                                if (e.key === 'Enter' || e.key === ' ') {
+                                    e.preventDefault();
+                                    handleCoinClick();
+                                }
+                            }}
+                        >
+                            {/* Coin Container */}
+                            <div className="relative w-24 h-24 md:w-32 md:h-32">
+                                {/* Glow Effect */}
+                                <div className={`absolute inset-0 rounded-full transition-all duration-500 ${
+                                    isHoveringCoin
+                                        ? 'bg-yellow-400/50 blur-xl animate-pulse' 
+                                        : coinAnchored 
+                                            ? 'bg-slate-500/40 blur-xl animate-pulse' 
+                                            : 'bg-slate-500/15 blur-md'
+                                }`} />
+                                
+                                {/* Coin Ring */}
+                                <div className={`absolute inset-2 rounded-full border-4 transition-all duration-500 ${
+                                    isHoveringCoin
+                                        ? 'border-yellow-500 shadow-lg shadow-yellow-500/50' 
+                                        : coinAnchored 
+                                            ? 'border-slate-600 shadow-lg shadow-slate-600/50' 
+                                            : 'border-slate-500/60'
+                                }`} />
+                                
+                                {/* Coin Center */}
+                                <div className={`absolute inset-4 rounded-full bg-gradient-to-br flex items-center justify-center transition-all duration-500 ${
+                                    isHoveringCoin
+                                        ? 'from-yellow-400 to-yellow-600 shadow-inner shadow-yellow-700/50' 
+                                        : coinAnchored 
+                                            ? 'from-slate-600 to-slate-800 shadow-inner shadow-slate-900/50' 
+                                            : 'from-slate-600 to-slate-800 shadow-sm'
+                                }`}>
+                                    {coinAnchored ? (
+                                        <button
+                                            onClick={handlePlayButtonClick}
+                                            className="relative group flex items-center justify-center w-full h-full"
+                                            aria-label="Play video"
+                                        >
+                                            <div className="absolute inset-0 bg-white/30 rounded-full transition-all duration-300 group-hover:bg-white/40 shadow-lg" />
+                                            <Play className="w-8 h-8 md:w-10 md:h-10 text-white relative z-20 transition-transform duration-300 group-hover:scale-110 drop-shadow-lg" />
+                                        </button>
+                                    ) : (
+                                        <span className="text-white font-black text-lg md:text-2xl tracking-tight">
+                                            $LKS
+                                        </span>
+                                    )}
+                                </div>
+
+                                {/* Hover Hint */}
+                                {!coinAnchored && (
+                                    <div className={`absolute -top-12 left-1/2 transform -translate-x-1/2 whitespace-nowrap transition-all duration-300 pointer-events-none z-50 ${
+                                        isHoveringCoin ? 'opacity-100 scale-100' : 'opacity-0 scale-95'
+                                    }`}>
+                                        <div className="relative">
+                                            <span className={`text-xs px-3 py-1 rounded-full border font-bold transition-all duration-500 block ${
+                                                isHoveringCoin 
+                                                    ? 'text-yellow-300 bg-black/95 border-yellow-500/60 shadow-xl' 
+                                                    : 'text-slate-300 bg-black/90 border-slate-500/40'
+                                            }`}>
+                                                ANCHOR LUKAS HERE TO PLAY VIDEO
+                                            </span>
+                                            {/* Debug indicator */}
+                                            {isHoveringCoin && (
+                                                <div className="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-2 h-2 bg-yellow-400 rounded-full animate-pulse" />
+                                            )}
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    </div>
+                )}
+
+                {/* Countdown Popup */}
+                {isCountingDown && (
+                    <div className="absolute -top-20 left-1/2 transform -translate-x-1/2 whitespace-nowrap transition-all duration-300 pointer-events-none z-50">
+                        <div className="relative">
+                            <span className="text-xs px-3 py-1 rounded-full border font-bold transition-all duration-500 block bg-black/95 border-red-500/60 shadow-xl animate-pulse">
+                                <span className="text-red-300 font-black text-lg mr-2">{countdown}</span>
+                                {getCountdownText()}
+                            </span>
+                        </div>
+                    </div>
+                )}
             </div>
 
             <button
@@ -192,6 +412,21 @@ export const LukasHeroAnimation = () => {
                     </svg>
                 </span>
             </button>
+
+            {/* Video Modal */}
+            <Dialog open={videoModalOpen} onOpenChange={setVideoModalOpen}>
+                <DialogContent className="max-w-4xl w-full bg-background border-border rounded-3xl p-0 overflow-hidden">
+                    <div className="relative w-full aspect-video">
+                        <iframe
+                            src={`${getVideoUrl()}?autoplay=1&rel=0&modestbranding=1`}
+                            title="LUKAS Video"
+                            className="absolute inset-0 w-full h-full border-0"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            allowFullScreen
+                        />
+                    </div>
+                </DialogContent>
+            </Dialog>
 
             {/* Global styles for animations (ideally in a global CSS file) */}
             <style jsx global>{`
