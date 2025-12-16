@@ -75,14 +75,14 @@ function LukasTokenModal({
   return (
     <AnimatePresence>
       <motion.div
-        className="fixed inset-0 z-50 flex items-center justify-center p-6"
+        className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
         onClick={onClose}
       >
         <motion.div
-          className="bg-white/95 dark:bg-slate-900/95 backdrop-blur-2xl rounded-3xl p-8 max-w-2xl w-full border border-slate-300/60 dark:border-slate-700/40 shadow-2xl"
+          className="bg-white/95 dark:bg-slate-900/95 backdrop-blur-2xl rounded-3xl p-6 sm:p-8 max-w-2xl w-full max-h-[90vh] border border-slate-300/60 dark:border-slate-700/40 shadow-2xl flex flex-col"
           initial={{ scale: 0.9, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           exit={{ scale: 0.9, opacity: 0 }}
@@ -100,7 +100,8 @@ function LukasTokenModal({
             showIcon={false}
           />
 
-          <div className="space-y-6 text-slate-700 dark:text-slate-300">
+          <div className="flex-1 overflow-y-auto">
+            <div className="space-y-6 text-slate-700 dark:text-slate-300 pr-2">
             <div>
               <h4 className="text-lg font-semibold mb-3 text-slate-900 dark:text-slate-50">
                 <Trans i18nKey="lukas.what_is_title" fallback="What is LUKAS?" />
@@ -154,6 +155,7 @@ function LukasTokenModal({
               </div>
             </div>
           </div>
+            </div>
         </motion.div>
       </motion.div>
     </AnimatePresence>
