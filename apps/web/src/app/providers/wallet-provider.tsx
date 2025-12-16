@@ -2,15 +2,16 @@
 
 import { ReactNode, createContext, useContext, useState, useEffect } from 'react';
 import EthereumProvider from '@walletconnect/ethereum-provider';
-import { MetamaskIcon, CoinbaseWalletIcon, WalletConnectIcon } from '@/components/ui/connect-wallet-modal';
+import { MetamaskIcon, CoinbaseWalletIcon, WalletConnectIcon, AlchemyIcon } from '@/components/ui/connect-wallet-modal';
 
 interface WalletState {
   address: string | null;
   isConnected: boolean;
   isConnecting: boolean;
-  // Which wallet type is currently attempting to connect (e.g. 'metamask', 'walletconnect')
+  // Which wallet type is currently attempting to connect (e.g. 'metamask', 'walletconnect', 'alchemy')
   connectingWalletId: string | null;
   error: string | null;
+  walletType: 'traditional' | 'alchemy' | null; // Track which auth type
 }
 
 interface WalletContextType extends WalletState {
@@ -41,6 +42,7 @@ export function WalletProvider({ children }: { children: ReactNode }) {
     isConnecting: false,
     connectingWalletId: null,
     error: null,
+    walletType: null,
   });
 
   const formatAddress = (addr: string) => {
@@ -115,6 +117,48 @@ export function WalletProvider({ children }: { children: ReactNode }) {
     return accounts[0] as string;
   };
 
+  const connectAlchemy = async () => {
+    // For Alchemy, we'll trigger the modal from the AlchemyProvider
+    // This function signals that Alchemy auth should be initiated
+    if (typeof window === 'undefined') {
+      throw new Error('Alchemy authentication is only available in the browser');
+    }
+
+    // Dispatch a custom event to trigger Alchemy modal
+    window.dispatchEvent(new CustomEvent('triggerAlchemyAuth'));
+
+    // Return a promise that will be resolved when Alchemy auth completes
+    return new Promise<string>((resolve, reject) => {
+      const timeout = setTimeout(() => {
+        reject(new Error('Alchemy authentication timeout'));
+      }, 60000); // 60 second timeout
+
+      const handleAlchemySuccess = (event: CustomEvent) => {
+        clearTimeout(timeout);
+        const address = event.detail?.address;
+        if (address) {
+          resolve(address);
+        } else {
+          reject(new Error('No address returned from Alchemy'));
+        }
+      };
+
+      const handleAlchemyError = (event: CustomEvent) => {
+        clearTimeout(timeout);
+        reject(new Error(event.detail?.error || 'Alchemy authentication failed'));
+      };
+
+      window.addEventListener('alchemyAuthSuccess', handleAlchemySuccess as EventListener);
+      window.addEventListener('alchemyAuthError', handleAlchemyError as EventListener);
+
+      return () => {
+        clearTimeout(timeout);
+        window.removeEventListener('alchemyAuthSuccess', handleAlchemySuccess as EventListener);
+        window.removeEventListener('alchemyAuthError', handleAlchemyError as EventListener);
+      };
+    });
+  };
+
   const connect = async (walletType?: string) => {
     const targetWallet = walletType || 'metamask';
     setWalletState(prev => ({ 
@@ -126,20 +170,29 @@ export function WalletProvider({ children }: { children: ReactNode }) {
 
     try {
       let address: string | null = null;
+      let authType: 'traditional' | 'alchemy' = 'traditional';
 
       switch (targetWallet) {
         case 'metamask':
           address = await connectMetaMask();
+          authType = 'traditional';
           break;
         case 'coinbase':
           address = await connectCoinbaseWallet();
+          authType = 'traditional';
           break;
         case 'walletconnect':
           address = await connectWalletConnect();
+          authType = 'traditional';
+          break;
+        case 'alchemy':
+          address = await connectAlchemy();
+          authType = 'alchemy';
           break;
         default:
           // Try MetaMask as default
           address = await connectMetaMask();
+          authType = 'traditional';
           break;
       }
 
@@ -149,6 +202,7 @@ export function WalletProvider({ children }: { children: ReactNode }) {
         isConnecting: false,
         connectingWalletId: null,
         error: null,
+        walletType: authType,
       });
     } catch (error) {
       setWalletState({
@@ -157,6 +211,7 @@ export function WalletProvider({ children }: { children: ReactNode }) {
         isConnecting: false,
         connectingWalletId: null,
         error: error instanceof Error ? error.message : 'Failed to connect wallet',
+        walletType: null,
       });
     }
   };
@@ -191,6 +246,7 @@ export function WalletProvider({ children }: { children: ReactNode }) {
       isConnecting: false,
       connectingWalletId: null,
       error: null,
+      walletType: null,
     });
 
     // Trigger a custom event for components to listen to
@@ -200,6 +256,12 @@ export function WalletProvider({ children }: { children: ReactNode }) {
   };
 
   const availableWallets = [
+    {
+      id: 'alchemy',
+      name: 'Alchemy',
+      icon: AlchemyIcon,
+      onConnect: () => connect('alchemy'),
+    },
     {
       id: 'metamask',
       name: 'MetaMask',

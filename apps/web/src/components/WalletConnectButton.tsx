@@ -76,11 +76,11 @@ export function WalletConnectButton() {
       // Only show MetaMask if it's available
       return typeof window !== 'undefined' && window.ethereum;
     }
-    if (wallet.id === 'walletconnect') {
-      // Show WalletConnect (will show error if not configured)
+    if (wallet.id === 'alchemy' || wallet.id === 'walletconnect' || wallet.id === 'coinbase') {
+      // Always show Alchemy, WalletConnect, and Coinbase
       return true;
     }
-    return false; // Hide other wallets for now
+    return false;
   }).map(wallet => ({
     ...wallet,
     disabled: wallet.id === 'metamask' && (!window.ethereum || typeof window.ethereum === 'undefined')
@@ -101,7 +101,9 @@ export function WalletConnectButton() {
           {isConnecting && selectedWallet ? (
             <>
               <Loader2 className="w-4 h-4 animate-spin relative z-10" />
-              <span className="relative z-10">Connecting to {selectedWallet === 'metamask' ? 'MetaMask' : 'WalletConnect'}...</span>
+              <span className="relative z-10">
+                Connecting to {selectedWallet === 'metamask' ? 'MetaMask' : selectedWallet === 'alchemy' ? 'Alchemy' : selectedWallet === 'coinbase' ? 'Coinbase' : 'WalletConnect'}...
+              </span>
             </>
           ) : (
             <>
@@ -153,8 +155,12 @@ export function WalletConnectButton() {
                   <div className="text-sm text-muted-foreground">
                     {wallet.id === 'metamask' && wallet.disabled 
                       ? 'MetaMask not detected - install extension' 
+                      : wallet.id === 'alchemy'
+                      ? 'Email & Passkey Login'
                       : wallet.id === 'metamask' 
                       ? 'Most popular wallet' 
+                      : wallet.id === 'coinbase'
+                      ? 'Coinbase Smart Wallet'
                       : 'Connect mobile wallets'
                     }
                   </div>

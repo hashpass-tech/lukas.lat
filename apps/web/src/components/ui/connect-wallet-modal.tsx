@@ -43,6 +43,13 @@ const WalletConnectIcon = (props: { className?: string }) => (
   </svg>
 );
 
+const AlchemyIcon = (props: { className?: string }) => (
+  <svg {...props} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="12" cy="12" r="10" fill="#6366F1" stroke="#6366F1" strokeWidth="2"/>
+    <path d="M12 6V18M6 12H18" stroke="white" strokeWidth="2" strokeLinecap="round"/>
+  </svg>
+);
+
 const ArrowRightIcon = (props: { className?: string }) => (
   <svg {...props} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <path d="M5 12h14"></path>
@@ -130,4 +137,4 @@ export function ConnectWalletModal({
 }
 
 // Export icons for reuse
-export { MetamaskIcon, CoinbaseWalletIcon, WalletConnectIcon };
+export { MetamaskIcon, CoinbaseWalletIcon, WalletConnectIcon, AlchemyIcon };

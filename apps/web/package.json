@@ -12,6 +12,8 @@
     "node": "22.18.0"
   },
   "dependencies": {
+    "@account-kit/infra": "^1.0.0",
+    "@account-kit/react": "^1.0.0",
     "@base-org/account": "^2.5.0",
     "@coinbase/wallet-sdk": "^4.3.7",
     "@gemini-wallet/core": "^0.3.2",
