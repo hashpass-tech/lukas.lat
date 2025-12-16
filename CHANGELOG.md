@@ -12,6 +12,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 ### Fixed
+
+## [0.2.8] - 2025-12-16
+### Added
+
+### Changed
+
+### Fixed
 - Fixed currency modal dark mode background to use proper design system colors
 - Fixed modal text contrast issues by replacing standard Tailwind colors with custom CSS variables
 - Removed blur effects from currency cards and modals for cleaner appearance
