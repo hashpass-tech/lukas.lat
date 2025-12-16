@@ -8,9 +8,12 @@ import { MobileThemeSwitcher } from "@/components/MobileThemeSwitcher";
 import { Menu, X } from "lucide-react";
 import { Trans } from "@/components/Trans";
 import { DownloadButton } from "@/components/DownloadButton";
+import Footer from "@/components/Footer";
+import { useSidebar } from "@/contexts/SidebarContext";
 
 export function HeaderClient() {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const { setMobileSidebarOpen } = useSidebar();
 
   return (
     <div className="pointer-events-auto w-full px-3 sm:px-4 py-2">
@@ -40,7 +43,10 @@ export function HeaderClient() {
             <button
               type="button"
               className="flex h-8 w-8 items-center justify-center rounded-md border border-border bg-background/80 sm:hidden"
-              onClick={() => setMobileOpen(true)}
+              onClick={() => {
+  setMobileOpen(true);
+  setMobileSidebarOpen(true);
+}}
             >
               <Menu className="h-4 w-4" />
             </button>
@@ -49,14 +55,17 @@ export function HeaderClient() {
       </header>
 
       {mobileOpen && (
-        <div className="fixed inset-0 z-[60] flex sm:hidden">
+        <div className="fixed inset-0 z-[70] flex sm:hidden">
           <div className="w-3/4 max-w-xs h-full bg-background/95 backdrop-blur-xl border-r border-border flex flex-col p-4 gap-4">
             <div className="flex items-center justify-between mb-2">
               <span className="text-base font-mono font-bold"><Trans i18nKey="brand.name" fallback="$LUKAS" /></span>
               <button
                 type="button"
                 className="flex h-8 w-8 items-center justify-center rounded-md border border-border bg-background/80"
-                onClick={() => setMobileOpen(false)}
+                onClick={() => {
+                  setMobileOpen(false);
+                  setMobileSidebarOpen(false);
+                }}
               >
                 <X className="h-4 w-4" />
               </button>
@@ -73,11 +82,17 @@ export function HeaderClient() {
             <div className="pt-2 border-t border-border/60">
               <WalletHeader connectTextKey="connect.wallet" />
             </div>
+            <div className="mt-auto pt-2">
+              <Footer className="relative !z-10" />
+            </div>
           </div>
           <button
             type="button"
             className="flex-1 h-full bg-black/40"
-            onClick={() => setMobileOpen(false)}
+            onClick={() => {
+              setMobileOpen(false);
+              setMobileSidebarOpen(false);
+            }}
           />
         </div>
       )}

@@ -2,6 +2,7 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { useState, useEffect } from 'react';
 import { useTheme } from 'next-themes';
+import { useSidebar } from '@/contexts/SidebarContext';
 
 
 type ColorKey =
@@ -267,6 +268,7 @@ export default function HashPassBranding() {
     const [isHovered, setIsHovered] = useState(false);
     const { theme, resolvedTheme } = useTheme();
     const [mounted, setMounted] = useState(false);
+    const { isMobileSidebarOpen } = useSidebar();
 
     // Handle mounting to avoid hydration mismatch
     useEffect(() => {
@@ -307,7 +309,9 @@ export default function HashPassBranding() {
 
     return (
         <button
-            className="fixed right-3 sm:right-6 bottom-32 sm:bottom-16 z-40 group cursor-pointer"
+            className={`fixed right-3 sm:right-6 bottom-32 sm:bottom-16 z-40 group cursor-pointer transition-all duration-300 ${
+                isMobileSidebarOpen ? 'opacity-0 pointer-events-none scale-95 sm:opacity-100 sm:pointer-events-auto' : 'opacity-100 pointer-events-auto'
+            }`}
             aria-label="Back to top"
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}

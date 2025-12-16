@@ -28,9 +28,10 @@ interface ChangelogEntry {
 
 interface FooterProps {
   version?: string;
+  className?: string;
 }
 
-export default function Footer({ version = versionInfo.version }: FooterProps) {
+export default function Footer({ version = versionInfo.version, className = "" }: FooterProps) {
   const [isChangelogOpen, setIsChangelogOpen] = useState(false);
 
   // Parse changelog data - in a real app, this would come from the actual changelog file
@@ -75,10 +76,10 @@ export default function Footer({ version = versionInfo.version }: FooterProps) {
 
   return (
     <>
-      <footer className="fixed bottom-0 left-0 right-0 z-40 bg-slate-950/95 backdrop-blur-md border-t border-slate-800/50">
+      <footer className={`fixed bottom-0 left-0 right-0 z-40 bg-background/95 backdrop-blur-md border-t border-border/50 ${className}`}>
         <div className="w-full max-w-full px-3 sm:px-6 py-2 sm:py-3">
           <div className="mx-auto flex w-full max-w-5xl flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-            <div className="flex flex-wrap items-center gap-2 sm:gap-4 text-slate-400 text-sm">
+            <div className="flex flex-wrap items-center gap-2 sm:gap-4 text-muted-foreground text-sm">
               <Package className="w-4 h-4" />
               <span className="whitespace-nowrap">Lukas Latam</span>
               <Dialog open={isChangelogOpen} onOpenChange={setIsChangelogOpen}>
@@ -86,33 +87,33 @@ export default function Footer({ version = versionInfo.version }: FooterProps) {
                   <button type="button" className="focus:outline-none">
                     <Badge
                       variant="secondary"
-                      className="text-[11px] sm:text-xs bg-slate-800/80 text-slate-100 border border-slate-700/60 cursor-pointer"
+                      className="text-[11px] sm:text-xs cursor-pointer"
                     >
                       v{version}
                     </Badge>
                   </button>
                 </DialogTrigger>
 
-                <DialogContent className="max-w-2xl max-h-[80vh] bg-slate-950 border-slate-800">
+                <DialogContent className="max-w-2xl max-h-[80vh] bg-background border-border rounded-3xl">
                   <DialogHeader>
-                    <DialogTitle className="text-xl font-semibold text-slate-100 flex items-center">
+                    <DialogTitle className="text-xl font-semibold text-foreground flex items-center">
                       <FileText className="w-5 h-5 mr-2" />
                       Changelog
                     </DialogTitle>
-                    <div className="mt-2 flex flex-wrap items-center gap-2 text-xs text-slate-400">
-                      <Badge variant="outline" className="border-slate-700 text-slate-200">
+                    <div className="mt-2 flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
+                      <Badge variant="outline">
                         Current version: v{version}
                       </Badge>
                       <a
                         href="https://github.com/hashpass-tech/lukas.lat"
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex items-center gap-1 hover:text-slate-200 transition-colors"
+                        className="inline-flex items-center gap-1 hover:text-foreground transition-colors"
                       >
                         <span>View on GitHub</span>
                         <ExternalLink className="w-3 h-3" />
                       </a>
-                      <div className="flex items-center gap-1 text-slate-500">
+                      <div className="flex items-center gap-1 text-muted-foreground">
                         <GitBranch className="w-3 h-3" />
                         <span>main</span>
                       </div>
@@ -124,17 +125,17 @@ export default function Footer({ version = versionInfo.version }: FooterProps) {
                       {changelogData.map((entry) => (
                         <div
                           key={entry.version}
-                          className="border-b border-slate-800 pb-4 last:border-0"
+                          className="border-b border-border pb-4 last:border-0"
                         >
                           <div className="flex items-center justify-between mb-3">
                             <div className="flex items-center space-x-2">
                               <Badge
                                 variant="outline"
-                                className="text-cyan-400 border-cyan-400/30"
+                                className="text-primary border-primary/30"
                               >
                                 v{entry.version}
                               </Badge>
-                              <div className="flex items-center text-slate-400 text-sm">
+                              <div className="flex items-center text-muted-foreground text-sm">
                                 <Calendar className="w-3 h-3 mr-1" />
                                 {entry.date}
                               </div>
@@ -144,16 +145,16 @@ export default function Footer({ version = versionInfo.version }: FooterProps) {
                           <div className="space-y-3">
                             {entry.changes.added && entry.changes.added.length > 0 && (
                               <div>
-                                <h4 className="text-sm font-medium text-green-400 mb-2">
+                                <h4 className="text-sm font-medium text-green-600 dark:text-green-400 mb-2">
                                   Added
                                 </h4>
                                 <ul className="space-y-1">
                                   {entry.changes.added.map((change, idx) => (
                                     <li
                                       key={idx}
-                                      className="text-sm text-slate-300 flex items-start"
+                                      className="text-sm text-foreground flex items-start"
                                     >
-                                      <span className="text-green-400 mr-2">•</span>
+                                      <span className="text-green-600 dark:text-green-400 mr-2">•</span>
                                       {change}
                                     </li>
                                   ))}
@@ -163,16 +164,16 @@ export default function Footer({ version = versionInfo.version }: FooterProps) {
 
                             {entry.changes.changed && entry.changes.changed.length > 0 && (
                               <div>
-                                <h4 className="text-sm font-medium text-yellow-400 mb-2">
+                                <h4 className="text-sm font-medium text-yellow-600 dark:text-yellow-400 mb-2">
                                   Changed
                                 </h4>
                                 <ul className="space-y-1">
                                   {entry.changes.changed.map((change, idx) => (
                                     <li
                                       key={idx}
-                                      className="text-sm text-slate-300 flex items-start"
+                                      className="text-sm text-foreground flex items-start"
                                     >
-                                      <span className="text-yellow-400 mr-2">•</span>
+                                      <span className="text-yellow-600 dark:text-yellow-400 mr-2">•</span>
                                       {change}
                                     </li>
                                   ))}
@@ -182,16 +183,16 @@ export default function Footer({ version = versionInfo.version }: FooterProps) {
 
                             {entry.changes.fixed && entry.changes.fixed.length > 0 && (
                               <div>
-                                <h4 className="text-sm font-medium text-blue-400 mb-2">
+                                <h4 className="text-sm font-medium text-blue-600 dark:text-blue-400 mb-2">
                                   Fixed
                                 </h4>
                                 <ul className="space-y-1">
                                   {entry.changes.fixed.map((change, idx) => (
                                     <li
                                       key={idx}
-                                      className="text-sm text-slate-300 flex items-start"
+                                      className="text-sm text-foreground flex items-start"
                                     >
-                                      <span className="text-blue-400 mr-2">•</span>
+                                      <span className="text-blue-600 dark:text-blue-400 mr-2">•</span>
                                       {change}
                                     </li>
                                   ))}

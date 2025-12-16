@@ -6,6 +6,7 @@ import HashPassBrandingWrapper from "@/components/HashPassBrandingWrapper";
 import { HeaderClient } from "@/components/HeaderClient";
 import { HtmlLayout } from "@/components/HtmlLayout";
 import { createMetadata } from "@/lib/metadata";
+import { SidebarProvider } from "@/contexts/SidebarContext";
 
 const jetbrainsMono = {
   variable: "--font-jetbrains-mono",
@@ -29,11 +30,13 @@ export default async function RootLayout(props: any) {
       <StyledComponentsRegistry>
         <Providers>
           <TranslationProvider initialLocale={lang as any}>
-            <div className="fixed top-0 left-0 w-full z-50 pointer-events-none">
-              <HeaderClient />
-            </div>
-            <HashPassBrandingWrapper />
-            {children}
+            <SidebarProvider>
+              <div className="fixed top-0 left-0 w-full z-50 pointer-events-none">
+                <HeaderClient />
+              </div>
+              <HashPassBrandingWrapper />
+              {children}
+            </SidebarProvider>
           </TranslationProvider>
         </Providers>
       </StyledComponentsRegistry>
