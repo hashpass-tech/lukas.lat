@@ -386,6 +386,8 @@ function CurrencyCard({
       className={`relative aspect-[5/4] w-32 cursor-pointer transition-all duration-300 rounded-2xl overflow-hidden ${
         selectedCurrency === currency.code
           ? 'scale-105 shadow-2xl' 
+          : selectedCurrency && selectedCurrency !== currency.code
+          ? 'opacity-50'
           : hoveredSegment === currency.code 
           ? 'scale-105 shadow-xl' 
           : hoveredSegment && hoveredSegment !== currency.code

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import versionInfo from "../../public/version.json";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
@@ -33,123 +33,111 @@ interface FooterProps {
   className?: string;
 }
 
+// Function to parse CHANGELOG.md file
+async function parseChangelog(): Promise<ChangelogEntry[]> {
+  try {
+    const response = await fetch('/CHANGELOG.md');
+    const text = await response.text();
+    
+    const entries: ChangelogEntry[] = [];
+    const lines = text.split('\n');
+    let currentEntry: Partial<ChangelogEntry> = {};
+    let currentSection: 'added' | 'changed' | 'fixed' | null = null;
+    
+    for (let i = 0; i < lines.length; i++) {
+      const line = lines[i].trim();
+      
+      // Match version header: ## [0.2.8] - 2025-12-16
+      const versionMatch = line.match(/^## \[([0-9.]+)\] - (\d{4}-\d{2}-\d{2})$/);
+      if (versionMatch) {
+        // Save previous entry if it exists
+        if (currentEntry.version && currentEntry.date) {
+          entries.push(currentEntry as ChangelogEntry);
+        }
+        
+        // Start new entry
+        currentEntry = {
+          version: versionMatch[1],
+          date: versionMatch[2],
+          changes: {}
+        };
+        currentSection = null;
+        continue;
+      }
+      
+      // Match section headers: ### Added, ### Changed, ### Fixed
+      if (line === '### Added') {
+        currentSection = 'added';
+        if (!currentEntry.changes) currentEntry.changes = {};
+        currentEntry.changes.added = [];
+        continue;
+      }
+      
+      if (line === '### Changed') {
+        currentSection = 'changed';
+        if (!currentEntry.changes) currentEntry.changes = {};
+        currentEntry.changes.changed = [];
+        continue;
+      }
+      
+      if (line === '### Fixed') {
+        currentSection = 'fixed';
+        if (!currentEntry.changes) currentEntry.changes = {};
+        currentEntry.changes.fixed = [];
+        continue;
+      }
+      
+      // Skip empty lines and other headers
+      if (!line || line.startsWith('#') || line === '### Added' || line === '### Changed' || line === '### Fixed') {
+        continue;
+      }
+      
+      // Parse list items (starting with -)
+      if (line.startsWith('-') && currentSection && currentEntry.changes) {
+        const item = line.substring(1).trim();
+        if (item) {
+          const sectionArray = currentEntry.changes[currentSection];
+          if (sectionArray) {
+            sectionArray.push(item);
+          }
+        }
+      }
+    }
+    
+    // Add the last entry
+    if (currentEntry.version && currentEntry.date) {
+      entries.push(currentEntry as ChangelogEntry);
+    }
+    
+    return entries;
+  } catch (error) {
+    console.error('Error parsing changelog:', error);
+    return [];
+  }
+}
+
 export default function Footer({ version = versionInfo.version, className = "" }: FooterProps) {
   const [isChangelogOpen, setIsChangelogOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(0);
+  const [changelogData, setChangelogData] = useState<ChangelogEntry[]>([]);
+  const [loading, setLoading] = useState(false);
 
-  // Parse changelog data - in a real app, this would come from the actual changelog file
-  const changelogData: ChangelogEntry[] = [
-    {
-      version: "0.2.3",
-      date: "2025-12-16",
-      changes: {
-        fixed: [
-          "Fixed Join Movement card being cut by footer on mobile by adding responsive bottom padding",
-          "Added proper bottom spacing to prevent footer overlap with content"
-        ]
-      }
-    },
-    {
-      version: "0.2.2",
-      date: "2025-12-16",
-      changes: {
-        added: [
-          "Added footer to mobile sidebar with proper positioning",
-          "Created global sidebar context for state management",
-          "Implemented proper theme-aware styling for sidebar footer"
-        ],
-        fixed: [
-          "Fixed scroll button visibility when sidebar is open on mobile",
-          "Resolved z-index layering and overlapping issues",
-          "Fixed footer light mode behavior in sidebar",
-          "Updated changelog modal border radius to match UI consistency",
-          "Completely hidden CTA button when sidebar is open on mobile"
-        ]
-      }
-    },
-    {
-      version: "0.2.1",
-      date: "2025-12-16",
-      changes: {
-        added: [
-          "Animated percentage display for currency cards and main donut chart",
-          "Filling animation effect for LUKAS card",
-          "Smooth counting animation with adjustable duration"
-        ],
-        fixed: [
-          "Fixed white corner artifacts on currency cards",
-          "Fixed light mode text colors for better readability",
-          "LUKAS modal mobile responsiveness and scrolling behavior"
-        ]
-      }
-    },
-    {
-      version: "0.2.0",
-      date: "2025-12-15",
-      changes: {
-        added: [
-          "Major mobile sidebar improvements",
-          "Enhanced wallet integration features",
-          "Improved responsive design across components"
-        ]
-      }
-    },
-    {
-      version: "0.1.45",
-      date: "2025-12-11",
-      changes: {
-        fixed: [
-          "Aligned Join Movement and Swap cards to share the same minimum height for a stable layout",
-          "Updated footer version badge to read from generated version.json so it always matches the current release"
-        ]
-      }
-    },
-    {
-      version: "0.1.44", 
-      date: "2025-12-11",
-      changes: {
-        added: [],
-        changed: [],
-        fixed: []
-      }
-    },
-    {
-      version: "0.1.43",
-      date: "2025-12-11", 
-      changes: {
-        added: [
-          "WalletConnect v3 integration using project ID env config and Ethereum provider",
-          "Advanced swap card and Join Movement swap flow improvements when wallet is connected"
-        ],
-        changed: [
-          "Refined wallet header and mobile wallet button UX for clearer connect/disconnect states"
-        ],
-        fixed: [
-          "Wallet connect modal not appearing due to missing WalletConnect provider setup"
-        ]
-      }
-    },
-    {
-      version: "0.1.42",
-      date: "2025-12-10",
-      changes: {
-        added: [
-          "Enhanced donut chart animations",
-          "Improved currency card interactions"
-        ]
-      }
-    },
-    {
-      version: "0.1.41",
-      date: "2025-12-09",
-      changes: {
-        fixed: [
-          "Resolved mobile layout issues",
-          "Fixed navigation responsiveness"
-        ]
-      }
+  // Load changelog data when modal opens
+  useEffect(() => {
+    if (isChangelogOpen && changelogData.length === 0) {
+      setLoading(true);
+      parseChangelog().then((data) => {
+        // Get only the last 3 versions (excluding unreleased)
+        const releasedVersions = data.filter(entry => entry.version !== 'Unreleased');
+        const lastThreeVersions = releasedVersions.slice(0, 3);
+        setChangelogData(lastThreeVersions);
+        setLoading(false);
+      }).catch((error) => {
+        console.error('Error loading changelog:', error);
+        setLoading(false);
+      });
     }
-  ];
+  }, [isChangelogOpen, changelogData.length]);
 
   // Pagination logic - show 3 items per page (1x3 layout)
   const itemsPerPage = 3;
@@ -217,88 +205,100 @@ export default function Footer({ version = versionInfo.version, className = "" }
                   </DialogHeader>
 
                   <div className="flex-1 max-h-[50vh] sm:max-h-[60vh] pr-4 overflow-y-auto">
-                    <div className="space-y-4">
-                      {currentItems.map((entry) => (
-                        <div
-                          key={entry.version}
-                          className="bg-card/50 rounded-xl p-4 border border-border/50 hover:border-border transition-colors"
-                        >
-                          <div className="flex items-center justify-between mb-3">
-                            <div className="flex items-center space-x-2">
-                              <Badge
-                                variant="outline"
-                                className="text-primary border-primary/30 text-xs"
-                              >
-                                v{entry.version}
-                              </Badge>
-                              <div className="flex items-center text-muted-foreground text-xs">
-                                <Calendar className="w-3 h-3 mr-1" />
-                                {entry.date}
+                    {loading ? (
+                      <div className="flex items-center justify-center h-40">
+                        <div className="text-muted-foreground">Loading changelog...</div>
+                      </div>
+                    ) : (
+                      <div className="space-y-4">
+                        {currentItems.length === 0 ? (
+                          <div className="flex items-center justify-center h-40">
+                            <div className="text-muted-foreground">No changelog entries available</div>
+                          </div>
+                        ) : (
+                          currentItems.map((entry) => (
+                            <div
+                              key={entry.version}
+                              className="bg-card/50 rounded-xl p-4 border border-border/50 hover:border-border transition-colors"
+                            >
+                              <div className="flex items-center justify-between mb-3">
+                                <div className="flex items-center space-x-2">
+                                  <Badge
+                                    variant="outline"
+                                    className="text-primary border-primary/30 text-xs"
+                                  >
+                                    v{entry.version}
+                                  </Badge>
+                                  <div className="flex items-center text-muted-foreground text-xs">
+                                    <Calendar className="w-3 h-3 mr-1" />
+                                    {entry.date}
+                                  </div>
+                                </div>
+                              </div>
+
+                              <div className="space-y-2 max-h-40 overflow-y-auto">
+                                {entry.changes.added && entry.changes.added.length > 0 && (
+                                  <div>
+                                    <h4 className="text-sm font-medium text-green-600 dark:text-green-400 mb-2">
+                                      Added
+                                    </h4>
+                                    <ul className="space-y-1">
+                                      {entry.changes.added.map((change, idx) => (
+                                        <li
+                                          key={idx}
+                                          className="text-sm text-foreground flex items-start"
+                                        >
+                                          <span className="text-green-600 dark:text-green-400 mr-2">•</span>
+                                          {change}
+                                        </li>
+                                      ))}
+                                    </ul>
+                                  </div>
+                                )}
+
+                                {entry.changes.changed && entry.changes.changed.length > 0 && (
+                                  <div>
+                                    <h4 className="text-sm font-medium text-yellow-600 dark:text-yellow-400 mb-2">
+                                      Changed
+                                    </h4>
+                                    <ul className="space-y-1">
+                                      {entry.changes.changed.map((change, idx) => (
+                                        <li
+                                          key={idx}
+                                          className="text-sm text-foreground flex items-start"
+                                        >
+                                          <span className="text-yellow-600 dark:text-yellow-400 mr-2">•</span>
+                                          {change}
+                                        </li>
+                                      ))}
+                                    </ul>
+                                  </div>
+                                )}
+
+                                {entry.changes.fixed && entry.changes.fixed.length > 0 && (
+                                  <div>
+                                    <h4 className="text-sm font-medium text-blue-600 dark:text-blue-400 mb-2">
+                                      Fixed
+                                    </h4>
+                                    <ul className="space-y-1">
+                                      {entry.changes.fixed.map((change, idx) => (
+                                        <li
+                                          key={idx}
+                                          className="text-sm text-foreground flex items-start"
+                                        >
+                                          <span className="text-blue-600 dark:text-blue-400 mr-2">•</span>
+                                          {change}
+                                        </li>
+                                      ))}
+                                    </ul>
+                                  </div>
+                                )}
                               </div>
                             </div>
-                          </div>
-
-                          <div className="space-y-2 max-h-40 overflow-y-auto">
-                            {entry.changes.added && entry.changes.added.length > 0 && (
-                              <div>
-                                <h4 className="text-sm font-medium text-green-600 dark:text-green-400 mb-2">
-                                  Added
-                                </h4>
-                                <ul className="space-y-1">
-                                  {entry.changes.added.map((change, idx) => (
-                                    <li
-                                      key={idx}
-                                      className="text-sm text-foreground flex items-start"
-                                    >
-                                      <span className="text-green-600 dark:text-green-400 mr-2">•</span>
-                                      {change}
-                                    </li>
-                                  ))}
-                                </ul>
-                              </div>
-                            )}
-
-                            {entry.changes.changed && entry.changes.changed.length > 0 && (
-                              <div>
-                                <h4 className="text-sm font-medium text-yellow-600 dark:text-yellow-400 mb-2">
-                                  Changed
-                                </h4>
-                                <ul className="space-y-1">
-                                  {entry.changes.changed.map((change, idx) => (
-                                    <li
-                                      key={idx}
-                                      className="text-sm text-foreground flex items-start"
-                                    >
-                                      <span className="text-yellow-600 dark:text-yellow-400 mr-2">•</span>
-                                      {change}
-                                    </li>
-                                  ))}
-                                </ul>
-                              </div>
-                            )}
-
-                            {entry.changes.fixed && entry.changes.fixed.length > 0 && (
-                              <div>
-                                <h4 className="text-sm font-medium text-blue-600 dark:text-blue-400 mb-2">
-                                  Fixed
-                                </h4>
-                                <ul className="space-y-1">
-                                  {entry.changes.fixed.map((change, idx) => (
-                                    <li
-                                      key={idx}
-                                      className="text-sm text-foreground flex items-start"
-                                    >
-                                      <span className="text-blue-600 dark:text-blue-400 mr-2">•</span>
-                                      {change}
-                                    </li>
-                                  ))}
-                                </ul>
-                              </div>
-                            )}
-                          </div>
-                        </div>
-                      ))}
-                    </div>
+                          ))
+                        )}
+                      </div>
+                    )}
                   </div>
                 
                 {/* Pagination in DialogFooter */}
