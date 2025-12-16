@@ -13,6 +13,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+## [0.2.15] - 2025-12-16
+
+### Added
+
+- Add wallet session persistence (63f485a)
+
+### Changed
+
+- Clean up duplicate changelog entries (886894a)
+
+### Fixed
+
+- Resolve build errors for static export (e065754)
+
+
+
 ## [0.2.14] - 2025-12-16
 
 ### Added
