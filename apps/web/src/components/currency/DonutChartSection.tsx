@@ -129,7 +129,7 @@ export function DonutChartSection({
         </div>
         
         {/* Card Content */}
-        <div className="p-10 rounded-3xl bg-card/90 backdrop-blur-sm border border-border">
+        <div className="p-10 rounded-3xl bg-card/90 border border-border">
           <h2 className="text-4xl font-bold mb-8 text-foreground flex items-center justify-center gap-3">
             <span className="text-5xl">⚖️</span> 
             <Trans i18nKey="Currency Weights" fallback="Currency Weights" />
@@ -268,7 +268,9 @@ function CurrencyLegend({
             <div className="flex items-center justify-between">
               <span className="text-lg">🌟</span>
               <div className="flex items-center gap-1">
-                <span className="text-xs font-black text-foreground">{lukasDisplayWeight}%</span>
+                <span className="text-xs opacity-80 text-foreground">
+                <Trans i18nKey="all" fallback="All" />
+              </span>
                 <button
                   onClick={(e) => {
                     e.stopPropagation();
@@ -280,7 +282,7 @@ function CurrencyLegend({
                       color: 'from-emerald-400/80 to-green-700/80'
                     });
                   }}
-                  className="w-5 h-5 rounded-full bg-card/10 backdrop-blur-sm flex items-center justify-center hover:bg-card/20 transition-all duration-200 group/info border border-border"
+                  className="w-5 h-5 rounded-full bg-card/10 flex items-center justify-center hover:bg-card/20 transition-all duration-200 group/info border border-border"
                 >
                   <svg className="w-3 h-3 text-foreground/60 group-hover/info:text-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -290,9 +292,7 @@ function CurrencyLegend({
             </div>
             <div className="text-center">
               <div className="text-sm font-bold text-foreground">$LUKAS</div>
-              <div className="text-xs opacity-80 text-foreground">
-                <Trans i18nKey="all" fallback="All" />
-              </div>
+              <div className="text-xs font-black text-foreground">{lukasDisplayWeight}%</div>
             </div>
           </div>
         </div>
@@ -426,7 +426,7 @@ function CurrencyCard({
                 e.stopPropagation();
                 onActiveCurrency(currency);
               }}
-              className="w-5 h-5 rounded-full bg-card/10 backdrop-blur-sm flex items-center justify-center hover:bg-card/20 transition-all duration-200 group/info border border-border"
+              className="w-5 h-5 rounded-full bg-card/10 flex items-center justify-center hover:bg-card/20 transition-all duration-200 group/info border border-border"
             >
               <svg className="w-3 h-3 text-foreground/60 group-hover/info:text-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12 a9 9 0 11-18 0 9 9 0 0118 0z" />

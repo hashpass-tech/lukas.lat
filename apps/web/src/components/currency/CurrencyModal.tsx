@@ -43,7 +43,7 @@ export function CurrencyModal({ currency, onClose, currencies }: CurrencyModalPr
           onClick={onClose}
         >
           <motion.div
-            className="bg-white/95 dark:bg-slate-900/95 backdrop-blur-2xl rounded-3xl p-8 max-w-md w-full border border-slate-300/60 dark:border-slate-700/40 shadow-2xl"
+            className="bg-card rounded-3xl p-8 max-w-md w-full border border shadow-2xl"
             initial={{ scale: 0.9, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0.9, opacity: 0 }}
@@ -82,7 +82,7 @@ function LukasTokenModal({
         onClick={onClose}
       >
         <motion.div
-          className="bg-white/95 dark:bg-slate-900/95 backdrop-blur-2xl rounded-3xl p-6 sm:p-8 max-w-2xl w-full max-h-[90vh] border border-slate-300/60 dark:border-slate-700/40 shadow-2xl flex flex-col"
+          className="bg-card rounded-3xl p-6 sm:p-8 max-w-2xl w-full max-h-[90vh] border border shadow-2xl flex flex-col"
           initial={{ scale: 0.9, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           exit={{ scale: 0.9, opacity: 0 }}
@@ -101,9 +101,9 @@ function LukasTokenModal({
           />
 
           <div className="flex-1 overflow-y-auto">
-            <div className="space-y-6 text-slate-700 dark:text-slate-300 pr-2">
+            <div className="space-y-6 text-card-foreground pr-2">
             <div>
-              <h4 className="text-lg font-semibold mb-3 text-slate-900 dark:text-slate-50">
+              <h4 className="text-lg font-semibold mb-3 text-foreground">
                 <Trans i18nKey="lukas.what_is_title" fallback="What is LUKAS?" />
               </h4>
               <p className="leading-relaxed">
@@ -115,7 +115,7 @@ function LukasTokenModal({
             </div>
 
             <div>
-              <h4 className="text-lg font-semibold mb-3 text-slate-900 dark:text-slate-50">
+              <h4 className="text-lg font-semibold mb-3 text-foreground">
                 <Trans i18nKey="lukas.key_features" fallback="Key Features" />
               </h4>
               <ul className="space-y-2 list-disc list-inside">
@@ -139,16 +139,16 @@ function LukasTokenModal({
             </div>
 
             <div>
-              <h4 className="text-lg font-semibold mb-3 text-slate-900 dark:text-slate-50">
+              <h4 className="text-lg font-semibold mb-3 text-foreground">
                 <Trans i18nKey="lukas.currency_basket" fallback="Currency Basket" />
               </h4>
               <div className="grid grid-cols-2 gap-3">
                 {currencies.map((c) => (
-                  <div key={c.code} className="flex items-center gap-2 p-3 bg-slate-50 dark:bg-slate-800 rounded-lg">
+                  <div key={c.code} className="flex items-center gap-2 p-3 bg-muted rounded-lg">
                     <span className="text-lg">{c.country}</span>
                     <div className="flex-1">
-                      <div className="font-semibold text-sm">{c.code}</div>
-                      <div className="text-xs text-slate-500 dark:text-slate-400">{c.weight}%</div>
+                      <div className="font-semibold text-sm text-card-foreground">{c.code}</div>
+                      <div className="text-xs text-muted-foreground">{c.weight}%</div>
                     </div>
                   </div>
                 ))}
@@ -177,21 +177,21 @@ function ModalHeader({ currency, onClose, showIcon }: ModalHeaderProps) {
         <div className={`w-16 h-16 ${
           currency.code === 'LUKAS' 
             ? 'bg-gradient-to-br from-emerald-400 to-green-600' 
-            : 'bg-gradient-to-br from-slate-100 to-slate-200 dark:from-slate-800 dark:to-slate-700'
+            : 'bg-gradient-to-br from-muted to-muted-foreground/20'
         } rounded-2xl flex items-center justify-center shadow-lg`}>
           <span className="text-3xl">
             {currency.code === 'LUKAS' ? '🌟' : currency.country}
           </span>
         </div>
         <div>
-          <h3 className="text-2xl font-bold text-slate-900 dark:text-slate-50">
+          <h3 className="text-2xl font-bold text-foreground">
             {currency.code === 'LUKAS' ? (
               <Trans i18nKey="lukas.token.title" fallback="LUKAS Token" />
             ) : (
               currency.code
             )}
           </h3>
-          <p className="text-slate-600 dark:text-slate-400">
+          <p className="text-muted-foreground">
             {currency.code === 'LUKAS' ? (
               <Trans i18nKey="lukas.token.subtitle" fallback="Regional Stable-Basket Meme Coin" />
             ) : (
@@ -202,9 +202,9 @@ function ModalHeader({ currency, onClose, showIcon }: ModalHeaderProps) {
       </div>
       <button
         onClick={onClose}
-        className="w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
+        className="w-10 h-10 rounded-full bg-muted flex items-center justify-center hover:bg-muted-foreground/10 transition-colors"
       >
-        <svg className="w-5 h-5 text-slate-600 dark:text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg className="w-5 h-5 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
         </svg>
       </button>
@@ -239,15 +239,15 @@ function ModalBody({ currency, imageUrl }: ModalBodyProps) {
       </div>
 
       <div className="text-center">
-        <div className="text-3xl font-bold text-slate-900 dark:text-slate-50 mb-2">
+        <div className="text-3xl font-bold text-foreground mb-2">
           {currency.weight}%
         </div>
-        <p className="text-slate-600 dark:text-slate-400">
+        <p className="text-muted-foreground">
           <Trans i18nKey="currency.weight" fallback="Currency Weight" />
         </p>
       </div>
 
-      <div className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
+      <div className="text-sm text-muted-foreground leading-relaxed">
         <Trans
           i18nKey={`currency.${currency.code.toLowerCase()}.description`}
           fallback=""
