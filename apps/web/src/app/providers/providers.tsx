@@ -3,7 +3,7 @@
 import React from "react";
 import { ThemeProvider } from "next-themes";
 import { WalletProvider } from "@/app/providers/wallet-provider";
-import { AlchemyProvider } from "@/app/providers/alchemy-provider";
+// import { AlchemyProvider } from "@/app/providers/alchemy-provider"; // Temporarily disabled for static export
 
 export function Providers({ children }: { children: any }) {
     return (
@@ -14,11 +14,11 @@ export function Providers({ children }: { children: any }) {
             storageKey="theme"
             disableTransitionOnChange
         >
-            <AlchemyProvider>
+            {/* <AlchemyProvider> */}
                 <WalletProvider>
                     {children}
                 </WalletProvider>
-            </AlchemyProvider>
+            {/* </AlchemyProvider> */}
         </ThemeProvider>
     );
 }

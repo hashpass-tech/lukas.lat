@@ -299,6 +299,7 @@ export function WalletProvider({ children }: { children: ReactNode }) {
             isConnecting: false,
             connectingWalletId: null,
             error: null,
+            walletType: 'traditional',
           });
         }
       } catch (error) {

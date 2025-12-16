@@ -1,7 +1,8 @@
 "use client";
 
 import React, { useEffect, useRef } from 'react';
-import { useAccount } from "@account-kit/react";
+import { useSmartAccountClient } from "@account-kit/react";
+import { alchemyConfig } from "@/app/config";
 
 interface AlchemyLoginModalProps {
   isOpen: boolean;
@@ -23,7 +24,8 @@ export function AlchemyLoginModal({
   onSuccess,
   onError 
 }: AlchemyLoginModalProps) {
-  const { address } = useAccount();
+  // TODO: Fix AccountKit integration - temporarily using placeholder
+  const address = null; // useSmartAccountClient should be properly integrated
   const containerRef = useRef<HTMLDivElement>(null);
 
   // Handle Alchemy account connection
