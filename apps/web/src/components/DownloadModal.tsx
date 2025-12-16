@@ -107,7 +107,7 @@ export const DownloadModal = ({ isOpen, onClose }: DownloadModalProps) => {
           
           {/* Modal */}
           <motion.div
-            className="fixed left-4 right-4 top-1/2 -translate-y-1/2 z-50 max-w-md max-h-[calc(100vh-4rem)] overflow-y-auto mx-auto"
+            className="fixed left-4 right-4 top-4 sm:top-1/2 sm:-translate-y-1/2 z-50 max-w-md max-h-[calc(100vh-2rem)] sm:max-h-[calc(100vh-4rem)] overflow-y-auto mx-auto"
             initial={{ opacity: 0, scale: 0.9, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.9, y: 20 }}
@@ -128,7 +128,7 @@ export const DownloadModal = ({ isOpen, onClose }: DownloadModalProps) => {
               </div>
 
               {/* Content */}
-              <div className="p-3 sm:p-4 space-y-3 sm:space-y-4">
+              <div className="p-3 sm:p-4 space-y-3 sm:space-y-4 max-h-[60vh] sm:max-h-none overflow-y-auto">
                 {/* Documents Download Options */}
                 <div className="space-y-2">
                   <p className="text-sm text-muted-foreground font-medium">
@@ -137,10 +137,10 @@ export const DownloadModal = ({ isOpen, onClose }: DownloadModalProps) => {
                   <div className="grid grid-cols-2 gap-2 sm:gap-3">
                     <button
                       onClick={() => handleDownload('pdf')}
-                      className="flex flex-col items-center gap-2 p-3 sm:p-4 rounded-xl border border-border bg-accent/30 hover:bg-accent/60 transition-colors group"
+                      className="flex flex-col items-center gap-2 p-2 sm:p-3 rounded-xl border border-border bg-accent/30 hover:bg-accent/60 transition-colors group"
                     >
-                      <div className="p-2 sm:p-3 rounded-full bg-red-500/10 group-hover:bg-red-500/20 transition-colors">
-                        <FileText className="w-5 h-5 sm:w-6 sm:h-6 text-red-500" />
+                      <div className="p-1.5 sm:p-2 rounded-full bg-red-500/10 group-hover:bg-red-500/20 transition-colors">
+                        <FileText className="w-4 h-4 sm:w-5 sm:h-5 text-red-500" />
                       </div>
                       <span className="text-xs sm:text-sm font-medium text-center">
                         <Trans i18nKey="download.whitepaper" fallback="Whitepaper" />
@@ -150,10 +150,10 @@ export const DownloadModal = ({ isOpen, onClose }: DownloadModalProps) => {
                     
                     <button
                       onClick={() => handleDownload('txt')}
-                      className="flex flex-col items-center gap-2 p-3 sm:p-4 rounded-xl border border-border bg-accent/30 hover:bg-accent/60 transition-colors group"
+                      className="flex flex-col items-center gap-2 p-2 sm:p-3 rounded-xl border border-border bg-accent/30 hover:bg-accent/60 transition-colors group"
                     >
-                      <div className="p-2 sm:p-3 rounded-full bg-emerald-500/10 group-hover:bg-emerald-500/20 transition-colors">
-                        <File className="w-5 h-5 sm:w-6 sm:h-6 text-emerald-500" />
+                      <div className="p-1.5 sm:p-2 rounded-full bg-emerald-500/10 group-hover:bg-emerald-500/20 transition-colors">
+                        <File className="w-4 h-4 sm:w-5 sm:h-5 text-emerald-500" />
                       </div>
                       <span className="text-xs sm:text-sm font-medium text-center">
                         <Trans i18nKey="download.manifesto" fallback="Manifesto" />
@@ -170,13 +170,13 @@ export const DownloadModal = ({ isOpen, onClose }: DownloadModalProps) => {
                   </p>
                   <button
                     onClick={() => handleDownload('image')}
-                    className="w-full flex items-center gap-3 p-3 sm:p-4 rounded-xl border border-border bg-accent/30 hover:bg-accent/60 transition-colors group"
+                    className="w-full flex items-center gap-2 sm:gap-3 p-2 sm:p-3 rounded-xl border border-border bg-accent/30 hover:bg-accent/60 transition-colors group"
                   >
-                    <div className="p-2 sm:p-3 rounded-full bg-purple-500/10 group-hover:bg-purple-500/20 transition-colors">
-                      <Image className="w-5 h-5 sm:w-6 sm:h-6 text-purple-500" />
+                    <div className="p-1.5 sm:p-2 rounded-full bg-purple-500/10 group-hover:bg-purple-500/20 transition-colors">
+                      <Image className="w-4 h-4 sm:w-5 sm:h-5 text-purple-500" />
                     </div>
                     <div className="flex-1 text-left">
-                      <span className="text-sm font-medium block">
+                      <span className="text-xs sm:text-sm font-medium block">
                         <Trans i18nKey="download.infographic_title" fallback="LUKAS Infographic" />
                       </span>
                       <span className="text-xs text-muted-foreground">

@@ -17,6 +17,41 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Created reusable useAudioPlayer hook for audio state management
 - Created reusable AudioPlayer component for consistent UI
 - Added sound indicators and visual feedback for audio playback status
+- Improved mobile responsiveness of download modal
+- Optimized modal positioning for mobile devices (top-aligned instead of centered)
+- Enhanced mobile layout with compact spacing and sizing
+- Added scrollable content area for mobile to prevent overflow
+- Improved audio player mobile UI with smaller icons and hidden text labels
+
+### Fixed
+- Added opacity/mute effect to non-selected currency cards when one is selected
+- Made changelog modal dynamically show last 3 versions instead of hardcoded data
+- Fixed TypeScript error in changelog parsing function for better type safety
+- Cleaned up duplicate version entries and empty sections in CHANGELOG.md
+
+## [0.2.11] - 2025-12-16
+### Added
+
+### Changed
+- Improved mobile responsiveness of download modal
+- Optimized modal positioning for mobile devices (top-aligned instead of centered)
+- Enhanced mobile layout with compact spacing and sizing
+- Added scrollable content area for mobile to prevent overflow
+- Improved audio player mobile UI with smaller icons and hidden text labels
+
+### Fixed
+
+## [0.2.10] - 2025-12-16
+### Added
+
+### Changed
+- Enhanced download modal with audio and image format options
+- Added language-specific infographic downloads (EN, ES, PT)
+- Added audio content playback with play/pause controls
+- Implemented proper audio player with single track playback
+- Created reusable useAudioPlayer hook for audio state management
+- Created reusable AudioPlayer component for consistent UI
+- Added sound indicators and visual feedback for audio playback status
 
 ### Fixed
 - Added opacity/mute effect to non-selected currency cards when one is selected
