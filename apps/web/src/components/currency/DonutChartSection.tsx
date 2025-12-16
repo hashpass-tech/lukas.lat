@@ -34,6 +34,38 @@ export function DonutChartSection({
   onActiveCurrency,
 }: DonutChartSectionProps) {
   const { locale } = useTranslation(); // Ensure re-render on language change
+  const [displayPercentage, setDisplayPercentage] = useState(100);
+
+  // Animate center percentage when selection changes
+  useEffect(() => {
+    const targetPercentage = selectedCurrency 
+      ? currencies.find(c => c.code === selectedCurrency)?.weight || 0
+      : 100;
+    
+    // Reset to 0 and animate to target
+    setDisplayPercentage(0);
+    
+    const timer = setTimeout(() => {
+      const duration = 1200; // Slower frames
+      const steps = 60; // More steps for smoother progression
+      const increment = targetPercentage / steps;
+      let currentStep = 0;
+      
+      const countInterval = setInterval(() => {
+        currentStep++;
+        const newPercentage = Math.min(Math.round(increment * currentStep), targetPercentage);
+        setDisplayPercentage(newPercentage);
+        
+        if (currentStep >= steps) {
+          clearInterval(countInterval);
+        }
+      }, duration / steps);
+      
+      return () => clearInterval(countInterval);
+    }, 100);
+    
+    return () => clearTimeout(timer);
+  }, [selectedCurrency, animationKey, currencies]);
 
   // Create donut chart data - either all currencies or just selected one
   const donutData: DonutChartSegment[] = selectedCurrency 
@@ -67,7 +99,7 @@ export function DonutChartSection({
   const centerContent = (
     <div className="text-center">
       <div className="text-3xl font-black text-foreground drop-shadow-lg">
-        {selectedCurrency ? `${currencies.find(c => c.code === selectedCurrency)?.weight}%` : '100%'}
+        {displayPercentage}%
       </div>
       <div className="text-sm uppercase tracking-[0.22em] font-semibold text-foreground drop-shadow-md">
         {selectedCurrency ? selectedCurrency : <Trans i18nKey="Currency Weights" fallback="Currency Weights" />}
@@ -142,31 +174,101 @@ function CurrencyLegend({
   onCurrencySelect: (currency: string | null) => void;
   onActiveCurrency: (currency: Currency) => void;
 }) {
+  const [lukasFillHeight, setLukasFillHeight] = useState(100);
+  const [lukasDisplayWeight, setLukasDisplayWeight] = useState(100);
+  const [lukasAnimationKey, setLukasAnimationKey] = useState(0);
+
+  // Initial fill animation for LUKAS card
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setLukasFillHeight(100);
+      // Animate weight counting from 0 to 100
+      const duration = 1200; // Slower frames
+      const steps = 60; // More steps for smoother progression
+      const increment = 100 / steps;
+      let currentStep = 0;
+      
+      const countInterval = setInterval(() => {
+        currentStep++;
+        const newWeight = Math.min(Math.round(increment * currentStep), 100);
+        setLukasDisplayWeight(newWeight);
+        
+        if (currentStep >= steps) {
+          clearInterval(countInterval);
+        }
+      }, duration / steps);
+      
+      return () => clearInterval(countInterval);
+    }, 100);
+    return () => clearTimeout(timer);
+  }, []);
+
+  // Restart LUKAS animation when clicked
+  const handleLukasClick = () => {
+    setLukasFillHeight(0);
+    setLukasDisplayWeight(0);
+    setLukasAnimationKey(prev => prev + 1);
+    setTimeout(() => {
+      setLukasFillHeight(100);
+      // Animate weight counting from 0 to 100
+      const duration = 1200; // Slower frames
+      const steps = 60; // More steps for smoother progression
+      const increment = 100 / steps;
+      let currentStep = 0;
+      
+      const countInterval = setInterval(() => {
+        currentStep++;
+        const newWeight = Math.min(Math.round(increment * currentStep), 100);
+        setLukasDisplayWeight(newWeight);
+        
+        if (currentStep >= steps) {
+          clearInterval(countInterval);
+        }
+      }, duration / steps);
+      
+      onCurrencySelect(null);
+    }, 100);
+  };
   return (
     <div className="flex flex-wrap justify-center gap-6 max-w-3xl mx-auto mt-8">
       {/* LUKAS Reset Card */}
       <div 
-        className={`relative aspect-[5/4] w-32 cursor-pointer transition-all duration-300 ${
+        className={`relative aspect-[5/4] w-32 cursor-pointer transition-all duration-300 rounded-2xl ${
           !selectedCurrency
             ? 'scale-105 shadow-2xl' 
             : 'hover:scale-105 hover:shadow-xl'
         }`}
-        onClick={() => onCurrencySelect(null)}
+        onClick={handleLukasClick}
       >
-        <div className={`relative aspect-[5/4] rounded-2xl overflow-hidden border border-border ${
-          !selectedCurrency
-            ? 'bg-gradient-to-br from-emerald-500/90 to-green-600/90' 
-            : 'bg-card/90'
-        }`}>
-          {/* Progress Indicator */}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
+        <div className="relative aspect-[5/4] bg-card rounded-2xl overflow-hidden group border border-border">
+          {/* Progress Fill - LUKAS Card */}
+          <div 
+            key={lukasAnimationKey}
+            className="absolute bottom-0 left-0 right-0 transition-all duration-1500 ease-out overflow-hidden"
+            style={{ 
+              height: `${lukasFillHeight}%`,
+              background: 'linear-gradient(to top, #10b981, #34d399)'
+            }}
+          >
+            {/* Fluid Loading Animation */}
+            <div className="absolute inset-0 opacity-30">
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent animate-pulse" />
+              <div 
+                className="absolute inset-0 bg-gradient-to-t from-transparent via-white/10 to-transparent"
+                style={{
+                  animation: 'fluid 3s ease-in-out infinite',
+                  background: 'linear-gradient(45deg, transparent 30%, rgba(255,255,255,0.1) 50%, transparent 70%)'
+                }}
+              />
+            </div>
+          </div>
           
           {/* Content */}
-          <div className="relative h-full p-3 flex flex-col justify-between text-white">
+          <div className="relative h-full p-3 flex flex-col justify-between">
             <div className="flex items-center justify-between">
               <span className="text-lg">🌟</span>
               <div className="flex items-center gap-1">
-                <span className="text-xs font-black">100%</span>
+                <span className="text-xs font-black text-foreground">{lukasDisplayWeight}%</span>
                 <button
                   onClick={(e) => {
                     e.stopPropagation();
@@ -178,16 +280,16 @@ function CurrencyLegend({
                       color: 'from-emerald-400/80 to-green-700/80'
                     });
                   }}
-                  className="w-5 h-5 rounded-full bg-white/10 backdrop-blur-sm flex items-center justify-center hover:bg-white/20 transition-all duration-200 group/info"
+                  className="w-5 h-5 rounded-full bg-card/10 backdrop-blur-sm flex items-center justify-center hover:bg-card/20 transition-all duration-200 group/info border border-border"
                 >
-                  <svg className="w-3 h-3 text-white/80 group-hover/info:text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-3 h-3 text-foreground/60 group-hover/info:text-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
                 </button>
               </div>
             </div>
             <div className="text-center">
-              <div className="text-sm font-bold text-foreground">LUKAS</div>
+              <div className="text-sm font-bold text-foreground">$LUKAS</div>
               <div className="text-xs opacity-80 text-foreground">
                 <Trans i18nKey="all" fallback="All" />
               </div>
@@ -224,9 +326,64 @@ function CurrencyCard({
   onCurrencySelect: (currency: string | null) => void;
   onActiveCurrency: (currency: Currency) => void;
 }) {
+  const [fillHeight, setFillHeight] = useState(0);
+  const [animationKey, setAnimationKey] = useState(0);
+  const [displayWeight, setDisplayWeight] = useState(0);
+
+  // Initial fill animation
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setFillHeight(currency.weight);
+      // Animate weight counting from 0 to target weight
+      const duration = 1200; // Slower frames
+      const steps = 60; // More steps for smoother progression
+      const increment = currency.weight / steps;
+      let currentStep = 0;
+      
+      const countInterval = setInterval(() => {
+        currentStep++;
+        const newWeight = Math.min(Math.round(increment * currentStep), currency.weight);
+        setDisplayWeight(newWeight);
+        
+        if (currentStep >= steps) {
+          clearInterval(countInterval);
+        }
+      }, duration / steps);
+      
+      return () => clearInterval(countInterval);
+    }, 100);
+    return () => clearTimeout(timer);
+  }, [currency.weight]);
+
+  // Restart animation when clicked
+  const handleClick = () => {
+    setFillHeight(0);
+    setDisplayWeight(0);
+    setAnimationKey(prev => prev + 1);
+    setTimeout(() => {
+      setFillHeight(currency.weight);
+      // Animate weight counting from 0 to target weight
+      const duration = 1200; // Slower frames
+      const steps = 60; // More steps for smoother progression
+      const increment = currency.weight / steps;
+      let currentStep = 0;
+      
+      const countInterval = setInterval(() => {
+        currentStep++;
+        const newWeight = Math.min(Math.round(increment * currentStep), currency.weight);
+        setDisplayWeight(newWeight);
+        
+        if (currentStep >= steps) {
+          clearInterval(countInterval);
+        }
+      }, duration / steps);
+      
+      onCurrencySelect(selectedCurrency === currency.code ? null : currency.code);
+    }, 100);
+  };
   return (
     <div 
-      className={`relative aspect-[5/4] w-32 cursor-pointer transition-all duration-300 ${
+      className={`relative aspect-[5/4] w-32 cursor-pointer transition-all duration-300 rounded-2xl overflow-hidden ${
         selectedCurrency === currency.code
           ? 'scale-105 shadow-2xl' 
           : hoveredSegment === currency.code 
@@ -235,18 +392,15 @@ function CurrencyCard({
           ? 'opacity-50'
           : 'hover:scale-105 hover:shadow-xl'
       }`}
-      onClick={() => onCurrencySelect(selectedCurrency === currency.code ? null : currency.code)}
+      onClick={handleClick}
     >
-      <div className="relative aspect-[5/4] bg-card/90 rounded-2xl overflow-hidden group border border-border">
-        {/* Progress Bar Background */}
-        <div className="absolute inset-0 bg-gradient-to-br opacity-0 group-hover:opacity-100 transition-opacity duration-300" 
-             style={{ backgroundImage: `linear-gradient(135deg, ${currency.color.split(' ')[0].replace('from-', '')}30, ${currency.color.split(' ')[1].replace('to-', '')}30)` }} />
-        
+      <div className="relative aspect-[5/4] bg-card rounded-2xl overflow-hidden group border border-border hover:scale-105 hover:shadow-xl selected:scale-105 selected:shadow-2xl">
         {/* Progress Fill - Fixed with Fluid Animation */}
         <div 
-          className="absolute bottom-0 left-0 right-0 transition-all duration-1000 ease-out overflow-hidden"
+          key={animationKey}
+          className="absolute bottom-0 left-0 right-0 transition-all duration-1500 ease-out overflow-hidden"
           style={{ 
-            height: `${currency.weight}%`,
+            height: `${fillHeight}%`,
             background: `linear-gradient(to top, ${currency.color.includes('emerald') ? '#10b981' : currency.color.includes('rose') ? '#f43f5e' : currency.color.includes('amber') ? '#f59e0b' : currency.color.includes('sky') ? '#0ea5e9' : currency.color.includes('cyan') ? '#06b6d4' : '#64748b'}, ${currency.color.includes('emerald') ? '#34d399' : currency.color.includes('rose') ? '#fb7185' : currency.color.includes('amber') ? '#fbbf24' : currency.color.includes('sky') ? '#38bdf8' : currency.color.includes('cyan') ? '#22d3ee' : '#94a3b8'})`
           }}
         >
@@ -272,7 +426,7 @@ function CurrencyCard({
                 e.stopPropagation();
                 onActiveCurrency(currency);
               }}
-              className="w-5 h-5 rounded-full bg-white/10 backdrop-blur-sm flex items-center justify-center hover:bg-white/20 transition-all duration-200 group/info"
+              className="w-5 h-5 rounded-full bg-card/10 backdrop-blur-sm flex items-center justify-center hover:bg-card/20 transition-all duration-200 group/info border border-border"
             >
               <svg className="w-3 h-3 text-foreground/60 group-hover/info:text-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12 a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -280,8 +434,8 @@ function CurrencyCard({
             </button>
           </div>
           <div className="text-center">
-            <div className="text-sm font-bold">{currency.code}</div>
-            <div className="text-xs opacity-80">{currency.weight}%</div>
+            <div className="text-sm font-bold">${currency.code}</div>
+            <div className="text-xs opacity-80">{displayWeight}%</div>
           </div>
         </div>
       </div>

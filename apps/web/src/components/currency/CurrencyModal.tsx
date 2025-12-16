@@ -248,7 +248,7 @@ function ModalBody({ currency, imageUrl }: ModalBodyProps) {
       <div className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
         <Trans
           i18nKey={`currency.${currency.code.toLowerCase()}.description`}
-          fallback={`${currency.code} represents ${(currency.weight / 100).toFixed(2)} of the LUKAS stable basket, providing stability and liquidity for the Latin American market.`}
+          fallback=""
         />
       </div>
     </div>
