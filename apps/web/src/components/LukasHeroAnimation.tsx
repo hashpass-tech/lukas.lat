@@ -364,6 +364,7 @@ export const LukasHeroAnimation = () => {
                 )}
             </div>
 
+            {!videoModalOpen && (
             <button
                 className="explore-btn"
                 style={{ animationDelay: '2.2s' }}
@@ -384,6 +385,7 @@ export const LukasHeroAnimation = () => {
                     </svg>
                 </span>
             </button>
+            )}
 
             {/* Video Modal */}
             <Dialog open={videoModalOpen} onOpenChange={setVideoModalOpen}>

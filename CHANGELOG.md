@@ -29,6 +29,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Enhanced mobile layout with compact spacing and sizing
 - Added scrollable content area for mobile to prevent overflow
 - Improved audio player mobile UI with smaller icons and hidden text labels
+- Hidden scroll to explore button when video modal is open or playing
 
 ### Fixed
 - Added opacity/mute effect to non-selected currency cards when one is selected
