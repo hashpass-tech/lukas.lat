@@ -35,18 +35,46 @@ export function useWallet() {
   return context;
 }
 
+// Load wallet state from localStorage
+const loadWalletState = (): WalletState | null => {
+  if (typeof window !== 'undefined') {
+    const saved = localStorage.getItem('walletState');
+    if (saved) {
+      try {
+        return JSON.parse(saved);
+      } catch (error) {
+        console.error('Failed to parse saved wallet state:', error);
+        localStorage.removeItem('walletState');
+      }
+    }
+  }
+  return null;
+};
+
 export function WalletProvider({ children }: { children: ReactNode }) {
-  const [walletState, setWalletState] = useState<WalletState>({
-    address: null,
-    isConnected: false,
-    isConnecting: false,
-    connectingWalletId: null,
-    error: null,
-    walletType: null,
+  // Initialize state from localStorage or default values
+  const [walletState, setWalletState] = useState<WalletState>(() => {
+    const savedState = loadWalletState();
+    return savedState || {
+      address: null,
+      isConnected: false,
+      isConnecting: false,
+      connectingWalletId: null,
+      error: null,
+      walletType: null,
+    };
   });
 
-  const formatAddress = (addr: string) => {
-    return `${addr.slice(0, 6)}...${addr.slice(-4)}`;
+  // Wrapper for setWalletState that also saves to localStorage
+  const updateWalletState = (newState: WalletState | ((prev: WalletState) => WalletState)) => {
+    setWalletState(prev => {
+      const updatedState = typeof newState === 'function' ? newState(prev) : newState;
+      // Save wallet state to localStorage
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('walletState', JSON.stringify(updatedState));
+      }
+      return updatedState;
+    });
   };
 
   const connectMetaMask = async () => {
@@ -161,7 +189,7 @@ export function WalletProvider({ children }: { children: ReactNode }) {
 
   const connect = async (walletType?: string) => {
     const targetWallet = walletType || 'metamask';
-    setWalletState(prev => ({ 
+    updateWalletState(prev => ({ 
       ...prev, 
       isConnecting: true, 
       connectingWalletId: targetWallet,
@@ -196,7 +224,7 @@ export function WalletProvider({ children }: { children: ReactNode }) {
           break;
       }
 
-      setWalletState({
+      updateWalletState({
         address,
         isConnected: true,
         isConnecting: false,
@@ -205,7 +233,7 @@ export function WalletProvider({ children }: { children: ReactNode }) {
         walletType: authType,
       });
     } catch (error) {
-      setWalletState({
+      updateWalletState({
         address: null,
         isConnected: false,
         isConnecting: false,
@@ -240,7 +268,7 @@ export function WalletProvider({ children }: { children: ReactNode }) {
     }
 
     // Reset wallet state
-    setWalletState({
+    updateWalletState({
       address: null,
       isConnected: false,
       isConnecting: false,
@@ -284,26 +312,57 @@ export function WalletProvider({ children }: { children: ReactNode }) {
 
   // Check wallet connection on mount
   useEffect(() => {
-    if (typeof window === 'undefined' || !window.ethereum) return;
+    if (typeof window === 'undefined') return;
 
     const checkConnection = async () => {
       try {
-        const accounts = await window.ethereum?.request({
-          method: 'eth_accounts',
-        });
+        // First, try to load saved state from localStorage
+        const savedState = loadWalletState();
+        
+        if (savedState && savedState.isConnected && savedState.address) {
+          // Verify the saved connection is still valid
+          if (window.ethereum) {
+            const accounts = await window.ethereum?.request({
+              method: 'eth_accounts',
+            });
 
-        if (accounts.length > 0) {
-          setWalletState({
-            address: accounts[0],
-            isConnected: true,
-            isConnecting: false,
-            connectingWalletId: null,
-            error: null,
-            walletType: 'traditional',
+            if (accounts.length > 0 && accounts[0] === savedState.address) {
+              // Connection is still valid, restore the state
+              updateWalletState(savedState);
+              return;
+            } else {
+              // Connection is no longer valid, clear it
+              disconnect();
+              return;
+            }
+          } else {
+            // No ethereum provider available, clear connection
+            disconnect();
+            return;
+          }
+        }
+
+        // If no saved state or invalid connection, check for existing connection
+        if (window.ethereum) {
+          const accounts = await window.ethereum?.request({
+            method: 'eth_accounts',
           });
+
+          if (accounts.length > 0) {
+            updateWalletState({
+              address: accounts[0],
+              isConnected: true,
+              isConnecting: false,
+              connectingWalletId: null,
+              error: null,
+              walletType: 'traditional',
+            });
+          }
         }
       } catch (error) {
         console.error('Failed to check wallet connection:', error);
+        // Clear any potentially invalid saved state
+        disconnect();
       }
     };
 
@@ -314,7 +373,7 @@ export function WalletProvider({ children }: { children: ReactNode }) {
       if (accounts.length === 0) {
         disconnect();
       } else {
-        setWalletState(prev => ({
+        updateWalletState(prev => ({
           ...prev,
           address: accounts[0],
           isConnected: true,
