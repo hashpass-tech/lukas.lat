@@ -309,8 +309,8 @@ export default function HashPassBranding() {
 
     return (
         <button
-            className={`fixed right-3 sm:right-6 bottom-32 sm:bottom-16 z-40 group cursor-pointer transition-all duration-300 ${
-                isMobileSidebarOpen ? 'opacity-0 pointer-events-none scale-95 sm:opacity-100 sm:pointer-events-auto' : 'opacity-100 pointer-events-auto'
+            className={`fixed right-3 sm:right-6 bottom-32 sm:bottom-16 z-30 group cursor-pointer transition-all duration-300 ${
+                isMobileSidebarOpen ? 'opacity-0 pointer-events-none scale-95 hidden sm:opacity-100 sm:pointer-events-auto sm:z-40 sm:flex' : 'opacity-100 pointer-events-auto z-40 flex'
             }`}
             aria-label="Back to top"
             onMouseEnter={() => setIsHovered(true)}

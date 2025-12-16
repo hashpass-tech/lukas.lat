@@ -64,7 +64,7 @@ function CurrencyPageContent() {
         <section id="content" className="relative overflow-hidden bg-slate-950" data-no-orbit>
           <CyberneticGridShader />
           <div className="absolute inset-0 pointer-events-none bg-gradient-to-br from-slate-950/70 via-slate-900/60 to-slate-950/80 z-0" />
-          <main className="flex min-h-screen flex-col items-center justify-center p-4 sm:p-24 relative overflow-x-hidden z-10">
+          <main className="flex min-h-screen flex-col items-center justify-center p-4 sm:p-24 pb-20 sm:pb-24 relative overflow-x-hidden z-10">
           <div className="z-10 max-w-4xl w-full items-center justify-center font-mono text-sm">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-10 w-full max-w-5xl mx-auto">
               <DonutChartSection
