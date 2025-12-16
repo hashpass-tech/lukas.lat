@@ -12,7 +12,7 @@ interface AlchemyProviderProps {
 export function AlchemyProvider({ children }: AlchemyProviderProps) {
   return (
     <QueryClientProvider client={queryClient}>
-      <AlchemyAccountProvider config={alchemyConfig}>
+      <AlchemyAccountProvider config={alchemyConfig} queryClient={queryClient}>
         {children}
       </AlchemyAccountProvider>
     </QueryClientProvider>
