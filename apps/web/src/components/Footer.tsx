@@ -3,7 +3,7 @@
 import { useState } from "react";
 import versionInfo from "../../public/version.json";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Badge } from "@/components/ui/badge";
 import { 
@@ -13,7 +13,9 @@ import {
   ChevronRight,
   Package,
   History,
-  ExternalLink
+  ExternalLink,
+  ChevronLeft,
+  ChevronRight as ChevronRightIcon
 } from "lucide-react";
 
 interface ChangelogEntry {
@@ -33,9 +35,65 @@ interface FooterProps {
 
 export default function Footer({ version = versionInfo.version, className = "" }: FooterProps) {
   const [isChangelogOpen, setIsChangelogOpen] = useState(false);
+  const [currentPage, setCurrentPage] = useState(0);
 
   // Parse changelog data - in a real app, this would come from the actual changelog file
   const changelogData: ChangelogEntry[] = [
+    {
+      version: "0.2.3",
+      date: "2025-12-16",
+      changes: {
+        fixed: [
+          "Fixed Join Movement card being cut by footer on mobile by adding responsive bottom padding",
+          "Added proper bottom spacing to prevent footer overlap with content"
+        ]
+      }
+    },
+    {
+      version: "0.2.2",
+      date: "2025-12-16",
+      changes: {
+        added: [
+          "Added footer to mobile sidebar with proper positioning",
+          "Created global sidebar context for state management",
+          "Implemented proper theme-aware styling for sidebar footer"
+        ],
+        fixed: [
+          "Fixed scroll button visibility when sidebar is open on mobile",
+          "Resolved z-index layering and overlapping issues",
+          "Fixed footer light mode behavior in sidebar",
+          "Updated changelog modal border radius to match UI consistency",
+          "Completely hidden CTA button when sidebar is open on mobile"
+        ]
+      }
+    },
+    {
+      version: "0.2.1",
+      date: "2025-12-16",
+      changes: {
+        added: [
+          "Animated percentage display for currency cards and main donut chart",
+          "Filling animation effect for LUKAS card",
+          "Smooth counting animation with adjustable duration"
+        ],
+        fixed: [
+          "Fixed white corner artifacts on currency cards",
+          "Fixed light mode text colors for better readability",
+          "LUKAS modal mobile responsiveness and scrolling behavior"
+        ]
+      }
+    },
+    {
+      version: "0.2.0",
+      date: "2025-12-15",
+      changes: {
+        added: [
+          "Major mobile sidebar improvements",
+          "Enhanced wallet integration features",
+          "Improved responsive design across components"
+        ]
+      }
+    },
     {
       version: "0.1.45",
       date: "2025-12-11",
@@ -50,7 +108,6 @@ export default function Footer({ version = versionInfo.version, className = "" }
       version: "0.1.44", 
       date: "2025-12-11",
       changes: {
-        // Placeholder: no specific entries recorded in summary
         added: [],
         changed: [],
         fixed: []
@@ -71,8 +128,47 @@ export default function Footer({ version = versionInfo.version, className = "" }
           "Wallet connect modal not appearing due to missing WalletConnect provider setup"
         ]
       }
+    },
+    {
+      version: "0.1.42",
+      date: "2025-12-10",
+      changes: {
+        added: [
+          "Enhanced donut chart animations",
+          "Improved currency card interactions"
+        ]
+      }
+    },
+    {
+      version: "0.1.41",
+      date: "2025-12-09",
+      changes: {
+        fixed: [
+          "Resolved mobile layout issues",
+          "Fixed navigation responsiveness"
+        ]
+      }
     }
   ];
+
+  // Pagination logic - show 3 items per page (1x3 layout)
+  const itemsPerPage = 3;
+  const totalPages = Math.ceil(changelogData.length / itemsPerPage);
+  const startIndex = currentPage * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const currentItems = changelogData.slice(startIndex, endIndex);
+
+  const handlePreviousPage = () => {
+    setCurrentPage((prev) => (prev === 0 ? totalPages - 1 : prev - 1));
+  };
+
+  const handleNextPage = () => {
+    setCurrentPage((prev) => (prev === totalPages - 1 ? 0 : prev + 1));
+  };
+
+  const handleDotClick = (pageIndex: number) => {
+    setCurrentPage(pageIndex);
+  };
 
   return (
     <>
@@ -120,29 +216,29 @@ export default function Footer({ version = versionInfo.version, className = "" }
                     </div>
                   </DialogHeader>
 
-                  <ScrollArea className="max-h-[60vh] pr-4">
-                    <div className="space-y-6">
-                      {changelogData.map((entry) => (
+                  <div className="max-h-[60vh] pr-4 overflow-y-auto">
+                    <div className="space-y-4">
+                      {currentItems.map((entry) => (
                         <div
                           key={entry.version}
-                          className="border-b border-border pb-4 last:border-0"
+                          className="bg-card/50 rounded-xl p-4 border border-border/50 hover:border-border transition-colors"
                         >
                           <div className="flex items-center justify-between mb-3">
                             <div className="flex items-center space-x-2">
                               <Badge
                                 variant="outline"
-                                className="text-primary border-primary/30"
+                                className="text-primary border-primary/30 text-xs"
                               >
                                 v{entry.version}
                               </Badge>
-                              <div className="flex items-center text-muted-foreground text-sm">
+                              <div className="flex items-center text-muted-foreground text-xs">
                                 <Calendar className="w-3 h-3 mr-1" />
                                 {entry.date}
                               </div>
                             </div>
                           </div>
 
-                          <div className="space-y-3">
+                          <div className="space-y-2 max-h-40 overflow-y-auto">
                             {entry.changes.added && entry.changes.added.length > 0 && (
                               <div>
                                 <h4 className="text-sm font-medium text-green-600 dark:text-green-400 mb-2">
@@ -203,7 +299,29 @@ export default function Footer({ version = versionInfo.version, className = "" }
                         </div>
                       ))}
                     </div>
-                  </ScrollArea>
+                  </div>
+                
+                {/* Pagination in DialogFooter */}
+                {totalPages > 1 && (
+                  <DialogFooter className="border-t border-border bg-background/95 backdrop-blur-sm">
+                    <div className="flex items-center justify-center gap-2 w-full p-4">
+                      <div className="flex gap-2">
+                        {Array.from({ length: totalPages }, (_, index) => (
+                          <button
+                            key={index}
+                            onClick={() => handleDotClick(index)}
+                            className={`w-3 h-3 rounded-full transition-all duration-300 ${
+                              currentPage === index
+                                ? 'bg-primary scale-125'
+                                : 'bg-muted-foreground/30 hover:bg-muted-foreground/50 hover:scale-110'
+                            }`}
+                            aria-label={`Go to page ${index + 1}`}
+                          />
+                        ))}
+                      </div>
+                    </div>
+                  </DialogFooter>
+                )}
                 </DialogContent>
               </Dialog>
             </div>
