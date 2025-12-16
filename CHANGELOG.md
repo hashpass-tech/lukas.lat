@@ -10,6 +10,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 ### Changed
+
+### Fixed
+
+## [0.2.10] - 2025-12-16
+### Added
+
+### Changed
 - Enhanced download modal with audio and image format options
 - Added language-specific infographic downloads (EN, ES, PT)
 - Added audio content playback with play/pause controls
