@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from 'react';
 import { Trans } from '@/components/Trans';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { Play } from 'lucide-react';
+import { useTranslation } from '@/lib/translator';
 
 // Orb component for the background
 const Orb = ({ size, x, y, color, delay }: { size: number; x: number; y: number; color: string; delay: number }) => {
@@ -36,6 +37,7 @@ const Orb = ({ size, x, y, color, delay }: { size: number; x: number; y: number;
 };
 
 export const LukasHeroAnimation = () => {
+    const { locale } = useTranslation();
     const [isMobile, setIsMobile] = useState(false);
     const titleWords = (isMobile ? '$LUKAS' : '$(LKS) LUKAS').split('');
     const [visibleWords, setVisibleWords] = useState(0);
@@ -48,7 +50,6 @@ export const LukasHeroAnimation = () => {
     const [coinAnchored, setCoinAnchored] = useState(false);
     const [coinVisible, setCoinVisible] = useState(false);
     const [videoModalOpen, setVideoModalOpen] = useState(false);
-    const [currentLanguage, setCurrentLanguage] = useState('en');
     const [isHoveringCoin, setIsHoveringCoin] = useState(false);
     const [countdown, setCountdown] = useState(0);
     const [isCountingDown, setIsCountingDown] = useState(false);
@@ -58,58 +59,19 @@ export const LukasHeroAnimation = () => {
         setMounted(true);
     }, []);
 
-    // Detect mobile screen size and language
+    // Detect mobile screen size
     useEffect(() => {
         const checkMobile = () => {
             setIsMobile(window.innerWidth < 768); // md breakpoint
         };
         
-        const detectLanguage = () => {
-            // Get language from URL path or browser
-            const pathLang = window.location.pathname.split('/')[1];
-            const browserLang = navigator.language.split('-')[0];
-            
-            // Determine if Spanish (es, pt, cl) or English
-            const spanishLangs = ['es', 'pt', 'cl'];
-            const detectedLang = spanishLangs.includes(pathLang) ? pathLang : 
-                               spanishLangs.includes(browserLang) ? browserLang : 'en';
-            
-            setCurrentLanguage(detectedLang);
-        };
-        
         checkMobile();
-        detectLanguage();
-        
         window.addEventListener('resize', checkMobile);
-        
-        // Listen for language changes (for i18n context changes)
-        const handleLanguageChange = () => {
-            detectLanguage();
-        };
-        
-        // Listen for popstate events (browser navigation)
-        window.addEventListener('popstate', handleLanguageChange);
-        
-        // Set up an interval to check for language context changes
-        const languageCheckInterval = setInterval(() => {
-            const currentPathLang = window.location.pathname.split('/')[1];
-            const spanishLangs = ['es', 'pt', 'cl'];
-            const expectedLang = spanishLangs.includes(currentPathLang) ? currentPathLang : 'en';
-            
-            console.log('Language check - Path:', currentPathLang, 'Expected:', expectedLang, 'Current:', currentLanguage);
-            
-            if (expectedLang !== currentLanguage) {
-                console.log('Language changed from', currentLanguage, 'to', expectedLang);
-                setCurrentLanguage(expectedLang);
-            }
-        }, 1000); // Check every second
         
         return () => {
             window.removeEventListener('resize', checkMobile);
-            window.removeEventListener('popstate', handleLanguageChange);
-            clearInterval(languageCheckInterval);
         };
-    }, [currentLanguage]);
+    }, []);
 
     // Listen for theme changes
     useEffect(() => {
@@ -227,8 +189,8 @@ export const LukasHeroAnimation = () => {
     const getVideoUrl = () => {
         // Return language-specific YouTube video URLs
         const spanishLangs = ['es', 'pt', 'cl'];
-        console.log('Current language for video:', currentLanguage);
-        if (spanishLangs.includes(currentLanguage)) {
+        console.log('Current language for video:', locale);
+        if (spanishLangs.includes(locale)) {
             console.log('Using Spanish video');
             return 'https://www.youtube.com/embed/_endxVObD4U'; // Spanish video
         }
@@ -239,7 +201,7 @@ export const LukasHeroAnimation = () => {
     const getCountdownText = () => {
         // Return language-specific countdown text
         const spanishLangs = ['es', 'pt', 'cl'];
-        if (spanishLangs.includes(currentLanguage)) {
+        if (spanishLangs.includes(locale)) {
             return `Iniciando en ${countdown}...`; // Spanish
         }
         return `Starting in ${countdown}...`; // English
