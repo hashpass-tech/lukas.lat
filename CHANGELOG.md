@@ -10,13 +10,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 ### Changed
-
-### Fixed
-
-## [0.2.9] - 2025-12-16
-### Added
-
-### Changed
+- Enhanced download modal with audio and image format options
+- Added language-specific infographic downloads (EN, ES, PT)
+- Added audio content playback with play/pause controls
+- Implemented proper audio player with single track playback
+- Created reusable useAudioPlayer hook for audio state management
+- Created reusable AudioPlayer component for consistent UI
+- Added sound indicators and visual feedback for audio playback status
 
 ### Fixed
 - Added opacity/mute effect to non-selected currency cards when one is selected
@@ -25,6 +25,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Cleaned up duplicate version entries and empty sections in CHANGELOG.md
 
 ## [0.2.8] - 2025-12-16
+
+### Added
+
+### Changed
+- Enhanced download modal with audio and image format options
+- Added language-specific infographic downloads (EN, ES, PT)
+- Added audio content playback with play/pause controls
+- Implemented proper audio player with single track playback
+- Created reusable useAudioPlayer hook for audio state management
+- Created reusable AudioPlayer component for consistent UI
+- Added sound indicators and visual feedback for audio playback status
 
 ### Fixed
 - Fixed currency modal dark mode background to use proper design system colors

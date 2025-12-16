@@ -252,6 +252,16 @@ export default function OrbitingSkills() {
             }
         };
 
+        const handleCenterCursor = (e: CustomEvent) => {
+            if (containerRef.current) {
+                // Center the cursor effect on the specified coordinates and anchor it
+                isFollowing.current = false; // Stop following cursor
+                containerRef.current.style.position = 'absolute';
+                containerRef.current.style.left = `${e.detail.x}px`;
+                containerRef.current.style.top = `${e.detail.y}px`;
+            }
+        };
+
         const handleScroll = () => {
             const heroSection = document.getElementById('hero');
             if (heroSection) {
@@ -266,6 +276,7 @@ export default function OrbitingSkills() {
         window.addEventListener('mousemove', handleMouseMove);
         // Use bubble phase (default) so we can stop propagation from the component
         window.addEventListener('click', handleGlobalClick);
+        window.addEventListener('centerCursorOnElement', handleCenterCursor as EventListener);
         window.addEventListener('scroll', handleScroll, { passive: true });
         // If the user scrolls, begin following the cursor (so scroll CTA works then tracking starts)
         const handleScrollOrWheel = () => {
@@ -279,6 +290,7 @@ export default function OrbitingSkills() {
         return () => {
             window.removeEventListener('mousemove', handleMouseMove);
             window.removeEventListener('click', handleGlobalClick);
+            window.removeEventListener('centerCursorOnElement', handleCenterCursor as EventListener);
             window.removeEventListener('scroll', handleScroll);
             window.removeEventListener('wheel', handleScrollOrWheel);
         };

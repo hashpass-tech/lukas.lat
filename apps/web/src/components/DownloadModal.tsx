@@ -2,8 +2,10 @@
 
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, FileText, File, Twitter, Send, Link2, Check } from 'lucide-react';
+import { X, FileText, File, Twitter, Send, Link2, Check, Image } from 'lucide-react';
 import { Trans } from '@/components/Trans';
+import { useTranslation } from '@/lib/translator';
+import { AudioPlayer } from '@/components/ui/AudioPlayer';
 
 interface DownloadModalProps {
   isOpen: boolean;
@@ -12,16 +14,67 @@ interface DownloadModalProps {
 
 export const DownloadModal = ({ isOpen, onClose }: DownloadModalProps) => {
   const [copied, setCopied] = React.useState(false);
+  const { locale } = useTranslation();
 
-  const handleDownload = (type: 'pdf' | 'txt') => {
-    const link = document.createElement('a');
-    link.href = type === 'pdf' 
-      ? '/docs/whitepaper-lukas-v0.1.0.pdf' 
-      : '/docs/lukas_manifesto_block_927773.txt';
-    link.download = '';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+  // Language-specific files
+  const getInfographicPath = () => {
+    const infographicMap: { [key: string]: string } = {
+      'en': '/docs/infografic-EN.png',
+      'es': '/docs/infografic-ES.png', 
+      'pt': '/docs/infografic-PT.png',
+      'cl': '/docs/infografic-ES.png' // Use Spanish for Chilean
+    };
+    return infographicMap[locale] || infographicMap['en'];
+  };
+
+  const getAudioFiles = () => {
+    return [
+      {
+        name: locale === 'pt' ? 'BRICS, Bitcoin e o Futuro do Dólar' : 
+              locale === 'es' || locale === 'cl' ? 'Regulación de stablecoins y refugio Bitcoin' :
+              'Global Crypto Use Drives Stablecoin Rules',
+        path: '/docs/audio/BRICS,_Bitcoin_e_o_Futuro_do_Dólar.m4a',
+        lang: 'PT'
+      },
+      {
+        name: 'Global Crypto Use Drives Stablecoin Rules',
+        path: '/docs/audio/Global_Crypto_Use_Drives_Stablecoin_Rules.m4a',
+        lang: 'EN'
+      },
+      {
+        name: locale === 'es' || locale === 'cl' ? 'Regulación de stablecoins y refugio Bitcoin' : 'Regulation of stablecoins and Bitcoin refuge',
+        path: '/docs/audio/Regulación_de_stablecoins_y_refugio_Bitcoin.m4a',
+        lang: 'ES' 
+      }
+    ];
+  };
+
+  const handleDownload = (type: 'pdf' | 'txt' | 'image' | 'audio', audioPath?: string) => {
+    let path = '';
+    
+    switch (type) {
+      case 'pdf':
+        path = '/docs/whitepaper-lukas-v0.1.0.pdf';
+        break;
+      case 'txt':
+        path = '/docs/lukas_manifesto_block_927773.txt';
+        break;
+      case 'image':
+        path = getInfographicPath();
+        break;
+      case 'audio':
+        path = audioPath || '';
+        break;
+    }
+    
+    if (path) {
+      const link = document.createElement('a');
+      link.href = path;
+      link.download = '';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
   };
 
   const handleShare = (platform: 'twitter' | 'telegram' | 'copy') => {
@@ -76,10 +129,10 @@ export const DownloadModal = ({ isOpen, onClose }: DownloadModalProps) => {
 
               {/* Content */}
               <div className="p-3 sm:p-4 space-y-3 sm:space-y-4">
-                {/* Download Options */}
+                {/* Documents Download Options */}
                 <div className="space-y-2">
                   <p className="text-sm text-muted-foreground font-medium">
-                    <Trans i18nKey="download.choose_format" fallback="Choose format" />
+                    <Trans i18nKey="download.documents" fallback="Documents" />
                   </p>
                   <div className="grid grid-cols-2 gap-2 sm:gap-3">
                     <button
@@ -108,6 +161,40 @@ export const DownloadModal = ({ isOpen, onClose }: DownloadModalProps) => {
                       <span className="text-xs text-muted-foreground">TXT</span>
                     </button>
                   </div>
+                </div>
+
+                {/* Infographic Download Option */}
+                <div className="space-y-2">
+                  <p className="text-sm text-muted-foreground font-medium">
+                    <Trans i18nKey="download.infographic" fallback="Infographic" />
+                  </p>
+                  <button
+                    onClick={() => handleDownload('image')}
+                    className="w-full flex items-center gap-3 p-3 sm:p-4 rounded-xl border border-border bg-accent/30 hover:bg-accent/60 transition-colors group"
+                  >
+                    <div className="p-2 sm:p-3 rounded-full bg-purple-500/10 group-hover:bg-purple-500/20 transition-colors">
+                      <Image className="w-5 h-5 sm:w-6 sm:h-6 text-purple-500" />
+                    </div>
+                    <div className="flex-1 text-left">
+                      <span className="text-sm font-medium block">
+                        <Trans i18nKey="download.infographic_title" fallback="LUKAS Infographic" />
+                      </span>
+                      <span className="text-xs text-muted-foreground">
+                        {locale === 'en' ? 'English' : locale === 'es' || locale === 'cl' ? 'Español' : locale === 'pt' ? 'Português' : 'English'}
+                      </span>
+                    </div>
+                  </button>
+                </div>
+
+                {/* Audio Options */}
+                <div className="space-y-2">
+                  <p className="text-sm text-muted-foreground font-medium">
+                    <Trans i18nKey="download.audio" fallback="Audio Content" />
+                  </p>
+                  <AudioPlayer 
+                    tracks={getAudioFiles()} 
+                    onDownload={(audioPath) => handleDownload('audio', audioPath)}
+                  />
                 </div>
 
                 {/* Divider */}

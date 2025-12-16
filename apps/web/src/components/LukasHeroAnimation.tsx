@@ -183,6 +183,16 @@ export const LukasHeroAnimation = () => {
 
     const handlePlayButtonClick = (e: React.MouseEvent) => {
         e.stopPropagation(); // Prevent coin anchor toggle
+        
+        // Center cursor effect on play button
+        const cursorCenterEvent = new CustomEvent('centerCursorOnElement', {
+            detail: {
+                x: e.clientX,
+                y: e.clientY
+            }
+        });
+        window.dispatchEvent(cursorCenterEvent);
+        
         setVideoModalOpen(true);
     };
 
