@@ -18,7 +18,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '18'
+          node-version: '22'
           registry-url: 'https://registry.npmjs.org'
 
       - name: Install pnpm
@@ -26,15 +26,18 @@ jobs:
         with:
           version: 8
 
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-
       - name: Extract version from tag
         id: extract_version
         run: |
           TAG=${GITHUB_REF#refs/tags/sdk-v}
           echo "version=$TAG" >> $GITHUB_OUTPUT
           echo "Extracted version: $TAG"
+
+      - name: Install SDK dependencies and build
+        run: |
+          cd packages/lukas-sdk
+          npm install
+          echo "Dependencies installed"
 
       - name: Update package version
         run: |
@@ -45,17 +48,17 @@ jobs:
       - name: Run type check
         run: |
           cd packages/lukas-sdk
-          pnpm run type-check
+          npm run type-check
 
       - name: Run tests
         run: |
           cd packages/lukas-sdk
-          pnpm run test
+          npm run test
 
       - name: Build package
         run: |
           cd packages/lukas-sdk
-          pnpm run build
+          npm run build
 
       - name: Generate changelog
         id: changelog
@@ -105,7 +108,7 @@ jobs:
             
             ### Installation
             ```bash
-            npm install @lukas/sdk@${{ steps.extract_version.outputs.version }}
+            npm install @lukas-protocol/sdk@${{ steps.extract_version.outputs.version }}
             ```
             
             ### Documentation
@@ -122,4 +125,4 @@ jobs:
       - name: Notify success
         run: |
           echo "✅ Successfully published Lukas SDK v${{ needs.publish.outputs.version }} to npm"
-          echo "📦 Package: https://www.npmjs.com/package/@lukas/sdk"
+          echo "📦 Package: https://www.npmjs.com/package/@lukas-protocol/sdk"
