@@ -13,6 +13,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+## [0.2.0] - 2025-12-16
+
+### Added
+
+
+
+### Changed
+
+
+
+### Fixed
+
+
+
+
+
 ## [0.1.64] - 2025-12-13
 ### Added
 - Optimized mobile modal positioning and responsiveness
