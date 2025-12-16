@@ -190,7 +190,7 @@ export default function Footer({ version = versionInfo.version, className = "" }
                   </button>
                 </DialogTrigger>
 
-                <DialogContent className="max-w-2xl max-h-[80vh] bg-background border-border rounded-3xl">
+                <DialogContent className="max-w-2xl max-h-[85vh] sm:max-h-[80vh] bg-background border-border rounded-3xl flex flex-col">
                   <DialogHeader>
                     <DialogTitle className="text-xl font-semibold text-foreground flex items-center">
                       <FileText className="w-5 h-5 mr-2" />
@@ -216,7 +216,7 @@ export default function Footer({ version = versionInfo.version, className = "" }
                     </div>
                   </DialogHeader>
 
-                  <div className="max-h-[60vh] pr-4 overflow-y-auto">
+                  <div className="flex-1 max-h-[50vh] sm:max-h-[60vh] pr-4 overflow-y-auto">
                     <div className="space-y-4">
                       {currentItems.map((entry) => (
                         <div
