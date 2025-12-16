@@ -1,42 +1,49 @@
 # Implementation Plan
 
-- [ ] 1. Set up SDK package structure and development environment
+- [x] 1. Set up SDK package structure and development environment
   - Create new package directory `packages/lukas-sdk` with proper TypeScript configuration
   - Set up build tooling with Rollup/Vite for both CommonJS and ESM outputs
   - Configure package.json with proper exports, dependencies, and metadata
   - Set up development scripts for building, testing, and linting
   - _Requirements: 1.1, 1.2_
 
-- [ ] 2. Implement core SDK infrastructure
-- [ ] 2.1 Create base SDK client and configuration system
+- [x] 2. Implement core SDK infrastructure
+- [x] 2.1 Create base SDK client and configuration system
   - Implement LukasSDK main class with initialization logic
   - Create configuration interfaces and validation
   - Implement network configuration management
   - _Requirements: 1.3, 1.5, 10.1, 10.5_
 
-- [ ] 2.2 Write property test for SDK initialization
+- [x] 2.2 Write property test for SDK initialization
   - **Property 1: Network initialization consistency**
   - **Validates: Requirements 1.3, 10.1**
 
-- [ ] 2.3 Write property test for invalid network handling
+- [x] 2.3 Write property test for invalid network handling
   - **Property 2: Invalid network error handling**
   - **Validates: Requirements 1.5, 10.5**
 
-- [ ] 2.4 Implement provider and signer management
+- [x] 2.4 Implement provider and signer management
   - Create ProviderManager for wallet provider abstraction
   - Implement signer detection and management
   - Add read-only mode support when no signer available
   - _Requirements: 1.4, 7.1_
 
-- [ ] 2.5 Create contract manager and ABI handling
+- [x] 2.5 Create contract manager and ABI handling
   - Implement ContractManager for managing contract instances
   - Load and validate contract ABIs
   - Handle contract address resolution per network
   - _Requirements: 10.1, 10.4_
 
-- [ ] 2.6 Write property test for custom contract configuration
+- [x] 2.6 Write property test for custom contract configuration
   - **Property 26: Custom contract configuration**
   - **Validates: Requirements 10.4**
+
+- [x] 2.7 Set up automated npm publishing with CI/CD
+  - Configure npm publishing using .env NPM_TOKEN
+  - Set up GitHub Actions workflow for automated publishing
+  - Add semantic versioning and changelog generation
+  - Configure publish on version tag creation
+  - _Requirements: 1.1_
 
 - [ ] 3. Implement error handling and utilities
 - [ ] 3.1 Create comprehensive error handling system

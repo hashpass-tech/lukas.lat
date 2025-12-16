@@ -1,0 +1,125 @@
+name: Publish Lukas SDK
+
+on:
+  push:
+    tags:
+      - 'sdk-v*'  # Triggers on tags like sdk-v1.0.0, sdk-v1.0.1, etc.
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Fetch full history for changelog generation
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Extract version from tag
+        id: extract_version
+        run: |
+          TAG=${GITHUB_REF#refs/tags/sdk-v}
+          echo "version=$TAG" >> $GITHUB_OUTPUT
+          echo "Extracted version: $TAG"
+
+      - name: Update package version
+        run: |
+          cd packages/lukas-sdk
+          npm version ${{ steps.extract_version.outputs.version }} --no-git-tag-version
+          echo "Updated package.json version to ${{ steps.extract_version.outputs.version }}"
+
+      - name: Run type check
+        run: |
+          cd packages/lukas-sdk
+          pnpm run type-check
+
+      - name: Run tests
+        run: |
+          cd packages/lukas-sdk
+          pnpm run test
+
+      - name: Build package
+        run: |
+          cd packages/lukas-sdk
+          pnpm run build
+
+      - name: Generate changelog
+        id: changelog
+        run: |
+          cd packages/lukas-sdk
+          # Create a simple changelog entry
+          echo "## [${{ steps.extract_version.outputs.version }}] - $(date +'%Y-%m-%d')" > CHANGELOG_ENTRY.md
+          echo "" >> CHANGELOG_ENTRY.md
+          echo "### Added" >> CHANGELOG_ENTRY.md
+          echo "- SDK release version ${{ steps.extract_version.outputs.version }}" >> CHANGELOG_ENTRY.md
+          echo "" >> CHANGELOG_ENTRY.md
+          
+          # Update main CHANGELOG.md if it exists, create if it doesn't
+          if [ -f CHANGELOG.md ]; then
+            # Prepend new entry to existing changelog
+            cat CHANGELOG_ENTRY.md > TEMP_CHANGELOG.md
+            echo "" >> TEMP_CHANGELOG.md
+            cat CHANGELOG.md >> TEMP_CHANGELOG.md
+            mv TEMP_CHANGELOG.md CHANGELOG.md
+          else
+            # Create new changelog
+            echo "# Changelog" > CHANGELOG.md
+            echo "" >> CHANGELOG.md
+            cat CHANGELOG_ENTRY.md >> CHANGELOG.md
+          fi
+          
+          rm CHANGELOG_ENTRY.md
+
+      - name: Publish to npm
+        run: |
+          cd packages/lukas-sdk
+          npm publish --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Create GitHub Release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Lukas SDK v${{ steps.extract_version.outputs.version }}
+          body: |
+            ## Lukas SDK v${{ steps.extract_version.outputs.version }}
+            
+            This release includes the latest version of the Lukas SDK with improvements and bug fixes.
+            
+            ### Installation
+            ```bash
+            npm install @lukas/sdk@${{ steps.extract_version.outputs.version }}
+            ```
+            
+            ### Documentation
+            See the [README](https://github.com/lukas-protocol/lukas-monorepo/blob/main/packages/lukas-sdk/README.md) for usage instructions.
+          draft: false
+          prerelease: false
+
+  notify:
+    needs: publish
+    runs-on: ubuntu-latest
+    if: success()
+    
+    steps:
+      - name: Notify success
+        run: |
+          echo "✅ Successfully published Lukas SDK v${{ needs.publish.outputs.version }} to npm"
+          echo "📦 Package: https://www.npmjs.com/package/@lukas/sdk"
