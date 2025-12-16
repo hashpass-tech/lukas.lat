@@ -168,11 +168,11 @@
   - Handle vault parameter queries and validation
   - _Requirements: 5.2, 5.4_
 
-- [ ]* 6.2 Write property test for vault status completeness
+- [ ] 6.2 Write property test for vault status completeness
   - **Property 17: Vault status completeness**
   - **Validates: Requirements 5.2**
 
-- [ ]* 6.3 Write property test for authorization checks
+- [ ] 6.3 Write property test for authorization checks
   - **Property 18: Authorization check accuracy**
   - **Validates: Requirements 5.4**
 
@@ -188,7 +188,7 @@
   - Add comprehensive vault event management
   - _Requirements: 5.1, 5.5_
 
-- [ ]* 6.6 Write property test for event subscription functionality
+- [ ] 6.6 Write property test for event subscription functionality
   - **Property 16: Event subscription functionality**
   - **Validates: Requirements 5.1, 5.5**
 
@@ -205,11 +205,11 @@
   - Handle Uniswap v4 position management integration
   - _Requirements: 6.1, 6.2, 6.3_
 
-- [ ]* 7.2 Write property test for liquidity operations
+- [ ] 7.2 Write property test for liquidity operations
   - **Property 19: Liquidity operation validity**
   - **Validates: Requirements 6.1, 6.2, 6.5**
 
-- [ ]* 7.3 Write property test for position queries
+- [ ] 7.3 Write property test for position queries
   - **Property 20: Liquidity position queries**
   - **Validates: Requirements 6.3**
 
@@ -219,7 +219,7 @@
   - Create comprehensive pre-flight checks
   - _Requirements: 6.4_
 
-- [ ]* 7.5 Write property test for insufficient token protection
+- [ ] 7.5 Write property test for insufficient token protection
   - **Property 21: Insufficient token protection**
   - **Validates: Requirements 6.4**
 
@@ -255,7 +255,7 @@
   - Handle contract address mapping per network
   - _Requirements: 10.1, 10.2, 10.3_
 
-- [ ]* 9.2 Write property test for network switching
+- [ ] 9.2 Write property test for network switching
   - **Property 25: Network switching consistency**
   - **Validates: Requirements 10.2**
 
@@ -316,7 +316,7 @@
   - Ensure backward compatibility with existing functionality
   - _Requirements: 8.1, 8.2, 8.3_
 
-- [ ]* 12.2 Write property test for functional equivalence
+- [ ] 12.2 Write property test for functional equivalence
   - **Property 24: Functional equivalence**
   - **Validates: Requirements 8.2**
 
@@ -339,7 +339,7 @@
   - Create comprehensive error scenario testing
   - _Requirements: 9.4_
 
-- [ ]* 13.2 Write unit tests for core functionality
+- [ ] 13.2 Write unit tests for core functionality
   - Create unit tests for all service classes
   - Add mock-based testing for contract interactions
   - Write tests for error handling and edge cases

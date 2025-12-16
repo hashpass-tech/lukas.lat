@@ -127,10 +127,10 @@ export default function Footer({ version = versionInfo.version, className = "" }
     if (isChangelogOpen && changelogData.length === 0) {
       setLoading(true);
       parseChangelog().then((data) => {
-        // Get only the last 3 versions (excluding unreleased)
+        // Get only the last 9 versions (excluding unreleased)
         const releasedVersions = data.filter(entry => entry.version !== 'Unreleased');
-        const lastThreeVersions = releasedVersions.slice(0, 3);
-        setChangelogData(lastThreeVersions);
+        const lastNineVersions = releasedVersions.slice(0, 9);
+        setChangelogData(lastNineVersions);
         setLoading(false);
       }).catch((error) => {
         console.error('Error loading changelog:', error);
