@@ -16,12 +16,12 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/lukas-protocol/lukas-monorepo.git",
+    "url": "https://github.com/hashpass-tech/lukas-protocol.git",
     "directory": "packages/lukas-sdk"
   },
   "homepage": "https://lukas.money",
   "bugs": {
-    "url": "https://github.com/lukas-protocol/lukas-monorepo/issues"
+    "url": "https://github.com/hashpass-tech/lukas-protocol/issues"
   },
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
