@@ -41,7 +41,7 @@ jobs:
           npm install
           echo "Dependencies installed in standalone directory"
 
-      - name: Update package version
+      - name: Update package version and repository info
         run: |
           cd /tmp/lukas-sdk-build
           # Only update version if it's different from current version
@@ -52,6 +52,15 @@ jobs:
           else
             echo "Version already matches tag version: ${{ steps.extract_version.outputs.version }}"
           fi
+          
+          # Ensure repository URL is correct for provenance
+          node -e "
+            const pkg = require('./package.json');
+            pkg.repository.url = 'https://github.com/hashpass-tech/lukas-protocol.git';
+            pkg.bugs.url = 'https://github.com/hashpass-tech/lukas-protocol/issues';
+            require('fs').writeFileSync('./package.json', JSON.stringify(pkg, null, 2));
+          "
+          echo "Updated repository URLs for provenance verification"
 
       - name: Run type check
         run: |
