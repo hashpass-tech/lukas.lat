@@ -15,6 +15,7 @@ export class LukasSDK {
   private config: LukasSDKConfig;
   private providerManager: ProviderManager;
   private contractManager: ContractManager | null = null;
+  private networkManager: NetworkManager;
   private networkConfig: NetworkConfig & { contracts: ContractAddresses };
   private initialized: boolean = false;
 
@@ -45,6 +46,9 @@ export class LukasSDK {
 
     // Initialize provider manager
     this.providerManager = new ProviderManager(config.provider);
+    
+    // Initialize network manager
+    this.networkManager = new NetworkManager(this.networkConfig, config.provider);
     
     // Initialize the SDK
     this.initialize();
@@ -93,6 +97,11 @@ export class LukasSDK {
    * Get the current network information
    */
   getNetworkInfo(): NetworkInfo {
+    const networkInfo = this.networkManager.getCurrentNetworkInfo();
+    if (networkInfo) {
+      return networkInfo;
+    }
+
     return {
       chainId: this.networkConfig.chainId,
       name: this.networkConfig.name,
@@ -100,6 +109,83 @@ export class LukasSDK {
       blockExplorer: this.networkConfig.blockExplorer,
       contracts: this.networkConfig.contracts,
     };
+  }
+
+  /**
+   * Get the network manager instance
+   */
+  getNetworkManager(): NetworkManager {
+    return this.networkManager;
+  }
+
+  /**
+   * Detect the current provider network
+   */
+  async detectProviderNetwork(): Promise<{ chainId: number; name: string } | null> {
+    return this.networkManager.detectProviderNetwork();
+  }
+
+  /**
+   * Add network change listener
+   */
+  onNetworkChange(listener: (networkInfo: NetworkInfo) => void): () => void {
+    return this.networkManager.onNetworkChange(listener);
+  }
+
+  /**
+   * Add network mismatch listener
+   */
+  onNetworkMismatch(listener: (expected: number, actual: number) => void): () => void {
+    return this.networkManager.onNetworkMismatch(listener);
+  }
+
+  /**
+   * Start automatic network monitoring
+   */
+  startNetworkMonitoring(intervalMs?: number): void {
+    this.networkManager.startNetworkMonitoring(intervalMs);
+  }
+
+  /**
+   * Stop automatic network monitoring
+   */
+  stopNetworkMonitoring(): void {
+    this.networkManager.stopNetworkMonitoring();
+  }
+
+  /**
+   * Auto-detect and switch to provider network
+   */
+  async autoDetectNetwork(): Promise<NetworkInfo | null> {
+    const networkInfo = await this.networkManager.autoDetectAndSwitchNetwork();
+    
+    if (networkInfo) {
+      // Update internal configuration
+      this.networkConfig = this.networkManager.getCurrentNetwork()!;
+      this.config.network = this.networkConfig;
+      this.config.contracts = this.networkConfig.contracts;
+
+      // Update contract manager with new addresses
+      if (this.contractManager) {
+        this.contractManager.updateAddresses(this.networkConfig.contracts);
+      }
+    }
+
+    return networkInfo;
+  }
+
+  /**
+   * Validate current network against provider
+   */
+  async validateNetwork(): Promise<{ isValid: boolean; expected?: number; actual?: number }> {
+    return this.networkManager.validateCurrentNetwork();
+  }
+
+  /**
+   * Check if network monitoring is active
+   */
+  isNetworkMonitoringActive(): boolean {
+    return this.networkManager.isNetworkMonitoringActive();
   }
 
   /**
@@ -136,14 +222,18 @@ export class LukasSDK {
   async connect(provider?: Provider): Promise<void> {
     await this.providerManager.connect(provider);
     
-    // Re-validate network after connecting
-    if (this.providerManager.getProvider()) {
-      const isValidNetwork = await this.providerManager.validateNetwork(this.networkConfig.chainId);
+    // Update network manager with new provider
+    const connectedProvider = this.providerManager.getProvider();
+    if (connectedProvider) {
+      this.networkManager.setProvider(connectedProvider);
+      
+      // Validate network compatibility
+      const isValidNetwork = await this.networkManager.validateProviderNetwork(this.networkConfig.chainId);
       if (!isValidNetwork) {
-        const networkInfo = await this.providerManager.getNetworkInfo();
+        const providerNetwork = await this.networkManager.detectProviderNetwork();
         throw new LukasSDKError(
           LukasSDKErrorCode.NETWORK_NOT_SUPPORTED,
-          `Connected provider network (${networkInfo?.chainId}) does not match configured network (${this.networkConfig.chainId})`
+          `Connected provider network (${providerNetwork?.chainId}) does not match configured network (${this.networkConfig.chainId})`
         );
       }
     }
@@ -157,41 +247,67 @@ export class LukasSDK {
    */
   disconnect(): void {
     this.providerManager.disconnect();
+    this.networkManager.stopNetworkMonitoring();
     this.contractManager = null;
   }
 
   /**
    * Switch to a different network
    */
-  async switchNetwork(networkId: number): Promise<void> {
-    if (!NetworkManager.isNetworkSupported(networkId)) {
-      throw new LukasSDKError(
-        LukasSDKErrorCode.NETWORK_NOT_SUPPORTED,
-        `Network with chainId ${networkId} is not supported`
-      );
-    }
-
-    // Update network configuration
-    const newNetworkConfig = NetworkManager.getDefaultNetworkConfig(networkId);
-    this.networkConfig = newNetworkConfig;
-    this.config.network = newNetworkConfig;
-    this.config.contracts = newNetworkConfig.contracts;
-
-    // If we have a provider, validate the network
-    if (this.providerManager.getProvider()) {
-      const isValidNetwork = await this.providerManager.validateNetwork(networkId);
-      if (!isValidNetwork) {
-        throw new LukasSDKError(
-          LukasSDKErrorCode.NETWORK_NOT_SUPPORTED,
-          `Provider is not connected to network ${networkId}. Please switch your wallet to the correct network.`
-        );
-      }
-    }
+  async switchNetwork(
+    networkId: number, 
+    customContracts?: Partial<ContractAddresses>,
+    networkOptions?: { name?: string; rpcUrl?: string; blockExplorer?: string }
+  ): Promise<NetworkInfo> {
+    // Use network manager to switch networks
+    const networkInfo = await this.networkManager.switchNetwork(networkId, customContracts, networkOptions);
+    
+    // Update internal configuration
+    this.networkConfig = this.networkManager.getCurrentNetwork()!;
+    this.config.network = this.networkConfig;
+    this.config.contracts = this.networkConfig.contracts;
 
     // Update contract manager with new addresses
     if (this.contractManager) {
-      this.contractManager.updateAddresses(newNetworkConfig.contracts);
+      this.contractManager.updateAddresses(this.networkConfig.contracts);
     }
+
+    return networkInfo;
+  }
+
+  /**
+   * Add and switch to a custom network
+   */
+  async addCustomNetwork(
+    config: NetworkConfig & { contracts: ContractAddresses }
+  ): Promise<NetworkInfo> {
+    const networkInfo = await this.networkManager.addAndSwitchToCustomNetwork(config);
+    
+    // Update internal configuration
+    this.networkConfig = this.networkManager.getCurrentNetwork()!;
+    this.config.network = this.networkConfig;
+    this.config.contracts = this.networkConfig.contracts;
+
+    // Update contract manager with new addresses
+    if (this.contractManager) {
+      this.contractManager.updateAddresses(this.networkConfig.contracts);
+    }
+
+    return networkInfo;
+  }
+
+  /**
+   * Get current network type
+   */
+  getCurrentNetworkType(): 'mainnet' | 'testnet' | 'custom' | 'unknown' {
+    return this.networkManager.getCurrentNetworkType();
+  }
+
+  /**
+   * Check if current network is a testnet
+   */
+  isTestnet(): boolean {
+    return this.networkManager.isCurrentNetworkTestnet();
   }
 
   /**

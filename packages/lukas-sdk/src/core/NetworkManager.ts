@@ -1,10 +1,11 @@
 import { LukasSDKError, LukasSDKErrorCode } from '../errors/LukasSDKError';
-import type { NetworkConfig, ContractAddresses } from './types';
+import type { NetworkConfig, ContractAddresses, NetworkInfo } from './types';
+import type { Provider } from 'ethers';
 
 /**
  * Supported networks with their default configurations
  */
-export const SUPPORTED_NETWORKS: Record<number, NetworkConfig & { contracts: ContractAddresses }> = {
+const SUPPORTED_NETWORKS: Record<number, NetworkConfig & { contracts: ContractAddresses }> = {
   // Ethereum Mainnet
   1: {
     chainId: 1,
@@ -47,12 +48,98 @@ export const SUPPORTED_NETWORKS: Record<number, NetworkConfig & { contracts: Con
       usdc: '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913', // USDC on Base
     },
   },
+  // Base Sepolia Testnet
+  84532: {
+    chainId: 84532,
+    name: 'Base Sepolia Testnet',
+    rpcUrl: 'https://sepolia.base.org',
+    blockExplorer: 'https://sepolia-explorer.base.org',
+    contracts: {
+      lukasToken: '0x0000000000000000000000000000000000000000', // Placeholder
+      stabilizerVault: '0x0000000000000000000000000000000000000000', // Placeholder
+      latAmBasketIndex: '0x0000000000000000000000000000000000000000', // Placeholder
+      lukasHook: '0x0000000000000000000000000000000000000000', // Placeholder
+      usdc: '0x0000000000000000000000000000000000000000', // Test USDC
+    },
+  },
+  // Polygon Mainnet
+  137: {
+    chainId: 137,
+    name: 'Polygon Mainnet',
+    rpcUrl: 'https://polygon-rpc.com',
+    blockExplorer: 'https://polygonscan.com',
+    contracts: {
+      lukasToken: '0x0000000000000000000000000000000000000000', // Placeholder
+      stabilizerVault: '0x0000000000000000000000000000000000000000', // Placeholder
+      latAmBasketIndex: '0x0000000000000000000000000000000000000000', // Placeholder
+      lukasHook: '0x0000000000000000000000000000000000000000', // Placeholder
+      usdc: '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174', // USDC on Polygon
+    },
+  },
+  // Polygon Mumbai Testnet
+  80001: {
+    chainId: 80001,
+    name: 'Polygon Mumbai Testnet',
+    rpcUrl: 'https://rpc-mumbai.maticvigil.com',
+    blockExplorer: 'https://mumbai.polygonscan.com',
+    contracts: {
+      lukasToken: '0x0000000000000000000000000000000000000000', // Placeholder
+      stabilizerVault: '0x0000000000000000000000000000000000000000', // Placeholder
+      latAmBasketIndex: '0x0000000000000000000000000000000000000000', // Placeholder
+      lukasHook: '0x0000000000000000000000000000000000000000', // Placeholder
+      usdc: '0x0000000000000000000000000000000000000000', // Test USDC
+    },
+  },
+  // Arbitrum One
+  42161: {
+    chainId: 42161,
+    name: 'Arbitrum One',
+    rpcUrl: 'https://arb1.arbitrum.io/rpc',
+    blockExplorer: 'https://arbiscan.io',
+    contracts: {
+      lukasToken: '0x0000000000000000000000000000000000000000', // Placeholder
+      stabilizerVault: '0x0000000000000000000000000000000000000000', // Placeholder
+      latAmBasketIndex: '0x0000000000000000000000000000000000000000', // Placeholder
+      lukasHook: '0x0000000000000000000000000000000000000000', // Placeholder
+      usdc: '0xaf88d065e77c8cC2239327C5EDb3A432268e5831', // USDC on Arbitrum
+    },
+  },
+  // Arbitrum Sepolia Testnet
+  421614: {
+    chainId: 421614,
+    name: 'Arbitrum Sepolia Testnet',
+    rpcUrl: 'https://sepolia-rollup.arbitrum.io/rpc',
+    blockExplorer: 'https://sepolia-explorer.arbitrum.io',
+    contracts: {
+      lukasToken: '0x0000000000000000000000000000000000000000', // Placeholder
+      stabilizerVault: '0x0000000000000000000000000000000000000000', // Placeholder
+      latAmBasketIndex: '0x0000000000000000000000000000000000000000', // Placeholder
+      lukasHook: '0x0000000000000000000000000000000000000000', // Placeholder
+      usdc: '0x0000000000000000000000000000000000000000', // Test USDC
+    },
+  },
 };
 
 /**
  * Network manager for handling network configurations and validation
  */
 export class NetworkManager {
+  private currentNetwork: NetworkConfig & { contracts: ContractAddresses } | null = null;
+  private provider: Provider | null = null;
+  private networkChangeListeners: Array<(networkInfo: NetworkInfo) => void> = [];
+  private networkMismatchListeners: Array<(expected: number, actual: number) => void> = [];
+  private isMonitoringNetwork: boolean = false;
+  private networkMonitorInterval: NodeJS.Timeout | null = null;
+
+  constructor(initialNetwork?: NetworkConfig & { contracts: ContractAddresses }, provider?: Provider) {
+    this.currentNetwork = initialNetwork || null;
+    this.provider = provider || null;
+    
+    // Start network monitoring if provider is available
+    if (this.provider) {
+      this.startNetworkMonitoring();
+    }
+  }
   /**
    * Validate network configuration
    */
@@ -190,5 +277,647 @@ export class NetworkManager {
         );
       }
     });
+  }
+
+  /**
+   * Set the provider for network operations
+   */
+  setProvider(provider: Provider): void {
+    this.provider = provider;
+  }
+
+  /**
+   * Get current network configuration
+   */
+  getCurrentNetwork(): NetworkConfig & { contracts: ContractAddresses } | null {
+    return this.currentNetwork;
+  }
+
+  /**
+   * Get current network info
+   */
+  getCurrentNetworkInfo(): NetworkInfo | null {
+    if (!this.currentNetwork) {
+      return null;
+    }
+
+    return {
+      chainId: this.currentNetwork.chainId,
+      name: this.currentNetwork.name,
+      rpcUrl: this.currentNetwork.rpcUrl || '',
+      blockExplorer: this.currentNetwork.blockExplorer,
+      contracts: this.currentNetwork.contracts,
+    };
+  }
+
+  /**
+   * Switch to a different network
+   */
+  async switchNetwork(
+    chainId: number, 
+    customContracts?: Partial<ContractAddresses>,
+    networkOptions?: { name?: string; rpcUrl?: string; blockExplorer?: string }
+  ): Promise<NetworkInfo> {
+    // Validate the target network
+    if (!NetworkManager.isNetworkSupported(chainId) && !customContracts) {
+      throw new LukasSDKError(
+        LukasSDKErrorCode.NETWORK_NOT_SUPPORTED,
+        `Network with chainId ${chainId} is not supported. Supported networks: ${Object.keys(NetworkManager.getSupportedNetworksMap()).join(', ')}`
+      );
+    }
+
+    let newNetworkConfig: NetworkConfig & { contracts: ContractAddresses };
+
+    if (NetworkManager.isNetworkSupported(chainId)) {
+      // Use supported network configuration
+      newNetworkConfig = NetworkManager.getDefaultNetworkConfig(chainId);
+      
+      // Override with custom contracts if provided
+      if (customContracts) {
+        NetworkManager.validateContractAddresses(customContracts);
+        newNetworkConfig = {
+          ...newNetworkConfig,
+          contracts: {
+            ...newNetworkConfig.contracts,
+            ...customContracts,
+          },
+        };
+      }
+
+      // Override network options if provided
+      if (networkOptions) {
+        newNetworkConfig = {
+          ...newNetworkConfig,
+          name: networkOptions.name || newNetworkConfig.name,
+          ...(networkOptions.rpcUrl && { rpcUrl: networkOptions.rpcUrl }),
+          ...(networkOptions.blockExplorer && { blockExplorer: networkOptions.blockExplorer }),
+        };
+      }
+    } else {
+      // Custom network - require all contract addresses
+      if (!customContracts || !NetworkManager.isCompleteContractAddresses(customContracts)) {
+        throw new LukasSDKError(
+          LukasSDKErrorCode.MISSING_CONTRACT_ADDRESS,
+          'Custom networks require all contract addresses to be provided'
+        );
+      }
+
+      NetworkManager.validateContractAddresses(customContracts);
+      
+      newNetworkConfig = {
+        chainId,
+        name: networkOptions?.name || `Custom Network ${chainId}`,
+        ...(networkOptions?.rpcUrl && { rpcUrl: networkOptions.rpcUrl }),
+        ...(networkOptions?.blockExplorer && { blockExplorer: networkOptions.blockExplorer }),
+        contracts: customContracts as ContractAddresses,
+      };
+    }
+
+    // Validate provider network if available
+    if (this.provider) {
+      const providerNetwork = await this.detectProviderNetwork();
+      if (providerNetwork && providerNetwork.chainId !== chainId) {
+        throw new LukasSDKError(
+          LukasSDKErrorCode.NETWORK_NOT_SUPPORTED,
+          `Provider is connected to network ${providerNetwork.chainId} but trying to switch to ${chainId}. Please switch your wallet to the correct network.`
+        );
+      }
+    }
+
+    // Update current network
+    const previousNetwork = this.currentNetwork;
+    this.currentNetwork = newNetworkConfig;
+
+    // Create network info
+    const networkInfo: NetworkInfo = {
+      chainId: newNetworkConfig.chainId,
+      name: newNetworkConfig.name,
+      rpcUrl: newNetworkConfig.rpcUrl || '',
+      blockExplorer: newNetworkConfig.blockExplorer,
+      contracts: newNetworkConfig.contracts,
+    };
+
+    // Notify listeners if network actually changed
+    if (!previousNetwork || previousNetwork.chainId !== chainId) {
+      this.notifyNetworkChange(networkInfo);
+    }
+
+    return networkInfo;
+  }
+
+  /**
+   * Add and switch to a custom network
+   */
+  async addAndSwitchToCustomNetwork(
+    config: NetworkConfig & { contracts: ContractAddresses }
+  ): Promise<NetworkInfo> {
+    // Validate the custom network configuration
+    const validation = NetworkManager.validateCustomNetworkConfig(config);
+    if (!validation.isValid) {
+      throw new LukasSDKError(
+        LukasSDKErrorCode.INVALID_NETWORK_CONFIG,
+        `Invalid custom network configuration: ${validation.errors.join(', ')}`
+      );
+    }
+
+    // Add the custom network
+    NetworkManager.addCustomNetwork(config.chainId, config);
+
+    // Switch to the new network
+    return this.switchNetwork(config.chainId);
+  }
+
+  /**
+   * Get network type for current network
+   */
+  getCurrentNetworkType(): 'mainnet' | 'testnet' | 'custom' | 'unknown' {
+    if (!this.currentNetwork) {
+      return 'unknown';
+    }
+    return NetworkManager.getNetworkType(this.currentNetwork.chainId);
+  }
+
+  /**
+   * Detect the current network from the provider
+   */
+  async detectProviderNetwork(): Promise<{ chainId: number; name: string } | null> {
+    if (!this.provider) {
+      return null;
+    }
+
+    try {
+      const network = await this.provider.getNetwork();
+      return {
+        chainId: Number(network.chainId),
+        name: network.name,
+      };
+    } catch (error) {
+      throw new LukasSDKError(
+        LukasSDKErrorCode.NETWORK_CONNECTION_FAILED,
+        'Failed to detect provider network',
+        error
+      );
+    }
+  }
+
+  /**
+   * Check if provider network matches expected network
+   */
+  async validateProviderNetwork(expectedChainId: number): Promise<boolean> {
+    const providerNetwork = await this.detectProviderNetwork();
+    return providerNetwork ? providerNetwork.chainId === expectedChainId : false;
+  }
+
+  /**
+   * Add network change listener
+   */
+  onNetworkChange(listener: (networkInfo: NetworkInfo) => void): () => void {
+    this.networkChangeListeners.push(listener);
+    
+    // Return unsubscribe function
+    return () => {
+      const index = this.networkChangeListeners.indexOf(listener);
+      if (index > -1) {
+        this.networkChangeListeners.splice(index, 1);
+      }
+    };
+  }
+
+  /**
+   * Notify all listeners of network change
+   */
+  private notifyNetworkChange(networkInfo: NetworkInfo): void {
+    this.networkChangeListeners.forEach(listener => {
+      try {
+        listener(networkInfo);
+      } catch (error) {
+        console.error('Error in network change listener:', error);
+      }
+    });
+  }
+
+  /**
+   * Get list of all supported networks
+   */
+  static getSupportedNetworks(): Array<NetworkConfig & { contracts: ContractAddresses }> {
+    return Object.values(SUPPORTED_NETWORKS);
+  }
+
+  /**
+   * Get supported networks mapping
+   */
+  static getSupportedNetworksMap(): Record<number, NetworkConfig & { contracts: ContractAddresses }> {
+    return { ...SUPPORTED_NETWORKS };
+  }
+
+  /**
+   * Add custom network configuration
+   */
+  static addCustomNetwork(
+    chainId: number, 
+    config: NetworkConfig & { contracts: ContractAddresses }
+  ): void {
+    NetworkManager.validateNetworkConfig(config);
+    NetworkManager.validateContractAddresses(config.contracts);
+    
+    if (config.chainId !== chainId) {
+      throw new LukasSDKError(
+        LukasSDKErrorCode.INVALID_NETWORK_CONFIG,
+        'Network configuration chainId must match the provided chainId'
+      );
+    }
+
+    SUPPORTED_NETWORKS[chainId] = config;
+  }
+
+  /**
+   * Check if a network is a testnet
+   */
+  static isTestnet(chainId: number): boolean {
+    const testnetChainIds = [11155111, 84532, 80001, 421614]; // Sepolia, Base Sepolia, Mumbai, Arbitrum Sepolia
+    return testnetChainIds.includes(chainId);
+  }
+
+  /**
+   * Get all testnet configurations
+   */
+  static getTestnetNetworks(): Array<NetworkConfig & { contracts: ContractAddresses }> {
+    return Object.values(SUPPORTED_NETWORKS).filter(network => 
+      NetworkManager.isTestnet(network.chainId)
+    );
+  }
+
+  /**
+   * Get all mainnet configurations
+   */
+  static getMainnetNetworks(): Array<NetworkConfig & { contracts: ContractAddresses }> {
+    return Object.values(SUPPORTED_NETWORKS).filter(network => 
+      !NetworkManager.isTestnet(network.chainId)
+    );
+  }
+
+  /**
+   * Create custom network configuration with validation
+   */
+  static createCustomNetworkConfig(
+    chainId: number,
+    name: string,
+    contracts: ContractAddresses,
+    options?: {
+      rpcUrl?: string;
+      blockExplorer?: string;
+    }
+  ): NetworkConfig & { contracts: ContractAddresses } {
+    const networkConfig: NetworkConfig = {
+      chainId,
+      name,
+      ...(options?.rpcUrl && { rpcUrl: options.rpcUrl }),
+      ...(options?.blockExplorer && { blockExplorer: options.blockExplorer }),
+    };
+
+    NetworkManager.validateNetworkConfig(networkConfig);
+    NetworkManager.validateContractAddresses(contracts);
+
+    return {
+      ...networkConfig,
+      contracts,
+    };
+  }
+
+  /**
+   * Validate custom network configuration before adding
+   */
+  static validateCustomNetworkConfig(
+    config: NetworkConfig & { contracts: ContractAddresses }
+  ): { isValid: boolean; errors: string[] } {
+    const errors: string[] = [];
+
+    try {
+      NetworkManager.validateNetworkConfig(config);
+    } catch (error) {
+      if (error instanceof LukasSDKError) {
+        errors.push(error.message);
+      }
+    }
+
+    try {
+      NetworkManager.validateContractAddresses(config.contracts);
+    } catch (error) {
+      if (error instanceof LukasSDKError) {
+        errors.push(error.message);
+      }
+    }
+
+    // Check if network already exists
+    if (NetworkManager.isNetworkSupported(config.chainId)) {
+      errors.push(`Network with chainId ${config.chainId} already exists`);
+    }
+
+    // Validate required contract addresses
+    const requiredContracts: (keyof ContractAddresses)[] = [
+      'lukasToken',
+      'stabilizerVault',
+      'latAmBasketIndex',
+      'lukasHook',
+      'usdc',
+    ];
+
+    requiredContracts.forEach(contractName => {
+      if (!config.contracts[contractName]) {
+        errors.push(`Missing required contract address: ${contractName}`);
+      }
+    });
+
+    return {
+      isValid: errors.length === 0,
+      errors,
+    };
+  }
+
+  /**
+   * Remove custom network configuration
+   */
+  static removeCustomNetwork(chainId: number): boolean {
+    if (!NetworkManager.isNetworkSupported(chainId)) {
+      return false;
+    }
+
+    delete SUPPORTED_NETWORKS[chainId];
+    return true;
+  }
+
+  /**
+   * Get network type (mainnet/testnet/custom)
+   */
+  static getNetworkType(chainId: number): 'mainnet' | 'testnet' | 'custom' | 'unknown' {
+    if (!NetworkManager.isNetworkSupported(chainId)) {
+      return 'unknown';
+    }
+
+    if (NetworkManager.isTestnet(chainId)) {
+      return 'testnet';
+    }
+
+    // Well-known mainnet chain IDs
+    const mainnetChainIds = [1, 8453, 137, 42161];
+    if (mainnetChainIds.includes(chainId)) {
+      return 'mainnet';
+    }
+
+    return 'custom';
+  }
+
+  /**
+   * Check if current network is a testnet
+   */
+  isCurrentNetworkTestnet(): boolean {
+    return this.getCurrentNetworkType() === 'testnet';
+  }
+
+  /**
+   * Start automatic network monitoring
+   */
+  startNetworkMonitoring(intervalMs: number = 5000): void {
+    if (this.isMonitoringNetwork || !this.provider) {
+      return;
+    }
+
+    this.isMonitoringNetwork = true;
+    
+    // Set up periodic network checking
+    this.networkMonitorInterval = setInterval(async () => {
+      try {
+        await this.checkNetworkMismatch();
+      } catch (error) {
+        console.warn('Network monitoring error:', error);
+      }
+    }, intervalMs);
+
+    // Set up provider event listeners if available
+    this.setupProviderEventListeners();
+  }
+
+  /**
+   * Stop automatic network monitoring
+   */
+  stopNetworkMonitoring(): void {
+    if (!this.isMonitoringNetwork) {
+      return;
+    }
+
+    this.isMonitoringNetwork = false;
+    
+    if (this.networkMonitorInterval) {
+      clearInterval(this.networkMonitorInterval);
+      this.networkMonitorInterval = null;
+    }
+
+    // Remove provider event listeners
+    this.removeProviderEventListeners();
+  }
+
+  /**
+   * Set up provider event listeners for network changes
+   */
+  private setupProviderEventListeners(): void {
+    if (!this.provider) {
+      return;
+    }
+
+    // Listen for network changes (if provider supports it)
+    try {
+      // Some providers emit 'network' events
+      if ('on' in this.provider && typeof this.provider.on === 'function') {
+        this.provider.on('network', this.handleProviderNetworkChange.bind(this));
+      }
+    } catch (error) {
+      console.warn('Failed to set up provider event listeners:', error);
+    }
+  }
+
+  /**
+   * Remove provider event listeners
+   */
+  private removeProviderEventListeners(): void {
+    if (!this.provider) {
+      return;
+    }
+
+    try {
+      if ('off' in this.provider && typeof this.provider.off === 'function') {
+        this.provider.off('network', this.handleProviderNetworkChange.bind(this));
+      }
+    } catch (error) {
+      console.warn('Failed to remove provider event listeners:', error);
+    }
+  }
+
+  /**
+   * Handle provider network change events
+   */
+  private async handleProviderNetworkChange(newNetwork: any, _oldNetwork?: any): Promise<void> {
+    try {
+      const newChainId = Number(newNetwork.chainId);
+      
+      if (this.currentNetwork && this.currentNetwork.chainId !== newChainId) {
+        // Network changed - check if we should auto-switch
+        await this.handleAutoNetworkSwitch(newChainId);
+      }
+    } catch (error) {
+      console.warn('Error handling provider network change:', error);
+    }
+  }
+
+  /**
+   * Check for network mismatch between provider and current configuration
+   */
+  async checkNetworkMismatch(): Promise<void> {
+    if (!this.provider || !this.currentNetwork) {
+      return;
+    }
+
+    try {
+      const providerNetwork = await this.detectProviderNetwork();
+      
+      if (providerNetwork && providerNetwork.chainId !== this.currentNetwork.chainId) {
+        // Network mismatch detected
+        this.notifyNetworkMismatch(this.currentNetwork.chainId, providerNetwork.chainId);
+      }
+    } catch (error) {
+      // Ignore network detection errors during monitoring
+    }
+  }
+
+  /**
+   * Handle automatic network switching when provider network changes
+   */
+  private async handleAutoNetworkSwitch(newChainId: number): Promise<void> {
+    try {
+      // Check if the new network is supported
+      if (NetworkManager.isNetworkSupported(newChainId)) {
+        // Auto-switch to the new network
+        await this.switchNetwork(newChainId);
+      } else {
+        // Notify about unsupported network
+        this.notifyNetworkMismatch(this.currentNetwork?.chainId || 0, newChainId);
+      }
+    } catch (error) {
+      console.warn('Failed to auto-switch network:', error);
+      this.notifyNetworkMismatch(this.currentNetwork?.chainId || 0, newChainId);
+    }
+  }
+
+  /**
+   * Auto-detect and switch to provider network
+   */
+  async autoDetectAndSwitchNetwork(): Promise<NetworkInfo | null> {
+    if (!this.provider) {
+      throw new LukasSDKError(
+        LukasSDKErrorCode.PROVIDER_NOT_AVAILABLE,
+        'Provider not available for network detection'
+      );
+    }
+
+    try {
+      const providerNetwork = await this.detectProviderNetwork();
+      
+      if (!providerNetwork) {
+        throw new LukasSDKError(
+          LukasSDKErrorCode.NETWORK_CONNECTION_FAILED,
+          'Failed to detect provider network'
+        );
+      }
+
+      // Check if the detected network is supported
+      if (!NetworkManager.isNetworkSupported(providerNetwork.chainId)) {
+        throw new LukasSDKError(
+          LukasSDKErrorCode.NETWORK_NOT_SUPPORTED,
+          `Detected network ${providerNetwork.chainId} (${providerNetwork.name}) is not supported`
+        );
+      }
+
+      // Switch to the detected network
+      return await this.switchNetwork(providerNetwork.chainId);
+    } catch (error) {
+      if (error instanceof LukasSDKError) {
+        throw error;
+      }
+      throw new LukasSDKError(
+        LukasSDKErrorCode.NETWORK_CONNECTION_FAILED,
+        'Failed to auto-detect and switch network',
+        error
+      );
+    }
+  }
+
+  /**
+   * Add network mismatch listener
+   */
+  onNetworkMismatch(listener: (expected: number, actual: number) => void): () => void {
+    this.networkMismatchListeners.push(listener);
+    
+    // Return unsubscribe function
+    return () => {
+      const index = this.networkMismatchListeners.indexOf(listener);
+      if (index > -1) {
+        this.networkMismatchListeners.splice(index, 1);
+      }
+    };
+  }
+
+  /**
+   * Notify all listeners of network mismatch
+   */
+  private notifyNetworkMismatch(expectedChainId: number, actualChainId: number): void {
+    this.networkMismatchListeners.forEach(listener => {
+      try {
+        listener(expectedChainId, actualChainId);
+      } catch (error) {
+        console.error('Error in network mismatch listener:', error);
+      }
+    });
+  }
+
+  /**
+   * Get network monitoring status
+   */
+  isNetworkMonitoringActive(): boolean {
+    return this.isMonitoringNetwork;
+  }
+
+  /**
+   * Force network detection and validation
+   */
+  async validateCurrentNetwork(): Promise<{ isValid: boolean; expected?: number; actual?: number }> {
+    if (!this.provider || !this.currentNetwork) {
+      return { isValid: false };
+    }
+
+    try {
+      const providerNetwork = await this.detectProviderNetwork();
+      
+      if (!providerNetwork) {
+        return { isValid: false };
+      }
+
+      const isValid = providerNetwork.chainId === this.currentNetwork.chainId;
+      
+      return {
+        isValid,
+        expected: this.currentNetwork.chainId,
+        actual: providerNetwork.chainId,
+      };
+    } catch (error) {
+      return { isValid: false };
+    }
+  }
+
+  /**
+   * Clean up resources
+   */
+  destroy(): void {
+    this.stopNetworkMonitoring();
+    this.networkChangeListeners = [];
+    this.networkMismatchListeners = [];
   }
 }

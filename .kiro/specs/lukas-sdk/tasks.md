@@ -255,43 +255,43 @@
   - Create event timestamp and metadata handling
   - _Requirements: 5.1_
 
-- [ ] 9. Implement Network Management
-- [ ] 9.1 Create NetworkManager for multi-network support
+- [x] 9. Implement Network Management
+- [x] 9.1 Create NetworkManager for multi-network support
   - Implement network switching and configuration
   - Add supported network definitions and validation
   - Handle contract address mapping per network
   - _Requirements: 10.1, 10.2, 10.3_
 
-- [ ] 9.2 Write property test for network switching
+- [x] 9.2 Write property test for network switching
   - **Property 25: Network switching consistency**
   - **Validates: Requirements 10.2**
 
-- [ ] 9.3 Add testnet and custom network support
+- [x] 9.3 Add testnet and custom network support
   - Implement testnet configuration and contract addresses
   - Add custom network configuration capabilities
   - Create network validation and error handling
   - _Requirements: 10.3, 10.4, 10.5_
 
-- [ ] 9.4 Implement automatic network detection
+- [x] 9.4 Implement automatic network detection
   - Add provider network detection and switching
   - Implement network change event handling
   - Create network mismatch detection and warnings
   - _Requirements: 10.2_
 
-- [ ] 10. Create React integration layer
-- [ ] 10.1 Implement React hooks for SDK integration
+- [x] 10. Create React integration layer
+- [x] 10.1 Implement React hooks for SDK integration
   - Create useTokenBalance, useTokenInfo, and usePegStatus hooks
   - Add useVaultStatus and useLiquidityPosition hooks
   - Implement automatic re-fetching and caching logic
   - _Requirements: 8.4_
 
-- [ ] 10.2 Add wagmi and viem compatibility layer
+- [x] 10.2 Add wagmi and viem compatibility layer
   - Create adapters for existing wagmi configurations
   - Implement viem provider integration
   - Add compatibility with existing wallet connection patterns
   - _Requirements: 8.1, 8.3_
 
-- [ ] 10.3 Implement React event subscriptions
+- [x] 10.3 Implement React event subscriptions
   - Create useEventSubscription hook for real-time updates
   - Add automatic cleanup on component unmount
   - Implement React-friendly event state management

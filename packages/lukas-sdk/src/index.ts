@@ -28,7 +28,8 @@ export { LukasSDKError, LukasSDKErrorCode } from './errors/LukasSDKError';
 export * from './utils';
 
 // React hooks (optional, only if React is available)
-export * from './react';
+// Commented out for now to avoid build issues when React types are not available
+// export * from './react';
 
 // Version
 export const VERSION = '0.1.0';

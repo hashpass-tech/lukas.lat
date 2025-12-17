@@ -2,26 +2,23 @@
  * React hooks and utilities for the Lukas SDK
  * 
  * These exports are optional and only available when React is installed
+ * 
+ * Note: This file will cause build errors if React is not installed.
+ * The SDK is designed to work without React, but React integration
+ * requires React to be available as a peer dependency.
  */
 
-// Re-export everything, but make it conditional
-const reactHooks: Record<string, unknown> = {};
+// Since React is a peer dependency, we assume it's available when this module is imported
+// If React is not available, the consuming application should not import from this module
 
-try {
-  // Only load React hooks if React is available
-  if (typeof window !== 'undefined' || typeof global !== 'undefined') {
-    // This will be implemented in later tasks
-    // reactHooks = require('./hooks');
-  }
-} catch (error) {
-  // React not available, hooks will be empty
-}
+// Hooks
+export * from './hooks';
 
-export const {
-  useTokenBalance,
-  useTokenInfo,
-  usePegStatus,
-  useVaultStatus,
-  useLiquidityPosition,
-  useEventSubscription,
-} = reactHooks;
+// Context
+export * from './context/LukasSDKContext';
+
+// Providers  
+export * from './providers';
+
+// Adapters
+export * from './adapters';
