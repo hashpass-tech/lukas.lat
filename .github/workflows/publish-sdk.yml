@@ -18,13 +18,8 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '22'
+          node-version: '18'
           registry-url: 'https://registry.npmjs.org'
-
-      - name: Install pnpm
-        uses: pnpm/action-setup@v2
-        with:
-          version: 8
 
       - name: Extract version from tag
         id: extract_version
@@ -33,15 +28,19 @@ jobs:
           echo "version=$TAG" >> $GITHUB_OUTPUT
           echo "Extracted version: $TAG"
 
-      - name: Install SDK dependencies and build
+      - name: Prepare SDK for standalone build
         run: |
-          cd packages/lukas-sdk
+          # Copy SDK to a temporary directory to avoid workspace issues
+          cp -r packages/lukas-sdk /tmp/lukas-sdk-build
+          cd /tmp/lukas-sdk-build
+          
+          # Install dependencies in the standalone directory
           npm install
-          echo "Dependencies installed"
+          echo "Dependencies installed in standalone directory"
 
       - name: Update package version
         run: |
-          cd packages/lukas-sdk
+          cd /tmp/lukas-sdk-build
           # Only update version if it's different from current version
           CURRENT_VERSION=$(node -p "require('./package.json').version")
           if [ "$CURRENT_VERSION" != "${{ steps.extract_version.outputs.version }}" ]; then
@@ -53,23 +52,23 @@ jobs:
 
       - name: Run type check
         run: |
-          cd packages/lukas-sdk
+          cd /tmp/lukas-sdk-build
           npm run type-check
 
       - name: Run tests
         run: |
-          cd packages/lukas-sdk
+          cd /tmp/lukas-sdk-build
           npm run test
 
       - name: Build package
         run: |
-          cd packages/lukas-sdk
+          cd /tmp/lukas-sdk-build
           npm run build
 
       - name: Generate changelog
         id: changelog
         run: |
-          cd packages/lukas-sdk
+          cd /tmp/lukas-sdk-build
           # Create a simple changelog entry
           echo "## [${{ steps.extract_version.outputs.version }}] - $(date +'%Y-%m-%d')" > CHANGELOG_ENTRY.md
           echo "" >> CHANGELOG_ENTRY.md
@@ -95,7 +94,7 @@ jobs:
 
       - name: Publish to npm
         run: |
-          cd packages/lukas-sdk
+          cd /tmp/lukas-sdk-build
           npm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
