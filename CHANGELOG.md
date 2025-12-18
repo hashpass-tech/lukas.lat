@@ -17,13 +17,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-
-
 ### Changed
-
-
+- Cleaned up and reorganized changelog with proper version ordering
+- Removed duplicate version entries and empty sections
+- Improved changelog structure for better maintainability
 
 ### Fixed
+- Fixed changelog formatting and consistency across all version entries
 
 
 
