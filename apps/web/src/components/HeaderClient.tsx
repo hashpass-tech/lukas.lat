@@ -1,6 +1,7 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import Link from 'next/link';
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { LightPullThemeSwitcher } from "@/components/LightPullThemeSwitcher";
 import { WalletHeader } from "@/components/WalletHeader";
@@ -14,6 +15,14 @@ import { useSidebar } from "@/contexts/SidebarContext";
 export function HeaderClient() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const { setMobileSidebarOpen } = useSidebar();
+  const [homeHref, setHomeHref] = useState<string>('/');
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const hostname = window.location.hostname;
+    const isLocal = hostname === 'localhost' || hostname === '127.0.0.1';
+    setHomeHref(isLocal ? 'http://localhost:3000' : 'https://lukas.lat');
+  }, []);
 
   return (
     <div className="pointer-events-auto w-full px-3 sm:px-4 py-2">
@@ -21,12 +30,12 @@ export function HeaderClient() {
         <nav className="flex h-12 sm:h-14 items-center justify-between px-3 sm:px-4 gap-2 sm:gap-3">
           {/* Left: brand + language */}
           <div className="flex items-center gap-3 min-w-0">
-            <div className="flex items-center gap-2 rounded-md px-2 py-1 hover:bg-accent/60 transition-colors">
+            <Link href="/" className="flex items-center gap-2 rounded-md px-2 py-1 hover:bg-accent/60 transition-colors">
               <span className="text-lg sm:text-xl font-mono font-bold tracking-tight">
                 <span className="sm:hidden"><Trans i18nKey="brand.name" fallback="$LUKAS" /></span>
                 <span className="hidden sm:inline"><Trans i18nKey="brand.name.full" fallback="$(LKS) LUKAS" /></span>
               </span>
-            </div>
+            </Link>
             <div className="hidden sm:flex items-center gap-2">
               <LanguageSwitcher />
               <DownloadButton />
@@ -58,7 +67,7 @@ export function HeaderClient() {
         <div className="fixed inset-0 z-[70] flex sm:hidden">
           <div className="w-3/4 max-w-xs h-full bg-background/95 backdrop-blur-xl border-r border-border flex flex-col p-4 gap-4">
             <div className="flex items-center justify-between mb-2">
-              <span className="text-base font-mono font-bold"><Trans i18nKey="brand.name" fallback="$LUKAS" /></span>
+              <Link href="/" className="text-base font-mono font-bold"><Trans i18nKey="brand.name" fallback="$LUKAS" /></Link>
               <button
                 type="button"
                 className="flex h-8 w-8 items-center justify-center rounded-md border border-border bg-background/80"
