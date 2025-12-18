@@ -23,7 +23,7 @@ const sidebars = {
     {
       type: 'category',
       label: 'Smart Contracts',
-      items: ['contracts/overview', 'contracts/deployment'],
+      items: ['contracts/overview', 'contracts/deployment', 'contracts/deployments'],
     },
     {
       type: 'category',

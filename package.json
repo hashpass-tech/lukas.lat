@@ -12,11 +12,15 @@
   },
   "scripts": {
     "dev": "npm run dev --workspace=apps/web",
+    "dev:web": "PORT=3000 pnpm --filter web dev",
+    "dev:docs": "PORT=3001 pnpm --filter docs dev",
+    "dev:all": "(PORT=3000 pnpm --filter web dev) & (PORT=3001 pnpm --filter docs dev) & wait",
     "build": "npm run build --workspace=apps/web",
     "start": "npm run start --workspace=apps/web",
     "version:patch": "node scripts/version.js patch",
     "version:minor": "node scripts/version.js minor",
     "version:major": "node scripts/version.js major",
-    "version:current": "node scripts/version.js"
+    "version:current": "node scripts/version.js",
+    "sync-deployments": "node scripts/sync-deployments.js"
   }
 }

@@ -1,0 +1,94 @@
+{
+  "networks": {
+    "80002": {
+      "name": "Polygon Amoy Testnet",
+      "chainId": 80002,
+      "rpcUrl": "https://rpc-amoy.polygon.technology",
+      "blockExplorer": "https://amoy.polygonscan.com",
+      "contracts": {
+        "LukasToken": {
+          "address": "0xaee0f26589a21ba4547765f630075262f330f1cb",
+          "deployedAt": "2025-12-17T20:10:24.158Z",
+          "deployer": "0x4f36dc378d1c78181b3f544a81e8951fb4838ad9",
+          "version": "1.0.0",
+          "verified": false
+        },
+        "StabilizerVault": {
+          "address": "0x5c5bc89db3f3e3e3e3e3e3e3e3e3e3e3e3e3e3e3",
+          "deployedAt": "2025-12-17T20:23:32.684Z",
+          "deployer": "0x4f36dc378d1c78181b3f544a81e8951fb4838ad9",
+          "version": "1.0.0",
+          "verified": false
+        },
+        "LatAmBasketIndex": {
+          "address": "0x...",
+          "deployedAt": null,
+          "deployer": null,
+          "version": "1.0.0",
+          "verified": false
+        },
+        "LukasHook": {
+          "address": "0x...",
+          "deployedAt": null,
+          "deployer": null,
+          "version": "1.0.0",
+          "verified": false
+        },
+        "USDC": {
+          "address": "0x41e94eb019c0762f9bfcf9fb1e58725bfb0e7582",
+          "deployedAt": null,
+          "deployer": null,
+          "version": "external",
+          "verified": true,
+          "note": "Official USDC on Polygon Amoy"
+        }
+      }
+    },
+    "137": {
+      "name": "Polygon Mainnet",
+      "chainId": 137,
+      "rpcUrl": "https://polygon-rpc.com",
+      "blockExplorer": "https://polygonscan.com",
+      "contracts": {
+        "LukasToken": {
+          "address": null,
+          "deployedAt": null,
+          "deployer": null,
+          "version": "1.0.0",
+          "verified": false
+        },
+        "StabilizerVault": {
+          "address": null,
+          "deployedAt": null,
+          "deployer": null,
+          "version": "1.0.0",
+          "verified": false
+        },
+        "LatAmBasketIndex": {
+          "address": null,
+          "deployedAt": null,
+          "deployer": null,
+          "version": "1.0.0",
+          "verified": false
+        },
+        "LukasHook": {
+          "address": null,
+          "deployedAt": null,
+          "deployer": null,
+          "version": "1.0.0",
+          "verified": false
+        },
+        "USDC": {
+          "address": "0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359",
+          "deployedAt": null,
+          "deployer": null,
+          "version": "external",
+          "verified": true,
+          "note": "Official USDC on Polygon"
+        }
+      }
+    }
+  },
+  "lastUpdated": "2025-12-17T20:32:00.000Z",
+  "version": "1.0.0"
+}
