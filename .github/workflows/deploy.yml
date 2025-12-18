@@ -48,6 +48,11 @@ jobs:
       - name: Install dependencies
         run: pnpm install --no-frozen-lockfile
 
+      - name: Build SDK
+        run: |
+          cd packages/lukas-sdk
+          pnpm build
+
       - name: Validate critical environment variables
         shell: bash
         env:
