@@ -7,7 +7,8 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ExternalLink, Network, Shield, FileText, Copy, Check } from "lucide-react";
 import { useWallet } from "@/app/providers/wallet-provider";
-import { VERIFIED_CONTRACTS_BY_CHAIN, WEB3_NETWORKS, getNetworkByChainId } from "@/lib/web3-config";
+import { useLukasSDK } from "@/app/providers/lukas-sdk-provider";
+import { WEB3_NETWORKS, getNetworkByChainId } from "@/lib/web3-config";
 
 type Props = {
   open: boolean;
@@ -16,10 +17,38 @@ type Props = {
 
 export function Web3SettingsDialog({ open, onOpenChange }: Props) {
   const { address, chainId, switchNetwork } = useWallet();
+  const { networkInfo, isInitialized } = useLukasSDK();
   const [copyOk, setCopyOk] = useState(false);
 
   const network = useMemo(() => getNetworkByChainId(chainId), [chainId]);
-  const contracts = useMemo(() => (chainId ? VERIFIED_CONTRACTS_BY_CHAIN[chainId] ?? [] : []), [chainId]);
+  
+  // Get contracts from SDK network info
+  const contracts = useMemo(() => {
+    if (!isInitialized || !networkInfo?.contracts) {
+      return [];
+    }
+    
+    const contractsList = [];
+    const { contracts: sdkContracts } = networkInfo;
+    
+    if (sdkContracts.lukasToken && sdkContracts.lukasToken !== '0x0000000000000000000000000000000000000000') {
+      contractsList.push({ name: 'LukasToken', address: sdkContracts.lukasToken });
+    }
+    if (sdkContracts.stabilizerVault && sdkContracts.stabilizerVault !== '0x0000000000000000000000000000000000000000') {
+      contractsList.push({ name: 'StabilizerVault', address: sdkContracts.stabilizerVault });
+    }
+    if (sdkContracts.latAmBasketIndex && sdkContracts.latAmBasketIndex !== '0x0000000000000000000000000000000000000000') {
+      contractsList.push({ name: 'LatAmBasketIndex', address: sdkContracts.latAmBasketIndex });
+    }
+    if (sdkContracts.lukasHook && sdkContracts.lukasHook !== '0x0000000000000000000000000000000000000000') {
+      contractsList.push({ name: 'LukasHook', address: sdkContracts.lukasHook });
+    }
+    if (sdkContracts.usdc && sdkContracts.usdc !== '0x0000000000000000000000000000000000000000') {
+      contractsList.push({ name: 'USDC', address: sdkContracts.usdc });
+    }
+    
+    return contractsList;
+  }, [isInitialized, networkInfo]);
 
   const onCopy = async (value: string) => {
     await navigator.clipboard.writeText(value);
@@ -107,36 +136,44 @@ export function Web3SettingsDialog({ open, onOpenChange }: Props) {
               <div className="font-medium">Verified contracts</div>
             </div>
 
-            {chainId ? (
+            {!isInitialized ? (
+              <div className="text-xs text-muted-foreground">Loading SDK contracts...</div>
+            ) : chainId ? (
               contracts.length > 0 ? (
                 <div className="space-y-2">
                   {contracts.map((c) => {
                     const url = network ? `${network.explorerBaseUrl}/address/${c.address}` : undefined;
                     return (
                       <div key={c.address} className="flex items-center justify-between gap-3 rounded-xl border border-border/60 bg-background/40 p-3">
-                        <div>
+                        <div className="flex-1 min-w-0">
                           <div className="text-sm font-medium">{c.name}</div>
                           <div className="text-xs font-mono text-muted-foreground break-all">{c.address}</div>
                         </div>
-                        <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-2 shrink-0">
                           <Button type="button" variant="outline" size="sm" onClick={() => onCopy(c.address)}>
-                            <Copy className="w-4 h-4" />
+                            {copyOk ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
                           </Button>
                           {url && (
-                            <a href={url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-xs text-primary hover:text-primary/80 underline">
-                              Explorer <ExternalLink className="w-3 h-3" />
+                            <a href={url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center w-8 h-8 rounded-md border border-border/60 hover:bg-accent hover:text-accent-foreground transition-colors">
+                              <ExternalLink className="w-4 h-4" />
                             </a>
                           )}
                         </div>
                       </div>
                     );
                   })}
+                  <div className="mt-3 pt-3 border-t border-border/60">
+                    <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                      <div className="w-2 h-2 rounded-full bg-green-500"></div>
+                      <span>SDK v0.2.4 - Contracts loaded from network {networkInfo?.chainId}</span>
+                    </div>
+                  </div>
                 </div>
               ) : (
-                <div className="text-xs text-muted-foreground">No verified contracts configured for this network.</div>
+                <div className="text-xs text-muted-foreground">No contracts deployed on this network yet.</div>
               )
             ) : (
-              <div className="text-xs text-muted-foreground">Select a network to view verified contracts.</div>
+              <div className="text-xs text-muted-foreground">Connect wallet to view contracts.</div>
             )}
           </div>
 

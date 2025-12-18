@@ -27,9 +27,9 @@ export { LukasSDKError, LukasSDKErrorCode } from './errors/LukasSDKError';
 // Utility exports
 export * from './utils';
 
-// React hooks (optional, only if React is available)
-// Commented out for now to avoid build issues when React types are not available
-// export * from './react';
+// React hooks and providers (optional, only if React is available)
+// These are exported separately to avoid build issues when React is not installed
+export * from './react';
 
 // Version
-export const VERSION = '0.1.0';
+export const VERSION = '0.2.5';
