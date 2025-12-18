@@ -40,7 +40,7 @@ export function Web3SettingsDialog({ open, onOpenChange }: Props) {
         </DialogHeader>
 
         <div className="space-y-6">
-          <div className="rounded-2xl border border-border/60 bg-background/30 p-4">
+          <div className="rounded-2xl border border-border/60 bg-background/30 p-3 sm:p-4">
             <div className="flex items-start justify-between gap-3">
               <div>
                 <div className="text-xs text-muted-foreground">Connected address</div>
@@ -76,7 +76,7 @@ export function Web3SettingsDialog({ open, onOpenChange }: Props) {
             </div>
           </div>
 
-          <div className="rounded-2xl border border-border/60 bg-background/30 p-4">
+          <div className="rounded-2xl border border-border/60 bg-background/30 p-3 sm:p-4">
             <div className="flex items-center gap-2 mb-3">
               <Network className="w-4 h-4" />
               <div className="font-medium">Network</div>
@@ -101,7 +101,7 @@ export function Web3SettingsDialog({ open, onOpenChange }: Props) {
             {!address && <div className="mt-2 text-xs text-muted-foreground">Connect a wallet to switch networks.</div>}
           </div>
 
-          <div className="rounded-2xl border border-border/60 bg-background/30 p-4">
+          <div className="rounded-2xl border border-border/60 bg-background/30 p-3 sm:p-4">
             <div className="flex items-center gap-2 mb-3">
               <Shield className="w-4 h-4" />
               <div className="font-medium">Verified contracts</div>
@@ -140,23 +140,7 @@ export function Web3SettingsDialog({ open, onOpenChange }: Props) {
             )}
           </div>
 
-          <div className="rounded-2xl border border-border/60 bg-background/30 p-4">
-            <div className="flex items-center gap-2 mb-3">
-              <FileText className="w-4 h-4" />
-              <div className="font-medium">Legal</div>
-            </div>
-
-            <div className="flex flex-col gap-2">
-              <Link href="/terms" className="inline-flex items-center justify-between rounded-xl border border-border/60 bg-background/40 px-4 py-3 text-sm hover:bg-background/60 transition-colors">
-                <span>Terms of Service</span>
-                <ExternalLink className="w-4 h-4" />
-              </Link>
-              <Link href="/privacy" className="inline-flex items-center justify-between rounded-xl border border-border/60 bg-background/40 px-4 py-3 text-sm hover:bg-background/60 transition-colors">
-                <span>Privacy Policy</span>
-                <ExternalLink className="w-4 h-4" />
-              </Link>
-            </div>
-          </div>
+          {/* Legal links removed from this dialog per design - keep modal focused on wallet/network settings */}
         </div>
       </DialogContent>
     </Dialog>

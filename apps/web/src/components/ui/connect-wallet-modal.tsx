@@ -80,9 +80,9 @@ export function ConnectWalletModal({
 
   return (
     <Dialog {...props}>
-      <DialogContent className="bg-card/95 dark:bg-card/95 backdrop-blur-2xl rounded-3xl p-8 max-w-md w-full border border-border shadow-2xl">
+      <DialogContent className="bg-card/95 dark:bg-card/95 backdrop-blur-2xl rounded-3xl p-6 sm:p-8 max-w-md w-full mx-4 sm:mx-auto border border-border shadow-2xl">
         <DialogHeader className="text-center mb-6">
-          <DialogTitle className="text-2xl font-bold text-foreground flex items-center justify-center gap-3">
+            <DialogTitle className="text-xl sm:text-2xl font-bold text-foreground flex items-center justify-center gap-3">
             <span className="text-3xl">🔗</span>
             Connect Wallet
           </DialogTitle>
@@ -101,16 +101,16 @@ export function ConnectWalletModal({
               key={wallet.id}
               variants={itemVariants}
               onClick={wallet.onConnect}
-              className="group flex items-center justify-between w-full px-6 py-4 text-foreground font-medium rounded-2xl border border-border bg-background/20 hover:bg-background/30 backdrop-blur-md transition-all duration-300 hover:shadow-xl hover:-translate-y-0.5"
+              className="group flex items-center justify-between w-full px-4 py-3 sm:px-6 sm:py-4 text-foreground font-medium rounded-2xl border border-border bg-background/20 hover:bg-background/30 backdrop-blur-md transition-all duration-300 hover:shadow-xl hover:-translate-y-0.5"
               aria-label={`Connect with ${wallet.name}`}
             >
               <div className="flex items-center gap-4">
-                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-slate-100 to-slate-200 dark:from-slate-800 dark:to-slate-700 flex items-center justify-center shadow-lg group-hover:shadow-xl transition-shadow">
-                  <wallet.icon className="h-8 w-8" />
+                <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-gradient-to-br from-slate-100 to-slate-200 dark:from-slate-800 dark:to-slate-700 flex items-center justify-center shadow-lg group-hover:shadow-xl transition-shadow">
+                  <wallet.icon className="h-6 w-6 sm:h-8 sm:w-8" />
                 </div>
                 <div className="text-left">
-                  <div className="font-semibold text-lg">{wallet.name}</div>
-                  <div className="text-sm text-muted-foreground">
+                  <div className="font-semibold text-base sm:text-lg">{wallet.name}</div>
+                  <div className="text-xs sm:text-sm text-muted-foreground">
                     {wallet.id === 'metamask' ? 'Most popular wallet' : 'Connect mobile wallets'}
                   </div>
                 </div>
@@ -119,19 +119,7 @@ export function ConnectWalletModal({
             </motion.button>
           ))}
         </motion.div>
-
-        <div className="mt-8 p-4 bg-muted/30 rounded-2xl border border-border/50">
-          <p className="text-xs text-muted-foreground text-center leading-relaxed">
-            By connecting your wallet, you agree to our{" "}
-            <Link href="/terms" className="text-primary hover:text-primary/80 underline transition-colors">
-              Terms of Service
-            </Link>{" "}
-            and{" "}
-            <Link href="/privacy" className="text-primary hover:text-primary/80 underline transition-colors">
-              Privacy Policy
-            </Link>
-          </p>
-        </div>
+        {/* Terms and privacy links intentionally removed for wallet settings modal */}
       </DialogContent>
     </Dialog>
   );
