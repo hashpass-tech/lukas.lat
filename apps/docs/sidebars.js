@@ -25,6 +25,19 @@ const sidebars = {
       label: 'Smart Contracts',
       items: ['contracts/overview', 'contracts/deployment'],
     },
+    {
+      type: 'category',
+      label: 'SDK',
+      items: [
+        'sdk/overview',
+        'sdk/installation',
+        'sdk/core-concepts',
+        'sdk/api-reference',
+        'sdk/examples',
+        'sdk/migration-guide',
+        'sdk/troubleshooting',
+      ],
+    },
   ],
 };
 

@@ -358,20 +358,20 @@
   - Implement stress testing for event subscriptions
   - _Requirements: 8.5_
 
-- [ ] 14. Documentation and examples
-- [ ] 14.1 Create comprehensive API documentation
+- [x] 14. Documentation and examples
+- [x] 14.1 Create comprehensive API documentation
   - Write detailed documentation for all public methods
   - Add TypeScript interface documentation
   - Create troubleshooting and FAQ sections
   - _Requirements: 9.1, 9.5_
 
-- [ ] 14.2 Implement example applications
+- [x] 14.2 Implement example applications
   - Create basic token interaction examples
   - Add advanced vault and liquidity examples
   - Write React integration examples
   - _Requirements: 9.3_
 
-- [ ] 14.3 Add migration guide from direct contract calls
+- [x] 14.3 Add migration guide from direct contract calls
   - Create step-by-step migration documentation
   - Add comparison examples showing before/after
   - Write best practices and optimization guides

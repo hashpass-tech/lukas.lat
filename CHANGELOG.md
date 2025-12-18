@@ -13,6 +13,33 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+## [SDK 0.2.1] - 2025-12-17
+
+### Added
+- Comprehensive SDK documentation in Docusaurus
+  - Overview: SDK introduction and architecture
+  - Installation: Detailed setup guide with troubleshooting
+  - Core Concepts: In-depth explanation of SDK patterns
+  - API Reference: Complete documentation of all methods and types
+  - Examples: Practical code examples for common use cases
+  - Migration Guide: Step-by-step guide from direct contract calls
+  - Troubleshooting: Solutions to common issues
+- Fast setup guide in SDK README with installation and usage examples
+- 5 runnable example applications:
+  - basic-usage.ts: SDK initialization and basic queries
+  - token-operations.ts: Token transfers, approvals, allowances
+  - oracle-and-vault.ts: Price oracle and vault operations
+  - network-management.ts: Network switching and monitoring
+  - react-integration.tsx: Complete React integration
+- Examples README with running instructions
+- DOCUMENTATION.md overview of all documentation structure
+
+### Changed
+- Updated Docusaurus sidebar to include SDK documentation section
+- Enhanced SDK README with better organization and examples
+
+### Fixed
+
 ## [0.2.15] - 2025-12-16
 
 ### Added
