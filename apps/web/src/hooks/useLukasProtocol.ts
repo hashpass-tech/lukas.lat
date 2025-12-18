@@ -8,6 +8,9 @@
 import { useLukasSDK } from '@/app/providers/lukas-sdk-provider';
 import { useCallback, useEffect, useState } from 'react';
 
+// Re-export for convenience
+export { useLukasSDK };
+
 export interface TokenInfo {
   name: string;
   symbol: string;

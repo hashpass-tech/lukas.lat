@@ -1,12 +1,12 @@
 'use client';
 
 import { useState } from 'react';
-import { useLukasSDK } from '../hooks/useLukasProtocol';
+import { useLukasProtocol } from '../hooks/useLukasProtocol';
 import { useSwap, useLukasPrice, useTokenBalance } from '@lukas-protocol/sdk/react';
 import { useAccount } from 'wagmi';
 
 export function SwapWidget() {
-  const { sdk } = useLukasSDK();
+  const { sdk } = useLukasProtocol();
   const { address } = useAccount();
   
   const [amountIn, setAmountIn] = useState('');
