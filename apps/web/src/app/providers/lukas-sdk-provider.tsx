@@ -59,16 +59,30 @@ export function LukasSDKProvider({ children }: LukasSDKProviderProps) {
         const targetChainId = chainId || 80002; // Default to Amoy testnet
         const config = createSDKConfig(targetChainId, isConnected);
 
+        console.log(`Initializing Lukas SDK v${VERSION} for chain ${targetChainId}...`);
+        
         const lukasSDK = new LukasSDK(config);
         
         setSdk(lukasSDK);
         setIsInitialized(true);
         
-        console.log(`Lukas SDK v${VERSION} initialized:`, lukasSDK.getNetworkInfo());
+        console.log(`Lukas SDK v${VERSION} initialized successfully:`, lukasSDK.getNetworkInfo());
       } catch (err) {
         console.error('Failed to initialize Lukas SDK:', err);
         setError(err instanceof Error ? err.message : 'Failed to initialize SDK');
         setIsInitialized(false);
+        
+        // Try to initialize with minimal config as fallback
+        try {
+          console.log('Attempting fallback initialization...');
+          const fallbackConfig = createSDKConfig(80002, false); // Amoy without provider
+          const fallbackSDK = new LukasSDK(fallbackConfig);
+          setSdk(fallbackSDK);
+          setIsInitialized(true);
+          console.log('Fallback SDK initialized successfully');
+        } catch (fallbackErr) {
+          console.error('Fallback initialization also failed:', fallbackErr);
+        }
       }
     };
 
@@ -76,10 +90,14 @@ export function LukasSDKProvider({ children }: LukasSDKProviderProps) {
 
     return () => {
       if (sdk) {
-        sdk.disconnect();
+        try {
+          sdk.disconnect();
+        } catch (err) {
+          console.warn('Error disconnecting SDK:', err);
+        }
       }
     };
-  }, [isConnected]); // Only reinitialize when connection status changes
+  }, [isConnected, chainId]); // Reinitialize when connection status or initial chain changes
 
   // Handle network changes
   useEffect(() => {
@@ -91,17 +109,32 @@ export function LukasSDKProvider({ children }: LukasSDKProviderProps) {
         
         // Only switch if network is different
         if (currentNetwork.chainId !== chainId) {
+          console.log(`Switching SDK from chain ${currentNetwork.chainId} to ${chainId}`);
+          
           const contractAddresses = getContractAddresses(chainId);
-          await sdk.switchNetwork(chainId, contractAddresses, {
-            name: getNetworkName(chainId),
-            rpcUrl: getRpcUrl(chainId),
-            blockExplorer: getBlockExplorer(chainId),
-          });
           
-          console.log('SDK network switched to:', chainId, sdk.getNetworkInfo());
-          
-          // Update network info after switching
-          setNetworkInfo(sdk.getNetworkInfo());
+          try {
+            await sdk.switchNetwork(chainId, contractAddresses, {
+              name: getNetworkName(chainId),
+              rpcUrl: getRpcUrl(chainId),
+              blockExplorer: getBlockExplorer(chainId),
+            });
+            
+            console.log('SDK network switched successfully to:', chainId, sdk.getNetworkInfo());
+            
+            // Update network info after switching
+            setNetworkInfo(sdk.getNetworkInfo());
+          } catch (switchError) {
+            // If switching fails, reinitialize the SDK with the new network
+            console.warn('Network switch failed, reinitializing SDK:', switchError);
+            
+            const config = createSDKConfig(chainId, isConnected);
+            const newSDK = new LukasSDK(config);
+            setSdk(newSDK);
+            setNetworkInfo(newSDK.getNetworkInfo());
+            
+            console.log('SDK reinitialized with new network:', chainId);
+          }
         }
       } catch (err) {
         console.error('Failed to sync SDK network:', err);
@@ -110,7 +143,7 @@ export function LukasSDKProvider({ children }: LukasSDKProviderProps) {
     };
 
     syncNetwork();
-  }, [chainId, sdk, isInitialized]);
+  }, [chainId, sdk, isInitialized, isConnected]);
 
   const contextValue = useMemo(() => ({
     sdk,
@@ -160,8 +193,10 @@ function createSDKConfig(chainId: number, isConnected: boolean): LukasSDKConfig 
 
 /**
  * Get contract addresses from deployments for a given chain
+ * @param chainId - The chain ID to get contracts for
+ * @param environment - 'stable' for production contracts, 'testing' for test contracts
  */
-function getContractAddresses(chainId: number) {
+function getContractAddresses(chainId: number, environment: 'stable' | 'testing' = 'stable') {
   // Load from deployments.json
   const deployments = require('../../../../../packages/contracts/deployments.json');
   const network = deployments.networks[chainId.toString()];
@@ -177,12 +212,30 @@ function getContractAddresses(chainId: number) {
     };
   }
 
+  // Helper to validate and normalize addresses
+  const normalizeAddress = (address: string | null | undefined): string => {
+    if (!address || address === '0x...' || address === 'null') {
+      return '0x0000000000000000000000000000000000000000';
+    }
+    return address;
+  };
+
+  // Get contracts from the specified environment (stable or testing)
+  const contracts = network.contracts[environment] || network.contracts.stable;
+  
+  // Use environment variable to override default (useful for development)
+  const useTestingContracts = process.env.NEXT_PUBLIC_USE_TESTING_CONTRACTS === 'true';
+  const selectedEnvironment = useTestingContracts ? 'testing' : environment;
+  const selectedContracts = network.contracts[selectedEnvironment] || network.contracts.stable;
+
+  console.log(`Loading ${selectedEnvironment} contracts for chain ${chainId}`);
+
   return {
-    lukasToken: network.contracts.LukasToken?.address || '0x0000000000000000000000000000000000000000',
-    stabilizerVault: network.contracts.StabilizerVault?.address || '0x0000000000000000000000000000000000000000',
-    latAmBasketIndex: network.contracts.LatAmBasketIndex?.address || '0x0000000000000000000000000000000000000000',
-    lukasHook: network.contracts.LukasHook?.address || '0x0000000000000000000000000000000000000000',
-    usdc: network.contracts.USDC?.address || '0x0000000000000000000000000000000000000000',
+    lukasToken: normalizeAddress(selectedContracts.LukasToken?.address),
+    stabilizerVault: normalizeAddress(selectedContracts.StabilizerVault?.address),
+    latAmBasketIndex: normalizeAddress(selectedContracts.LatAmBasketIndex?.address),
+    lukasHook: normalizeAddress(selectedContracts.LukasHook?.address),
+    usdc: normalizeAddress(selectedContracts.USDC?.address),
   };
 }
 
