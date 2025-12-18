@@ -6,16 +6,18 @@ import clsx from "clsx";
 type TTheme = "system" | "light" | "dark";
 
 export const MobileThemeSwitcher: React.FC = () => {
-  const getInitialTheme = (): TTheme => {
-    if (typeof window === "undefined") {
-      return "system";
-    }
-    return ((localStorage.getItem("theme") as TTheme) || "system");
-  };
-
-  const [theme, setTheme] = useState<TTheme>(getInitialTheme);
+  const [theme, setTheme] = useState<TTheme>("system");
 
   useEffect(() => {
+    if (typeof window === "undefined") return;
+    const storedTheme = localStorage.getItem("theme") as TTheme | null;
+    if (storedTheme) {
+      setTheme(storedTheme);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
     const root = document.documentElement;
 
     if (theme === "system") {

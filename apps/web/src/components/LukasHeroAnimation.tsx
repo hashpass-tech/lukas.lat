@@ -5,6 +5,7 @@ import { Trans } from '@/components/Trans';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { Play } from 'lucide-react';
 import { useTranslation } from '@/lib/translator';
+import { useSidebar } from '@/contexts/SidebarContext';
 
 // Orb component for the background
 const Orb = ({ size, x, y, color, delay }: { size: number; x: number; y: number; color: string; delay: number }) => {
@@ -38,6 +39,7 @@ const Orb = ({ size, x, y, color, delay }: { size: number; x: number; y: number;
 
 export const LukasHeroAnimation = () => {
     const { locale } = useTranslation();
+    const { isMobileSidebarOpen } = useSidebar();
     const [isMobile, setIsMobile] = useState(false);
     const titleWords = (isMobile ? '$LUKAS' : '$(LKS) LUKAS').split('');
     const [visibleWords, setVisibleWords] = useState(0);
@@ -50,9 +52,38 @@ export const LukasHeroAnimation = () => {
     const [coinAnchored, setCoinAnchored] = useState(false);
     const [coinVisible, setCoinVisible] = useState(false);
     const [videoModalOpen, setVideoModalOpen] = useState(false);
+    const [isAnyOverlayOpen, setIsAnyOverlayOpen] = useState(false);
     const [isHoveringCoin, setIsHoveringCoin] = useState(false);
     const [countdown, setCountdown] = useState(0);
     const [isCountingDown, setIsCountingDown] = useState(false);
+
+    useEffect(() => {
+        if (typeof window === 'undefined') return;
+
+        const computeOverlayState = () => {
+            const dialogOpen = !!document.querySelector(
+                '[data-dialog-content][data-state="open"], [data-dialog-overlay][data-state="open"], [role="dialog"][data-state="open"], [role="alertdialog"][data-state="open"], [data-state="open"][role="dialog"], [data-state="open"][role="alertdialog"]'
+            );
+
+            setIsAnyOverlayOpen(Boolean(isMobileSidebarOpen || videoModalOpen || dialogOpen));
+        };
+
+        computeOverlayState();
+
+        const observer = new MutationObserver(() => computeOverlayState());
+        observer.observe(document.body, {
+            subtree: true,
+            attributes: true,
+            attributeFilter: ['data-state', 'role', 'aria-hidden', 'class', 'style']
+        });
+
+        window.addEventListener('focus', computeOverlayState);
+
+        return () => {
+            observer.disconnect();
+            window.removeEventListener('focus', computeOverlayState);
+        };
+    }, [isMobileSidebarOpen, videoModalOpen]);
 
     // Ensure component is mounted for proper theme detection
     useEffect(() => {
@@ -364,7 +395,7 @@ export const LukasHeroAnimation = () => {
                 )}
             </div>
 
-            {!videoModalOpen && (
+            {!isAnyOverlayOpen && (
             <button
                 className="explore-btn"
                 style={{ animationDelay: '2.2s' }}

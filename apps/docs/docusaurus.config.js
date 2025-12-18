@@ -13,7 +13,7 @@ const config = {
   favicon: 'img/favicon.ico',
 
   url: 'https://lukas-latam.com',
-  baseUrl: '/',
+  baseUrl: '/documentation/',
 
   organizationName: 'lukas-latam',
   projectName: 'lukas-docs',
@@ -34,9 +34,7 @@ const config = {
         docs: {
           sidebarPath: './sidebars.js',
         },
-        blog: {
-          showReadingTime: true,
-        },
+        blog: false,
         theme: {
           customCss: './src/css/custom.css',
         },
@@ -57,7 +55,6 @@ const config = {
             position: 'left',
             label: 'Documentation',
           },
-          {to: '/blog', label: 'Blog', position: 'left'},
           {
             type: 'localeDropdown',
             position: 'right',
@@ -72,7 +69,7 @@ const config = {
             items: [
               {
                 label: 'Getting Started',
-                to: '/docs/intro',
+                to: 'docs/intro',
               },
             ],
           },

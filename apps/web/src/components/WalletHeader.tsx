@@ -25,10 +25,12 @@ import {
   ExternalLink, 
   LogOut,
   ChevronDown,
-  Check
+  Check,
+  Settings
 } from 'lucide-react';
 import { DitheringShader } from '@/components/ui/dithering-shader';
 import { useTranslation } from '@/lib/translator';
+import { Web3SettingsDialog } from '@/components/Web3SettingsDialog';
 
 interface WalletHeaderProps {
   connectText?: string;
@@ -52,6 +54,7 @@ export function WalletHeader({ connectText = "Connect Wallet", connectTextKey }:
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedWallet, setSelectedWallet] = useState<string | null>(null);
   const [copiedAddress, setCopiedAddress] = useState(false);
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
 
   const formatAddress = (addr: string) => {
     return `${addr.slice(0, 6)}...${addr.slice(-4)}`;
@@ -172,6 +175,16 @@ export function WalletHeader({ connectText = "Connect Wallet", connectTextKey }:
               <span>View on Etherscan</span>
             </div>
           </DropdownMenuItem>
+
+          <DropdownMenuItem
+            onClick={() => setIsSettingsOpen(true)}
+            className="cursor-pointer rounded-lg"
+          >
+            <div className="flex items-center gap-2">
+              <Settings className="w-4 h-4" />
+              <span>Settings</span>
+            </div>
+          </DropdownMenuItem>
           
           <DropdownMenuSeparator />
           
@@ -185,6 +198,8 @@ export function WalletHeader({ connectText = "Connect Wallet", connectTextKey }:
             </div>
           </DropdownMenuItem>
         </DropdownMenuContent>
+
+        <Web3SettingsDialog open={isSettingsOpen} onOpenChange={setIsSettingsOpen} />
       </DropdownMenu>
     );
   }

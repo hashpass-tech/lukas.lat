@@ -1,8 +1,9 @@
 "use client";
 
-import { ReactNode, createContext, useContext, useState, useEffect } from 'react';
+import { ReactNode, createContext, useContext, useState, useEffect, useRef } from 'react';
 import EthereumProvider from '@walletconnect/ethereum-provider';
 import { MetamaskIcon, CoinbaseWalletIcon, WalletConnectIcon, AlchemyIcon } from '@/components/ui/connect-wallet-modal';
+import { formatChainIdHex } from '@/lib/web3-config';
 
 interface WalletState {
   address: string | null;
@@ -12,11 +13,14 @@ interface WalletState {
   connectingWalletId: string | null;
   error: string | null;
   walletType: 'traditional' | 'alchemy' | null; // Track which auth type
+  connectedWalletId: string | null;
+  chainId: number | null;
 }
 
 interface WalletContextType extends WalletState {
   connect: (walletType?: string) => Promise<void>;
   disconnect: () => void;
+  switchNetwork: (chainId: number) => Promise<void>;
   availableWallets: Array<{
     id: string;
     name: string;
@@ -52,18 +56,18 @@ const loadWalletState = (): WalletState | null => {
 };
 
 export function WalletProvider({ children }: { children: ReactNode }) {
-  // Initialize state from localStorage or default values
-  const [walletState, setWalletState] = useState<WalletState>(() => {
-    const savedState = loadWalletState();
-    return savedState || {
-      address: null,
-      isConnected: false,
-      isConnecting: false,
-      connectingWalletId: null,
-      error: null,
-      walletType: null,
-    };
+  const [walletState, setWalletState] = useState<WalletState>({
+    address: null,
+    isConnected: false,
+    isConnecting: false,
+    connectingWalletId: null,
+    error: null,
+    walletType: null,
+    connectedWalletId: null,
+    chainId: null,
   });
+
+  const providerRef = useRef<any>(null);
 
   // Wrapper for setWalletState that also saves to localStorage
   const updateWalletState = (newState: WalletState | ((prev: WalletState) => WalletState)) => {
@@ -124,17 +128,22 @@ export function WalletProvider({ children }: { children: ReactNode }) {
       throw new Error('WalletConnect project ID is not configured');
     }
 
+    const amoyRpc = process.env.NEXT_PUBLIC_AMOY_RPC_URL;
     const mainnetRpc = process.env.NEXT_PUBLIC_MAINNET_RPC_URL;
+
+    const rpcMap: Record<number, string> = {};
+    if (amoyRpc) rpcMap[80002] = amoyRpc;
+    if (mainnetRpc) rpcMap[1] = mainnetRpc;
 
     const provider = await EthereumProvider.init({
       projectId,
-      // Use Ethereum mainnet by default; extend this if you add more chains later
-      chains: [1],
+      // Use Amoy as the primary test chain, but keep mainnet available
+      chains: [80002, 1],
       showQrModal: true,
-      ...(mainnetRpc
-        ? { rpcMap: { 1: mainnetRpc } as Record<number, string> }
-        : {}),
+      ...(Object.keys(rpcMap).length > 0 ? { rpcMap } : {}),
     });
+
+    providerRef.current = provider;
 
     const accounts = await provider.enable();
 
@@ -143,6 +152,36 @@ export function WalletProvider({ children }: { children: ReactNode }) {
     }
 
     return accounts[0] as string;
+  };
+
+  const readChainId = async () => {
+    try {
+      const provider = providerRef.current ?? window.ethereum;
+      if (!provider?.request) return null;
+      const chainIdHex = await provider.request({ method: 'eth_chainId' });
+      if (typeof chainIdHex !== 'string') return null;
+      return parseInt(chainIdHex, 16);
+    } catch {
+      return null;
+    }
+  };
+
+  const switchNetwork = async (targetChainId: number) => {
+    const provider = providerRef.current ?? (typeof window !== 'undefined' ? window.ethereum : null);
+    if (!provider?.request) {
+      throw new Error('No wallet provider available');
+    }
+
+    await provider.request({
+      method: 'wallet_switchEthereumChain',
+      params: [{ chainId: formatChainIdHex(targetChainId) }],
+    });
+
+    const updatedChainId = await readChainId();
+    updateWalletState(prev => ({
+      ...prev,
+      chainId: updatedChainId ?? prev.chainId,
+    }));
   };
 
   const connectAlchemy = async () => {
@@ -200,10 +239,13 @@ export function WalletProvider({ children }: { children: ReactNode }) {
       let address: string | null = null;
       let authType: 'traditional' | 'alchemy' = 'traditional';
 
+      providerRef.current = null;
+
       switch (targetWallet) {
         case 'metamask':
           address = await connectMetaMask();
           authType = 'traditional';
+          providerRef.current = typeof window !== 'undefined' ? window.ethereum : null;
           break;
         case 'coinbase':
           address = await connectCoinbaseWallet();
@@ -224,6 +266,8 @@ export function WalletProvider({ children }: { children: ReactNode }) {
           break;
       }
 
+      const chainId = await readChainId();
+
       updateWalletState({
         address,
         isConnected: true,
@@ -231,6 +275,8 @@ export function WalletProvider({ children }: { children: ReactNode }) {
         connectingWalletId: null,
         error: null,
         walletType: authType,
+        connectedWalletId: targetWallet,
+        chainId,
       });
     } catch (error) {
       updateWalletState({
@@ -240,6 +286,8 @@ export function WalletProvider({ children }: { children: ReactNode }) {
         connectingWalletId: null,
         error: error instanceof Error ? error.message : 'Failed to connect wallet',
         walletType: null,
+        connectedWalletId: null,
+        chainId: null,
       });
     }
   };
@@ -248,11 +296,13 @@ export function WalletProvider({ children }: { children: ReactNode }) {
     // Clear wallet connection data from storage
     if (typeof window !== 'undefined') {
       // Clear localStorage
+      localStorage.removeItem('walletState');
       localStorage.removeItem('walletconnected');
       localStorage.removeItem('walletType');
       localStorage.removeItem('walletAddress');
       
       // Clear sessionStorage
+      sessionStorage.removeItem('walletState');
       sessionStorage.removeItem('walletconnected');
       sessionStorage.removeItem('walletType');
       sessionStorage.removeItem('walletAddress');
@@ -275,7 +325,19 @@ export function WalletProvider({ children }: { children: ReactNode }) {
       connectingWalletId: null,
       error: null,
       walletType: null,
+      connectedWalletId: null,
+      chainId: null,
     });
+
+    try {
+      if (providerRef.current?.disconnect) {
+        providerRef.current.disconnect();
+      }
+    } catch {
+      // noop
+    }
+
+    providerRef.current = null;
 
     // Trigger a custom event for components to listen to
     if (typeof window !== 'undefined') {
@@ -328,7 +390,13 @@ export function WalletProvider({ children }: { children: ReactNode }) {
 
             if (accounts.length > 0 && accounts[0] === savedState.address) {
               // Connection is still valid, restore the state
-              updateWalletState(savedState);
+              providerRef.current = window.ethereum;
+              const chainId = await readChainId();
+              updateWalletState({
+                ...savedState,
+                connectedWalletId: savedState.connectedWalletId ?? 'metamask',
+                chainId,
+              });
               return;
             } else {
               // Connection is no longer valid, clear it
@@ -356,6 +424,8 @@ export function WalletProvider({ children }: { children: ReactNode }) {
               connectingWalletId: null,
               error: null,
               walletType: 'traditional',
+              connectedWalletId: 'metamask',
+              chainId: await readChainId(),
             });
           }
         }
@@ -381,19 +451,29 @@ export function WalletProvider({ children }: { children: ReactNode }) {
       }
     };
 
+    const handleChainChanged = (chainIdHex: string) => {
+      const nextChainId = typeof chainIdHex === 'string' ? parseInt(chainIdHex, 16) : null;
+      updateWalletState(prev => ({
+        ...prev,
+        chainId: nextChainId,
+      }));
+    };
+
     if (window.ethereum?.on && window.ethereum?.removeListener) {
       window.ethereum.on('accountsChanged', handleAccountsChanged);
+      window.ethereum.on('chainChanged', handleChainChanged);
 
       return () => {
         if (window.ethereum?.removeListener) {
           window.ethereum.removeListener('accountsChanged', handleAccountsChanged);
+          window.ethereum.removeListener('chainChanged', handleChainChanged);
         }
       };
     }
   }, []);
 
   return (
-    <WalletContext.Provider value={{ ...walletState, connect, disconnect, availableWallets }}>
+    <WalletContext.Provider value={{ ...walletState, connect, disconnect, switchNetwork, availableWallets }}>
       {children}
     </WalletContext.Provider>
   );
@@ -404,8 +484,8 @@ declare global {
   interface Window {
     ethereum?: {
       request: (args: { method: string; params?: any[] }) => Promise<any>;
-      on: (event: string, handler: (accounts: string[]) => void) => void;
-      removeListener: (event: string, handler: (accounts: string[]) => void) => void;
+      on: (event: string, handler: (...args: any[]) => void) => void;
+      removeListener: (event: string, handler: (...args: any[]) => void) => void;
     };
     coinbaseWalletExtension?: {
       request: (args: { method: string; params?: any[] }) => Promise<any>;

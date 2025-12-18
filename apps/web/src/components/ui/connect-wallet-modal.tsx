@@ -1,5 +1,6 @@
 import * as React from "react";
 import { motion } from "framer-motion";
+import Link from "next/link";
 import { cn } from "@/lib/utils";
 
 import {
@@ -122,13 +123,13 @@ export function ConnectWalletModal({
         <div className="mt-8 p-4 bg-muted/30 rounded-2xl border border-border/50">
           <p className="text-xs text-muted-foreground text-center leading-relaxed">
             By connecting your wallet, you agree to our{" "}
-            <a href={termsUrl} className="text-primary hover:text-primary/80 underline transition-colors">
+            <Link href="/terms" className="text-primary hover:text-primary/80 underline transition-colors">
               Terms of Service
-            </a>{" "}
+            </Link>{" "}
             and{" "}
-            <a href={policyUrl} className="text-primary hover:text-primary/80 underline transition-colors">
+            <Link href="/privacy" className="text-primary hover:text-primary/80 underline transition-colors">
               Privacy Policy
-            </a>
+            </Link>
           </p>
         </div>
       </DialogContent>

@@ -1,10 +1,7 @@
 import type { Metadata } from "next";
-import StyledComponentsRegistry from "@/lib/registry";
-import { Providers } from "../providers/providers";
 import { TranslationProvider } from "@/components/TranslationProvider";
 import HashPassBrandingWrapper from "@/components/HashPassBrandingWrapper";
 import { HeaderClient } from "@/components/HeaderClient";
-import { HtmlLayout } from "@/components/HtmlLayout";
 import { createMetadata } from "@/lib/metadata";
 import { SidebarProvider } from "@/contexts/SidebarContext";
 
@@ -22,24 +19,16 @@ export default async function RootLayout(props: any) {
   const lang = resolvedParams?.lang ?? "en";
 
   return (
-    <HtmlLayout
-      lang={lang}
-      className={jetbrainsMono.className}
-      bodyClassName="min-h-screen"
-    >
-      <StyledComponentsRegistry>
-        <Providers>
-          <TranslationProvider initialLocale={lang as any}>
-            <SidebarProvider>
-              <div className="fixed top-0 left-0 w-full z-50 pointer-events-none">
-                <HeaderClient />
-              </div>
-              <HashPassBrandingWrapper />
-              {children}
-            </SidebarProvider>
-          </TranslationProvider>
-        </Providers>
-      </StyledComponentsRegistry>
-    </HtmlLayout>
+    <TranslationProvider initialLocale={lang as any}>
+      <SidebarProvider>
+        <div className={`min-h-screen ${jetbrainsMono.className}`}>
+          <div className="fixed top-0 left-0 w-full z-50 pointer-events-none">
+            <HeaderClient />
+          </div>
+          <HashPassBrandingWrapper />
+          {children}
+        </div>
+      </SidebarProvider>
+    </TranslationProvider>
   );
 }

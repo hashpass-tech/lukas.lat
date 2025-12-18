@@ -83,6 +83,18 @@ jobs:
           NODE_ENV: production
           NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID: ${{ secrets.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID }}
 
+      - name: Build docs
+        run: |
+          cd apps/docs
+          pnpm build
+
+      - name: Merge docs into web export
+        shell: bash
+        run: |
+          mkdir -p apps/web/out/documentation
+          rm -rf apps/web/out/documentation/*
+          cp -R apps/docs/build/* apps/web/out/documentation/
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
