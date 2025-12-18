@@ -5,17 +5,6 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-
-## [0.2.20] - 2025-12-18
-
-### Changed
-- Manual version and tag sync to resolve version mismatches between local and remote
-- Forced v0.2.19 tag to latest commit for correct production/CI versioning
-- Ran versioning script and changelog updates to ensure all version files are in sync
-
-### Fixed
-- Fixed production showing outdated version due to tag mismatch
-
 ## [Unreleased]
 
 ### Added
@@ -25,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 ## [0.2.23] - 2025-12-18
+
 ### Added
 - Version 0.2.23 release
 
@@ -40,90 +30,52 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-
-
-
-
 ## [0.2.21] - 2025-12-18
 
 ### Added
 
-
-
 ### Changed
-
 - Bump version to 0.2.20 (dd7bb83)
 - Include apps/docs in bumps (a97ff34)
 
 ### Fixed
-
 - Use Next.js Link for brand to enable client-side routing to home (88267c0)
-
-
 
 ## [0.2.20] - 2025-12-18
 
-### Added
-
-
-
 ### Changed
-
-
+- Manual version and tag sync to resolve version mismatches between local and remote
+- Forced v0.2.19 tag to latest commit for correct production/CI versioning
+- Ran versioning script and changelog updates to ensure all version files are in sync
 
 ### Fixed
-
-
-
-
+- Fixed production showing outdated version due to tag mismatch
 
 ## [0.2.19] - 2025-12-18
 
 ### Added
 
-
-
 ### Changed
-
-
+- Version sync and footer fixes
 
 ### Fixed
-
-
-
-
 
 ## [0.2.18] - 2025-12-18
 
 ### Added
 
-
-
 ### Changed
 
-
-
 ### Fixed
-
-
-
-
 
 ## [0.2.17] - 2025-12-18
 
 ### Added
 
-
-
 ### Changed
-
-- Version sync and footer fixes for v0.2.19 (bb0e251)
+- Version sync and footer fixes for v0.2.19
 
 ### Fixed
-
-
-
-
 
 ## [SDK 0.2.1] - 2025-12-17
 
@@ -152,61 +104,43 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-## [0.2.15] - 2025-12-16
+## [0.2.16] - 2025-12-16
 
 ### Added
 
-- Add wallet session persistence (63f485a)
-
 ### Changed
-
-- Clean up duplicate changelog entries (886894a)
 
 ### Fixed
 
+## [0.2.15] - 2025-12-16
+
+### Added
+- Add wallet session persistence (63f485a)
+
+### Changed
+- Clean up duplicate changelog entries (886894a)
+
+### Fixed
 - Resolve build errors for static export (e065754)
-
-
 
 ## [0.2.14] - 2025-12-16
 
 ### Added
 
-
-
 ### Changed
 
-
-
 ### Fixed
-
-
-
-
 
 ## [0.2.13] - 2025-12-16
 
 ### Added
 
-
-
 ### Changed
-
-
 
 ### Fixed
 
-
-
-
-
-
-
-
-
-
-
 ## [0.2.12] - 2025-12-16
+
 ### Added
 
 ### Changed
@@ -215,6 +149,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 ## [0.2.11] - 2025-12-16
+
 ### Added
 
 ### Changed
@@ -227,6 +162,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 ## [0.2.10] - 2025-12-16
+
 ### Added
 
 ### Changed
@@ -243,6 +179,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Made changelog modal dynamically show last 3 versions instead of hardcoded data
 - Fixed TypeScript error in changelog parsing function for better type safety
 - Cleaned up duplicate version entries and empty sections in CHANGELOG.md
+
+## [0.2.9] - 2025-12-16
+
+### Added
+
+### Changed
+
+### Fixed
 
 ## [0.2.8] - 2025-12-16
 
@@ -268,53 +212,69 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.2.7] - 2025-12-16
 
 ### Added
+
 ### Changed
+
 ### Fixed
 
 ## [0.2.6] - 2025-12-16
 
 ### Added
+
 ### Changed
+
 ### Fixed
 
 ## [0.2.5] - 2025-12-16
 
 ### Added
+
 ### Changed
+
 ### Fixed
 
 ## [0.2.4] - 2025-12-16
 
 ### Added
+
 ### Changed
+
 ### Fixed
 
 ## [0.2.3] - 2025-12-16
 
 ### Added
+
 ### Changed
+
 ### Fixed
 
 ## [0.2.2] - 2025-12-16
 
 ### Added
+
 ### Changed
+
 ### Fixed
 
 ## [0.2.1] - 2025-12-16
 
 ### Added
+
 ### Changed
+
 ### Fixed
 
 ## [0.2.0] - 2025-12-15
 
 ### Added
+
 ### Changed
+
 ### Fixed
 
-
 ## [0.1.64] - 2025-12-13
+
 ### Added
 - Optimized mobile modal positioning and responsiveness
 
@@ -328,6 +288,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed mobile modal layout to prevent overlap with other elements
 
 ## [0.1.63] - 2025-12-13
+
 ### Added
 - Download modal with PDF/TXT format selection
 - Share buttons for Twitter/X, Telegram, and copy link
@@ -344,155 +305,83 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-
-
 ### Changed
 
-
-
 ### Fixed
-
-
-
-
 
 ## [0.1.61] - 2025-12-12
 
 ### Added
 
-
-
 ### Changed
 
-
-
 ### Fixed
-
-
-
-
 
 ## [0.1.60] - 2025-12-12
 
 ### Added
 
-
-
 ### Changed
 
-
-
 ### Fixed
-
-
-
-
 
 ## [0.1.59] - 2025-12-12
 
 ### Added
 
-
-
 ### Changed
 
-
-
 ### Fixed
-
-
-
-
 
 ## [0.1.58] - 2025-12-12
 
 ### Added
 
-
-
 ### Changed
 
-
-
 ### Fixed
-
-
-
-
 
 ## [0.1.57] - 2025-12-12
 
 ### Added
 
-
-
 ### Changed
 
-
-
 ### Fixed
-
-
-
-
 
 ## [0.1.56] - 2025-12-12
 
 ### Added
 
-
-
 ### Changed
 
-
-
 ### Fixed
-
-
-
-
 
 ## [0.1.55] - 2025-12-12
 
 ### Added
 
-
-
 ### Changed
 
-
-
 ### Fixed
-
 - Use android-chrome-512x512.png for Twitter/OG image compatibility (a794501)
-
-
 
 ## [0.1.54] - 2025-12-11
 
 ### Added
 
-
-
 ### Changed
-
-
 
 ### Fixed
 
-
-
-
-
 ## [0.1.53] - 2025-12-11
-### Added
 
+### Added
 - Added `--check-build` flag to versioning script to run production build before bumping version
 
 ### Changed
 
 ### Fixed
-
 - Fixed WalletConnect project ID configuration to use correct AppKit-enabled project
 - Fixed TypeScript build error in wallet-provider by including connectingWalletId in all state updates
 
@@ -500,63 +389,43 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-
-
-### Changed
-
-
-
-### Fixed
-
-
-
-
-
-## [0.1.52] - 2025-12-11
-### Added
-
 ### Changed
 
 ### Fixed
 
 ## [0.1.51] - 2025-12-11
+
 ### Added
 
 ### Changed
 
 ### Fixed
-
- - Unified wallet connection loading state across desktop and mobile connect buttons, showing consistent spinners and disabled states while any wallet is connecting
+- Unified wallet connection loading state across desktop and mobile connect buttons, showing consistent spinners and disabled states while any wallet is connecting
 
 ## [0.1.50] - 2025-12-11
 
 ### Added
-
- - Internal improvements to the versioning tooling to better support auto-generated changelog entries
+- Internal improvements to the versioning tooling to better support auto-generated changelog entries
 
 ### Changed
-
- - Refined auto-changelog behavior when using `--auto-changelog` so that it can proceed with empty sections when appropriate
+- Refined auto-changelog behavior when using `--auto-changelog` so that it can proceed with empty sections when appropriate
 
 ### Fixed
-
- - Cleaned up duplicate 0.1.49 sections and removed noisy auto-commit entries from the changelog history
+- Cleaned up duplicate 0.1.49 sections and removed noisy auto-commit entries from the changelog history
 
 ## [0.1.49] - 2025-12-11
 
 ### Added
-
 - Optional `--auto-changelog` flag for the versioning script to always populate changelog entries from git commits when desired
 
 ### Changed
-
 - Improved versioning script behavior to skip empty releases by default and log clearer messages when no relevant changes are detected
 
 ### Fixed
-
 - Prevented internal auto-commit helper commits from polluting the autogenerated changelog entries
 
 ## [0.1.48] - 2025-12-11
+
 ### Added
 
 ### Changed
@@ -564,6 +433,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 ## [0.1.47] - 2025-12-11
+
 ### Added
 
 ### Changed
@@ -571,26 +441,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 ## [0.1.46] - 2025-12-11
+
 ### Added
 
 ### Changed
 
 ### Fixed
-
 - Added CI check to validate NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID before building/deploying
- - Logged masked WalletConnect project ID in GitHub Actions to help verify configuration without exposing secrets
+- Logged masked WalletConnect project ID in GitHub Actions to help verify configuration without exposing secrets
 
 ## [0.1.45] - 2025-12-11
+
 ### Added
 
 ### Changed
 
 ### Fixed
-
 - Aligned Join Movement and Swap cards to share the same minimum height for a stable layout
 - Updated footer version badge to read from generated version.json so it always matches the current release
 
 ## [0.1.44] - 2025-12-11
+
 ### Added
 
 ### Changed
@@ -598,6 +469,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 ## [0.1.43] - 2025-12-11
+
 ### Added
 
 ### Changed
@@ -605,6 +477,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 ## [0.1.42] - 2025-12-11
+
 ### Added
 
 ### Changed
@@ -612,20 +485,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 ## [0.1.41] - 2025-12-11
-### Added
 
+### Added
 - WalletConnect v3 integration using project ID env config and Ethereum provider
 - Advanced swap card and Join Movement swap flow improvements when wallet is connected
 
 ### Changed
-
 - Refined wallet header and mobile wallet button UX for clearer connect/disconnect states
 
 ### Fixed
-
 - Wallet connect modal not appearing due to missing WalletConnect provider setup
 
 ## [0.1.40] - 2025-12-11
+
 ### Added
 
 ### Changed
@@ -633,6 +505,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 ## [0.1.39] - 2025-12-11
+
 ### Added
 - Minor UI and copy updates for latest landing page tweaks
 
@@ -641,6 +514,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 ## [0.1.38] - 2025-12-11
+
 ### Added
 
 ### Changed
@@ -648,6 +522,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 ## [0.1.37] - 2025-12-11
+
 ### Added
 
 ### Changed
@@ -655,15 +530,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 ## [0.1.36] - 2025-12-11
+
 ### Added
 
 ### Changed
 
 ### Fixed
-
 - Resolved React hook order warning on Currency page by making wallet hook usage consistent
 
 ## [0.1.35] - 2025-12-10
+
 ### Added
 
 ### Changed
@@ -671,16 +547,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 ## [0.1.34] - 2025-12-10
+
 ### Added
 
 ### Changed
-
 - Added GitHub repository link to version badge in Footer component
 - Made version pill clickable with external link indicator
 
 ### Fixed
 
 ## [0.1.33] - 2025-12-10
+
 ### Added
 
 ### Changed
@@ -688,16 +565,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 ## [0.1.32] - 2025-12-10
+
 ### Added
 
 ### Changed
 
 ### Fixed
-
 - Restricted orbiting currency cursor animation to first section only
 - Hidden orbiting animation completely when scrolling to second section
 
 ## [0.1.31] - 2025-12-10
+
 ### Added
 
 ### Changed
@@ -705,18 +583,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 ## [0.1.30] - 2025-11-24
-### Added
 
+### Added
 - Auto-commit and auto-push functionality to version bump script
 - Enhanced theme switching reliability in hero background animation
 
 ### Changed
-
 - Improved version script to handle uncommitted changes automatically
 
 ### Fixed
 
 ## [0.1.29] - 2025-11-24
+
 ### Added
 
 ### Changed
@@ -724,6 +602,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 ## [0.1.28] - 2025-11-24
+
 ### Added
 - Final version validation system
 - Prevention of empty releases
@@ -745,6 +624,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Background effects that blocked card interactions
 
 ## [0.1.26] - 2025-11-24
+
 ### Added
 
 ### Changed
@@ -752,6 +632,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 ## [0.1.25] - 2025-11-24
+
 ### Added
 
 ### Changed
@@ -759,6 +640,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 ## [0.1.24] - 2025-11-24
+
 ### Added
 
 ### Changed
@@ -766,6 +648,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 ## [0.1.23] - 2025-11-24
+
 ### Added
 
 ### Changed
@@ -773,6 +656,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 ## [0.1.22] - 2025-11-24
+
 ### Added
 
 ### Changed
@@ -780,6 +664,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 ## [0.1.21] - 2025-11-24
+
 ### Added
 
 ### Changed
@@ -787,6 +672,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 ## [0.1.20] - 2025-11-24
+
 ### Added
 
 ### Changed
@@ -794,6 +680,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 ## [0.1.19] - 2025-11-24
+
 ### Added
 
 ### Changed
@@ -801,6 +688,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 ## [0.1.18] - 2025-11-24
+
 ### Added
 
 ### Changed
@@ -808,6 +696,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 ## [0.1.17] - 2025-11-24
+
 ### Added
 
 ### Changed
@@ -815,6 +704,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 ## [0.1.16] - 2025-11-24
+
 ### Added
 
 ### Changed
@@ -822,6 +712,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 ## [0.1.15] - 2025-11-24
+
 ### Added
 
 ### Changed
@@ -829,6 +720,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 ## [0.1.14] - 2025-11-24
+
 ### Added
 
 ### Changed
@@ -855,7 +747,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - TypeScript import errors (useSimpleWallet → useWallet)
 - Layout hierarchy following Next.js best practices
 
-
 ## [0.1.5] - 2025-11-24
 
 ### Added
@@ -875,14 +766,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Prevented users from accessing site without locale prefix
 - Rope now expands smoothly instead of appearing cut
 
-
 ## [0.1.2] - 2025-11-24
 
 ### Added
 - Comprehensive versioning system with semantic versioning
 - Automated changelog management
 - Single source of truth for version (version.json)
-
 
 ## [0.1.0] - 2025-11-24
 
