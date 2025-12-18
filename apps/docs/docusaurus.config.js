@@ -116,12 +116,22 @@ const config = {
             (function() {
               function setHomeLink() {
                 var link = document.querySelector('.footer-back-main');
-                if (!link) return;
                 var hostname = window.location.hostname;
                 var isLocal = hostname === 'localhost' || hostname === '127.0.0.1';
                 try {
-                  link.setAttribute('href', isLocal ? 'http://localhost:3000' : 'https://lukas.lat');
-                  link.removeAttribute('target');
+                  if (link) {
+                    link.setAttribute('href', isLocal ? 'http://localhost:3000' : 'https://lukas.lat');
+                    link.removeAttribute('target');
+                  }
+                } catch (e) {}
+
+                // Also ensure the navbar brand points to the correct home
+                try {
+                  var brand = document.querySelector('.navbar__brand');
+                  if (brand) {
+                    brand.setAttribute('href', isLocal ? 'http://localhost:3000' : 'https://lukas.lat');
+                    brand.removeAttribute('target');
+                  }
                 } catch (e) {}
               }
               if (document.readyState === 'loading') {
