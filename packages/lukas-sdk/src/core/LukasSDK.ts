@@ -368,7 +368,6 @@ export class LukasSDK {
       this.initializeContractManager();
     }
   }
-}
 
   /**
    * Get Token Service for LUKAS token operations
