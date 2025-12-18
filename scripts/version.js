@@ -108,38 +108,45 @@ function categorizeCommit(message) {
     const lowerMessage = message.toLowerCase();
     
     // Check for conventional commit types first
-    if (message.match(/^(feat|feature)(\(.+\))?:/)) {
+    if (message.match(/^(feat|feature)(\(.+\))?:/i)) {
         return 'added';
     }
-    if (message.match(/^fix(\(.+\))?:/)) {
+    if (message.match(/^fix(\(.+\))?:/i)) {
         return 'fixed';
     }
-    if (message.match(/^refactor(\(.+\))?:|^chore(\(.+\))?:|^perf(\(.+\))?:/)) {
+    if (message.match(/^refactor(\(.+\))?:|^perf(\(.+\))?:/i)) {
+        return 'changed';
+    }
+    if (message.match(/^chore(\(.+\))?:/i)) {
+        // Skip chore commits - they're internal
+        return null;
+    }
+    if (message.match(/^docs(\(.+\))?:/i)) {
         return 'changed';
     }
     
     // Fallback to pattern matching
     // Added patterns
-    if (lowerMessage.includes('add') || lowerMessage.includes('create') || 
-        lowerMessage.includes('new') || lowerMessage.includes('implement')) {
+    if (lowerMessage.includes('add ') || lowerMessage.includes('create ') || 
+        lowerMessage.includes('new ') || lowerMessage.includes('implement ')) {
         return 'added';
     }
     
     // Changed patterns
-    if (lowerMessage.includes('update') || lowerMessage.includes('modify') || 
-        lowerMessage.includes('refactor') || lowerMessage.includes('improve') ||
-        lowerMessage.includes('enhance') || lowerMessage.includes('change')) {
+    if (lowerMessage.includes('update ') || lowerMessage.includes('modify ') || 
+        lowerMessage.includes('refactor ') || lowerMessage.includes('improve ') ||
+        lowerMessage.includes('enhance ') || lowerMessage.includes('change ')) {
         return 'changed';
     }
     
     // Fixed patterns
-    if (lowerMessage.includes('fix') || lowerMessage.includes('bug') || 
-        lowerMessage.includes('error') || lowerMessage.includes('issue') ||
-        lowerMessage.includes('resolve') || lowerMessage.includes('patch')) {
+    if (lowerMessage.includes('fix ') || lowerMessage.includes('bug ') || 
+        lowerMessage.includes('error ') || lowerMessage.includes('issue ') ||
+        lowerMessage.includes('resolve ') || lowerMessage.includes('patch ')) {
         return 'fixed';
     }
     
-    // Default to changed
+    // Default to changed for other commits
     return 'changed';
 }
 
@@ -174,7 +181,8 @@ function generateChangelogFromCommits() {
         const isAutoCommitHelper = msg.toLowerCase().includes('auto-commit changes before version bump');
         const isMerge = msg.startsWith('Merge');
 
-        if (!isRelease && !isAutoCommitHelper && !isMerge) {
+        // Skip if category is null (filtered out) or if it's a release/merge/auto-commit
+        if (category && !isRelease && !isAutoCommitHelper && !isMerge) {
             categories[category].push(formatCommitMessage(commit.message, commit.hash));
         }
     });
@@ -206,11 +214,15 @@ function validateChangelogContent(newVersion, date, { allowEmpty } = { allowEmpt
 
     if (!hasAdded && !hasChanged && !hasFixed) {
         if (allowEmpty) {
-            log(`No categorized changelog entries found for v${newVersion}. Proceeding with empty sections due to --auto-changelog.`, colors.yellow);
-            return true;
+            log(`Warning: No categorized changelog entries found for v${newVersion}. Please manually add entries to CHANGELOG.md under [Unreleased] before running version bump.`, colors.yellow);
+            log(`Tip: Add entries like:`, colors.blue);
+            log(`  ### Added`, colors.blue);
+            log(`  - Your feature description`, colors.blue);
+            return false;
         }
 
         log(`No changelog entries found for v${newVersion}. Skipping version bump to avoid empty release.`, colors.yellow);
+        log(`Please add entries to CHANGELOG.md under [Unreleased] section first.`, colors.blue);
         return false;
     }
     

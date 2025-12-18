@@ -8,10 +8,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Improved version script changelog generation with better commit categorization
 
 ### Changed
+- Enhanced commit filtering to skip internal chore commits
+- Improved changelog validation to require meaningful entries
 
 ### Fixed
+- Fixed auto-changelog to properly categorize conventional commits
 
 ## [0.2.24] - 2025-12-18
 
