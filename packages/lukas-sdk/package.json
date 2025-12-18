@@ -1,6 +1,6 @@
 {
   "name": "@lukas-protocol/sdk",
-  "version": "0.2.5",
+  "version": "0.2.6",
   "description": "TypeScript SDK for interacting with the Lukas Protocol smart contracts",
   "keywords": [
     "lukas",
@@ -33,9 +33,9 @@
       "types": "./dist/index.d.ts"
     },
     "./react": {
-      "import": "./dist/index.js",
-      "require": "./dist/index.cjs",
-      "types": "./dist/index.d.ts"
+      "import": "./dist/react.js",
+      "require": "./dist/react.cjs",
+      "types": "./dist/react.d.ts"
     }
   },
   "files": [
