@@ -25,6 +25,7 @@ const PUBLIC_VERSION_FILE = path.join(ROOT_DIR, 'apps/web/public/version.json');
 const CHANGELOG_FILE = path.join(ROOT_DIR, 'CHANGELOG.md');
 const ROOT_PACKAGE = path.join(ROOT_DIR, 'package.json');
 const WEB_PACKAGE = path.join(ROOT_DIR, 'apps/web/package.json');
+const DOCS_PACKAGE = path.join(ROOT_DIR, 'apps/docs/package.json');
 
 // Read version.json
 function readVersion() {
@@ -363,7 +364,7 @@ function autoCommitChanges() {
 function gitCommit(version) {
     try {
         // Stage all version-related files
-        execSync('git add version.json apps/web/public/version.json CHANGELOG.md package.json apps/web/package.json', {
+        execSync('git add version.json apps/web/public/version.json CHANGELOG.md package.json apps/web/package.json apps/docs/package.json', {
             cwd: ROOT_DIR,
             stdio: 'inherit'
         });
@@ -487,6 +488,12 @@ function main() {
     writeVersion(versionData);
     updatePackageJson(ROOT_PACKAGE, newVersion);
     updatePackageJson(WEB_PACKAGE, newVersion);
+    // Update docs package as well (do NOT touch packages/lukas-sdk)
+    try {
+        updatePackageJson(DOCS_PACKAGE, newVersion);
+    } catch (e) {
+        // ignore if docs package is missing
+    }
     copyToPublic(versionData);
     
     log('✓ Updated all version files', colors.green);

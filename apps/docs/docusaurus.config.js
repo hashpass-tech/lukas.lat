@@ -5,6 +5,18 @@
 // See: https://docusaurus.io/docs/api/docusaurus-config
 
 import {themes as prismThemes} from 'prism-react-renderer';
+import fs from 'fs';
+import path from 'path';
+
+// Read root version.json at build time
+let publicVersion = '0.0.0';
+try {
+  const root = path.resolve(__dirname, '..', '..');
+  const v = JSON.parse(fs.readFileSync(path.join(root, 'version.json'), 'utf8'));
+  publicVersion = v.version || publicVersion;
+} catch (e) {
+  // fallback left as default
+}
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
@@ -89,25 +101,29 @@ const config = {
                 label: '← Back to Home',
                 href: '#',
                 target: '_self',
+                // use class so runtime script can reliably find it
                 className: 'footer-back-main',
               },
             ],
           },
         ],
         copyright: `
-          <div style="display:flex;flex-direction:column;align-items:center;gap:0.25em;">
+            <div style="display:flex;flex-direction:column;align-items:center;gap:0.25em;">
             <span>Copyright © ${new Date().getFullYear()} $LUKAS. Built with Docusaurus.</span>
-            <span style="font-size:0.95em;opacity:0.7;">v0.2.18</span>
+            <span id="docs-version" style="font-size:0.95em;opacity:0.7;">v${publicVersion}</span>
           </div>
           <script>
             (function() {
-              var setHomeLink = function() {
+              function setHomeLink() {
                 var link = document.querySelector('.footer-back-main');
-                if (link) {
-                  var isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+                if (!link) return;
+                var hostname = window.location.hostname;
+                var isLocal = hostname === 'localhost' || hostname === '127.0.0.1';
+                try {
                   link.setAttribute('href', isLocal ? 'http://localhost:3000' : 'https://lukas.lat');
-                }
-              };
+                  link.removeAttribute('target');
+                } catch (e) {}
+              }
               if (document.readyState === 'loading') {
                 document.addEventListener('DOMContentLoaded', setHomeLink);
               } else {
