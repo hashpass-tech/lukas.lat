@@ -31,16 +31,8 @@ export const WEB3_NETWORKS: Web3Network[] = [
   },
 ];
 
-export type VerifiedContract = {
-  name: string;
-  address: string;
-};
-
-export const VERIFIED_CONTRACTS_BY_CHAIN: Record<number, VerifiedContract[]> = {
-  1: [],
-  80002: [],
-  11155111: [],
-};
+// Contract addresses are now managed by the Lukas SDK
+// The SDK loads them from deployments.json automatically
 
 export function getNetworkByChainId(chainId: number | null | undefined): Web3Network | undefined {
   if (!chainId) return undefined;

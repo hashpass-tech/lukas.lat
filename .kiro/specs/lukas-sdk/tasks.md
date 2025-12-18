@@ -316,24 +316,24 @@
   - Implement stale-while-revalidate patterns
   - _Requirements: 4.5, 5.1_
 
-- [ ] 12. Integration with existing web application
-- [ ] 12.1 Replace direct contract calls in web app
+- [x] 12. Integration with existing web application
+- [x] 12.1 Replace direct contract calls in web app
   - Update existing contract interactions to use SDK
   - Refactor wallet connection logic to work with SDK
   - Ensure backward compatibility with existing functionality
   - _Requirements: 8.1, 8.2, 8.3_
 
-- [ ] 12.2 Write property test for functional equivalence
+- [x] 12.2 Write property test for functional equivalence
   - **Property 24: Functional equivalence**
   - **Validates: Requirements 8.2**
 
-- [ ] 12.3 Update web app components to use SDK
+- [x] 12.3 Update web app components to use SDK
   - Refactor token balance displays to use SDK hooks
   - Update price and peg status components
   - Integrate vault and liquidity management features
   - _Requirements: 8.4_
 
-- [ ] 12.4 Add SDK configuration to web app
+- [x] 12.4 Add SDK configuration to web app
   - Create SDK configuration in app config
   - Add network-specific contract addresses
   - Implement SDK provider setup in app providers

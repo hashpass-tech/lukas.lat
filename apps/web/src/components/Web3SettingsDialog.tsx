@@ -165,7 +165,7 @@ export function Web3SettingsDialog({ open, onOpenChange }: Props) {
                   <div className="mt-3 pt-3 border-t border-border/60">
                     <div className="flex items-center gap-2 text-xs text-muted-foreground">
                       <div className="w-2 h-2 rounded-full bg-green-500"></div>
-                      <span>SDK v0.2.4 - Contracts loaded from network {networkInfo?.chainId}</span>
+                      <span>SDK v0.2.5 - Contracts loaded from network {networkInfo?.chainId}</span>
                     </div>
                   </div>
                 </div>
