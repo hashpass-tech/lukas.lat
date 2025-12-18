@@ -78,4 +78,4 @@ Ready to start building? Check out the [Installation Guide](./installation.md) t
 - **API Reference**: See the [API Documentation](./api-reference.md)
 - **Examples**: Check out the [Examples](./examples.md)
 - **Troubleshooting**: Visit the [Troubleshooting Guide](./troubleshooting.md)
-- **GitHub**: [Report issues or contribute](https://github.com/lukas-protocol/lukas)
+- **GitHub**: [Report issues or contribute](https://github.com/hashpass-tech/lukas-protocol)

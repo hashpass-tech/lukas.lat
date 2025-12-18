@@ -6,16 +6,16 @@ Common issues and solutions when working with the Lukas SDK.
 
 ### Module Not Found
 
-**Problem:** `Cannot find module '@lukas/sdk'`
+**Problem:** `Cannot find module '@lukas-protocol/sdk'`
 
 **Solution:**
 1. Verify the package is installed:
    ```bash
-   npm list @lukas/sdk
+   npm list @lukas-protocol/sdk
    ```
 2. Reinstall if necessary:
    ```bash
-   npm install @lukas/sdk
+   npm install @lukas-protocol/sdk
    ```
 3. Clear node_modules and reinstall:
    ```bash
@@ -434,7 +434,7 @@ sdk.startNetworkMonitoring();
 If you're still experiencing issues:
 
 1. **Check the documentation**: Review the [API Reference](./api-reference.md) and [Examples](./examples.md)
-2. **Search existing issues**: Check [GitHub Issues](https://github.com/lukas-protocol/lukas/issues)
+2. **Search existing issues**: Check [GitHub Issues](https://github.com/hashpass-tech/lukas-protocol/issues)
 3. **Create a new issue**: Provide:
    - SDK version
    - Network and chain ID

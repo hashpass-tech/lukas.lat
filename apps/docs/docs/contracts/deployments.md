@@ -89,7 +89,7 @@ All contracts are currently in testnet phase. Mainnet deployment will be announc
 The SDK automatically uses the correct contract addresses for each network:
 
 ```typescript
-import { LukasSDK } from '@lukas/sdk';
+import { LukasSDK } from '@lukas-protocol/sdk';
 
 // Testnet
 const sdk = new LukasSDK({

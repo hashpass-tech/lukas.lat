@@ -7,7 +7,7 @@ Practical examples demonstrating how to use the Lukas SDK in various scenarios.
 Simple example showing SDK initialization and basic queries.
 
 ```typescript
-import { LukasSDK } from '@lukas/sdk';
+import { LukasSDK } from '@lukas-protocol/sdk';
 
 // Initialize SDK
 const sdk = new LukasSDK({
@@ -31,7 +31,7 @@ const balance = await contractManager.getBalance(userAddress);
 console.log('Balance:', balance.toString());
 ```
 
-[View full example →](https://github.com/lukas-protocol/lukas/blob/main/packages/lukas-sdk/examples/basic-usage.ts)
+[View full example →](https://github.com/hashpass-tech/lukas-protocol/blob/main/packages/lukas-sdk/examples/basic-usage.ts)
 
 ## Token Operations
 
@@ -80,7 +80,7 @@ const allowance = await contractManager.getAllowance(ownerAddress, spenderAddres
 console.log('Allowance:', allowance.toString());
 ```
 
-[View full example →](https://github.com/lukas-protocol/lukas/blob/main/packages/lukas-sdk/examples/token-operations.ts)
+[View full example →](https://github.com/hashpass-tech/lukas-protocol/blob/main/packages/lukas-sdk/examples/token-operations.ts)
 
 ## Oracle and Vault Operations
 
@@ -141,7 +141,7 @@ await tx.wait();
 console.log('Stabilization mint completed');
 ```
 
-[View full example →](https://github.com/lukas-protocol/lukas/blob/main/packages/lukas-sdk/examples/oracle-and-vault.ts)
+[View full example →](https://github.com/hashpass-tech/lukas-protocol/blob/main/packages/lukas-sdk/examples/oracle-and-vault.ts)
 
 ## Network Management
 
@@ -221,7 +221,7 @@ const networkInfo = await sdk.addCustomNetwork({
 console.log('Custom network added:', networkInfo.name);
 ```
 
-[View full example →](https://github.com/lukas-protocol/lukas/blob/main/packages/lukas-sdk/examples/network-management.ts)
+[View full example →](https://github.com/hashpass-tech/lukas-protocol/blob/main/packages/lukas-sdk/examples/network-management.ts)
 
 ## React Integration
 
@@ -230,7 +230,7 @@ Using the SDK in React applications.
 ### SDK Provider Setup
 
 ```typescript
-import { LukasSDKProvider } from '@lukas/sdk/react';
+import { LukasSDKProvider } from '@lukas-protocol/sdk/react';
 
 function App() {
   return (
@@ -249,7 +249,7 @@ function App() {
 ### Using the SDK Hook
 
 ```typescript
-import { useLukasSDK } from '@lukas/sdk/react';
+import { useLukasSDK } from '@lukas-protocol/sdk/react';
 
 function MyComponent() {
   const { sdk, isConnected, connect, disconnect } = useLukasSDK();
@@ -273,7 +273,7 @@ function MyComponent() {
 ### Fetching Data in React
 
 ```typescript
-import { useLukasSDK } from '@lukas/sdk/react';
+import { useLukasSDK } from '@lukas-protocol/sdk/react';
 import { useEffect, useState } from 'react';
 
 function TokenBalance({ address }: { address: string }) {
@@ -307,7 +307,7 @@ function TokenBalance({ address }: { address: string }) {
 ### Network Monitoring in React
 
 ```typescript
-import { useLukasSDK } from '@lukas/sdk/react';
+import { useLukasSDK } from '@lukas-protocol/sdk/react';
 import { useEffect, useState } from 'react';
 
 function NetworkMonitor() {
@@ -344,7 +344,7 @@ function NetworkMonitor() {
 ### Transaction Component
 
 ```typescript
-import { useLukasSDK } from '@lukas/sdk/react';
+import { useLukasSDK } from '@lukas-protocol/sdk/react';
 import { useState } from 'react';
 import { parseUnits } from 'ethers';
 
@@ -405,7 +405,7 @@ function TransferTokens() {
 }
 ```
 
-[View full example →](https://github.com/lukas-protocol/lukas/blob/main/packages/lukas-sdk/examples/react-integration.tsx)
+[View full example →](https://github.com/hashpass-tech/lukas-protocol/blob/main/packages/lukas-sdk/examples/react-integration.tsx)
 
 ## Error Handling
 
@@ -414,7 +414,7 @@ Proper error handling patterns.
 ### Basic Error Handling
 
 ```typescript
-import { LukasSDKError, LukasSDKErrorCode } from '@lukas/sdk';
+import { LukasSDKError, LukasSDKErrorCode } from '@lukas-protocol/sdk';
 
 try {
   const balance = await contractManager.getBalance(address);
@@ -476,7 +476,7 @@ All examples are available in the SDK repository:
 
 ```bash
 # Clone the repository
-git clone https://github.com/lukas-protocol/lukas.git
+git clone https://github.com/hashpass-tech/lukas-protocol.git
 cd lukas/packages/lukas-sdk
 
 # Install dependencies

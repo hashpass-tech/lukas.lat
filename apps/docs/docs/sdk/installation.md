@@ -15,13 +15,13 @@ Install the Lukas SDK using your preferred package manager:
 
 ```bash
 # Using npm
-npm install @lukas/sdk
+npm install @lukas-protocol/sdk
 
 # Using yarn
-yarn add @lukas/sdk
+yarn add @lukas-protocol/sdk
 
 # Using pnpm
-pnpm add @lukas/sdk
+pnpm add @lukas-protocol/sdk
 ```
 
 ## Peer Dependencies
@@ -57,7 +57,7 @@ The SDK is written in TypeScript and includes type definitions. Make sure your `
 For read-only operations (querying data without transactions):
 
 ```typescript
-import { LukasSDK } from '@lukas/sdk';
+import { LukasSDK } from '@lukas-protocol/sdk';
 
 const sdk = new LukasSDK({
   network: {
@@ -76,7 +76,7 @@ console.log('Connected to:', networkInfo.name);
 For write operations (transactions), connect a wallet provider:
 
 ```typescript
-import { LukasSDK } from '@lukas/sdk';
+import { LukasSDK } from '@lukas-protocol/sdk';
 import { BrowserProvider } from 'ethers';
 
 // Connect to MetaMask or other injected wallet
@@ -150,7 +150,7 @@ Create a simple test file to verify the installation:
 
 ```typescript
 // test-sdk.ts
-import { LukasSDK } from '@lukas/sdk';
+import { LukasSDK } from '@lukas-protocol/sdk';
 
 async function testSDK() {
   const sdk = new LukasSDK({
@@ -183,7 +183,6 @@ Now that you have the SDK installed, you can:
 - Learn about [Core Concepts](./core-concepts.md)
 - Explore [API Reference](./api-reference.md)
 - Check out [Examples](./examples.md)
-- Read about [React Integration](./react-integration.md)
 
 ## Troubleshooting
 

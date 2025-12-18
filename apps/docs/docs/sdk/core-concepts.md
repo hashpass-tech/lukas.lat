@@ -7,7 +7,7 @@ Understanding these core concepts will help you use the Lukas SDK effectively.
 The SDK is initialized with a configuration object that defines the network, provider, and options:
 
 ```typescript
-import { LukasSDK } from '@lukas/sdk';
+import { LukasSDK } from '@lukas-protocol/sdk';
 
 const sdk = new LukasSDK({
   network: {
@@ -219,7 +219,7 @@ if (isAuthorized) {
 The SDK provides structured error handling:
 
 ```typescript
-import { LukasSDKError, LukasSDKErrorCode } from '@lukas/sdk';
+import { LukasSDKError, LukasSDKErrorCode } from '@lukas-protocol/sdk';
 
 try {
   await sdk.switchNetwork(999999); // Invalid network
@@ -379,4 +379,3 @@ unsubscribe();
 
 - Explore [API Reference](./api-reference.md) for detailed method documentation
 - Check out [Examples](./examples.md) for practical use cases
-- Learn about [React Integration](./react-integration.md) for React apps

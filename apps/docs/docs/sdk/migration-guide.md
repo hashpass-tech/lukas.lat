@@ -53,7 +53,7 @@ const oracle = new ethers.Contract(
 
 **After (Using SDK):**
 ```typescript
-import { LukasSDK } from '@lukas/sdk';
+import { LukasSDK } from '@lukas-protocol/sdk';
 import { BrowserProvider } from 'ethers';
 
 const provider = new BrowserProvider(window.ethereum);
@@ -285,7 +285,7 @@ const balance = await contractManager.getBalance(address);
 ### Step 1: Install the SDK
 
 ```bash
-npm install @lukas/sdk
+npm install @lukas-protocol/sdk
 ```
 
 ### Step 2: Replace Contract Initialization
@@ -303,7 +303,7 @@ const oracle = new ethers.Contract(address, LatAmBasketIndexABI, provider);
 
 **Add:**
 ```typescript
-import { LukasSDK } from '@lukas/sdk';
+import { LukasSDK } from '@lukas-protocol/sdk';
 
 const sdk = new LukasSDK({
   network: { chainId: 80002, name: 'amoy' },
@@ -342,7 +342,7 @@ try {
 
 **After:**
 ```typescript
-import { LukasSDKError, LukasSDKErrorCode } from '@lukas/sdk';
+import { LukasSDKError, LukasSDKErrorCode } from '@lukas-protocol/sdk';
 
 try {
   const tx = await contractManager.transfer(to, amount);
@@ -426,7 +426,7 @@ function TokenBalance({ address }: { address: string }) {
 ### After (Using SDK in React)
 
 ```typescript
-import { useLukasSDK } from '@lukas/sdk/react';
+import { useLukasSDK } from '@lukas-protocol/sdk/react';
 import { useEffect, useState } from 'react';
 
 function TokenBalance({ address }: { address: string }) {
@@ -452,7 +452,7 @@ function TokenBalance({ address }: { address: string }) {
 ### Setting Up React Provider
 
 ```typescript
-import { LukasSDKProvider } from '@lukas/sdk/react';
+import { LukasSDKProvider } from '@lukas-protocol/sdk/react';
 
 function App() {
   return (
@@ -476,7 +476,7 @@ Create a single SDK instance and reuse it throughout your application:
 
 ```typescript
 // sdk.ts
-import { LukasSDK } from '@lukas/sdk';
+import { LukasSDK } from '@lukas-protocol/sdk';
 
 export const sdk = new LukasSDK({
   network: { chainId: 80002, name: 'amoy' },
@@ -495,7 +495,7 @@ import { sdk } from './sdk';
 Create a centralized error handler:
 
 ```typescript
-import { LukasSDKError, LukasSDKErrorCode } from '@lukas/sdk';
+import { LukasSDKError, LukasSDKErrorCode } from '@lukas-protocol/sdk';
 
 export function handleSDKError(error: unknown): string {
   if (error instanceof LukasSDKError) {
