@@ -24,6 +24,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+## [0.2.21] - 2025-12-18
+
+### Added
+
+
+
+### Changed
+
+- Bump version to 0.2.20 (dd7bb83)
+- Include apps/docs in bumps (a97ff34)
+
+### Fixed
+
+- Use Next.js Link for brand to enable client-side routing to home (88267c0)
+
+
+
 ## [0.2.20] - 2025-12-18
 
 ### Added
