@@ -26,7 +26,7 @@ contract LukasTokenTest is Test {
 
     function test_TokenMetadata() public view {
         assertEq(token.name(), "LUKAS");
-        assertEq(token.symbol(), "LUKAS");
+        assertEq(token.symbol(), "LKS");
         assertEq(token.decimals(), 18);
     }
 

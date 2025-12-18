@@ -17,7 +17,7 @@ pragma solidity ^0.8.24;
  */
 contract LukasToken {
     string public constant name = "LUKAS";
-    string public constant symbol = "LUKAS";
+    string public constant symbol = "LKS";
     uint8 public constant decimals = 18;
     
     uint256 public totalSupply;

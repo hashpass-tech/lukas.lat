@@ -132,10 +132,10 @@ contract StabilizerVault {
             : ((fairPrice - poolPrice) * 10000) / fairPrice;
         
         bool isOverPeg = poolPrice > fairPrice;
-        bool shouldStabilize = deviation >= deviationThreshold;
+        bool needsStabilization = deviation >= deviationThreshold;
         bool canExecute = block.timestamp >= lastStabilization + cooldownPeriod;
         
-        return (shouldStabilize, isOverPeg, deviation, 1000e18, canExecute, "");
+        return (needsStabilization, isOverPeg, deviation, 1000e18, canExecute, "");
     }
     
     function stabilizeMint(uint256 amount, address recipient) external returns (bool) {
@@ -163,27 +163,27 @@ contract StabilizerVault {
 
 contract DeployMinimalAmoy is Script {
     // Amoy testnet addresses
-    address constant LUKAS_TOKEN = 0xaee0f26589a21ba4547765f630075262f330f1cb;
-    address constant USDC_TOKEN = 0x41e94eb019c0762f9bfcf9fb1e58725bfb0e7582;
+    address constant LUKAS_TOKEN = 0xAeE0F26589a21BA4547765F630075262f330F1CB;
+    address constant USDC_TOKEN = 0x41E94Eb019C0762f9Bfcf9Fb1E58725BfB0e7582;
     
     function run() external {
         uint256 deployerPrivateKey = vm.envUint("PRIVATE_KEY");
         vm.startBroadcast(deployerPrivateKey);
         
-        console.log("🚀 Deploying minimal Lukas Protocol contracts on Amoy...\n");
+        console.log("Deploying minimal Lukas Protocol contracts on Amoy...");
         
         // Deploy Oracle
-        console.log("📦 Deploying LatAmBasketIndex Oracle...");
+        console.log("Deploying LatAmBasketIndex Oracle...");
         LatAmBasketIndex oracle = new LatAmBasketIndex(LUKAS_TOKEN, USDC_TOKEN);
-        console.log("✅ Oracle deployed at:", address(oracle));
+        console.log("Oracle deployed at:", address(oracle));
         
         // Deploy Vault
-        console.log("\n📦 Deploying StabilizerVault...");
+        console.log("Deploying StabilizerVault...");
         StabilizerVault vault = new StabilizerVault(LUKAS_TOKEN, USDC_TOKEN, address(oracle));
-        console.log("✅ Vault deployed at:", address(vault));
+        console.log("Vault deployed at:", address(vault));
         
-        console.log("\n✅ Deployment Complete!");
-        console.log("\n📝 Update deployments.json:");
+        console.log("Deployment Complete!");
+        console.log("Update deployments.json:");
         console.log("  LatAmBasketIndex:", address(oracle));
         console.log("  StabilizerVault:", address(vault));
         
