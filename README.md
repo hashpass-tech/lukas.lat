@@ -206,6 +206,63 @@ This will start:
 - Web app at `http://localhost:3000`
 - Docs at `http://localhost:3001`
 
+### Documentation routing (`/documentation/`)
+
+In production, the documentation site is served under `/documentation/`.
+
+- Local development:
+  - Next web app: `http://localhost:3000`
+  - Docusaurus docs: `http://localhost:3001`
+  - The web app links to docs using:
+    - `http://localhost:3001` in development
+    - `/documentation` in production
+
+- Production build/deploy:
+  - The GitHub Pages workflow builds both apps.
+  - Docusaurus output (`apps/docs/build`) is copied into the web static export at:
+    - `apps/web/out/documentation`
+  - This is why `/documentation/` works in production.
+
+### Documentation i18n URLs (Docusaurus)
+
+Docusaurus is configured with locales: `en`, `es`, `pt`.
+
+- English:
+  - `/documentation/docs/...`
+- Spanish:
+  - `/documentation/es/docs/...`
+- Portuguese:
+  - `/documentation/pt/docs/...`
+
+### Legal docs single-source-of-truth (Terms/Privacy)
+
+Terms of Service and Privacy Policy are maintained as markdown files in:
+
+`packages/legal-content/`
+
+These are synced into both apps via:
+
+`node scripts/sync-legal-content.js`
+
+Sync targets:
+
+- Next.js (for runtime fetch in static export):
+  - `apps/web/public/legal/{locale}/terms.md`
+  - `apps/web/public/legal/{locale}/privacy.md`
+
+- Docusaurus (for docs + i18n):
+  - English canonical docs:
+    - `apps/docs/docs/legal/terms.md`
+    - `apps/docs/docs/legal/privacy.md`
+  - Translations:
+    - `apps/docs/i18n/{locale}/docusaurus-plugin-content-docs/current/legal/terms.md`
+    - `apps/docs/i18n/{locale}/docusaurus-plugin-content-docs/current/legal/privacy.md`
+
+Notes:
+
+- Next supports locales `en`, `es`, `pt`, `cl`. For legal docs we map `cl -> es`.
+- Do not edit the generated copies in `apps/web/public` or `apps/docs/docs` / `apps/docs/i18n`; edit only `packages/legal-content`.
+
 ## Build
 
 Build all apps and packages:

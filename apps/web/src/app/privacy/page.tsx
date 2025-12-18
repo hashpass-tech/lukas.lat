@@ -1,27 +1,67 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import { marked } from "marked";
+import { translator, Locale, useTranslation } from "@/lib/translator";
+
+function stripFrontmatter(md: string) {
+  return md.replace(/^---\s*[\s\S]*?\s*---\s*/m, "");
+}
+
+function stripLeadingH1(md: string) {
+  return md.replace(/^#\s+.*\n+/, "");
+}
+
 export default function PrivacyPage() {
+  const [html, setHtml] = useState<string>("");
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const { locale: currentLocale } = useTranslation();
+
+  useEffect(() => {
+    const load = async () => {
+      try {
+        const detected = currentLocale || translator.detectBrowserLocale();
+        const locale: Exclude<Locale, "cl"> = detected === "cl" ? "es" : detected;
+
+        const res = await fetch(`/legal/${locale}/privacy.md`, { cache: "no-store" });
+        if (!res.ok) throw new Error(`Failed to load privacy policy (${res.status})`);
+        const raw = await res.text();
+        const md = stripLeadingH1(stripFrontmatter(raw));
+
+        setHtml(marked.parse(md) as string);
+        setError(null);
+      } catch (e) {
+        setError(e instanceof Error ? e.message : "Failed to load privacy policy");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    load();
+  }, [currentLocale]);
+
   return (
-    <main className="mx-auto w-full max-w-4xl px-6 py-12">
+    <main className="mx-auto w-full max-w-4xl px-6 pt-24 pb-28">
       <h1 className="text-3xl font-semibold tracking-tight">Privacy Policy</h1>
-      <p className="mt-4 text-sm text-muted-foreground">
-        This Privacy Policy page is a placeholder. Replace this text with your official privacy policy.
-      </p>
-
-      <section className="mt-10 space-y-4 text-sm leading-6 text-foreground">
-        <h2 className="text-lg font-medium">1. Information We Collect</h2>
-        <p>
-          Describe what information is collected (e.g., analytics, device info) and what is not collected.
-        </p>
-
-        <h2 className="text-lg font-medium">2. Wallet Addresses</h2>
-        <p>
-          Wallet addresses may be displayed in the app and are public on-chain. Clarify your handling of addresses.
-        </p>
-
-        <h2 className="text-lg font-medium">3. Contact</h2>
-        <p>
-          Add contact details, DPO info, and required disclosures here.
-        </p>
-      </section>
+      {loading ? (
+        <div className="text-sm text-muted-foreground">Loading…</div>
+      ) : error ? (
+        <div className="text-sm text-red-400">{error}</div>
+      ) : (
+        <article
+          className="prose prose-sm dark:prose-invert max-w-none mt-6 select-none pointer-events-none"
+          onClickCapture={(e) => {
+            const target = e.target as HTMLElement | null;
+            if (target?.tagName === "A") {
+              e.preventDefault();
+              e.stopPropagation();
+            }
+          }}
+          dangerouslySetInnerHTML={{ __html: html }}
+        />
+      )}
     </main>
   );
 }

@@ -1,11 +1,12 @@
 {
   "name": "lukas-latam-monorepo",
-  "version": "0.2.16",
+  "version": "0.2.18",
   "private": true,
   "workspaces": [
     "apps/web",
     "apps/docs",
-    "packages/lukas-sdk"
+    "packages/lukas-sdk",
+    "packages/legal-content"
   ],
   "engines": {
     "node": "22.18.0"
@@ -15,6 +16,7 @@
     "dev:web": "PORT=3000 pnpm --filter web dev",
     "dev:docs": "PORT=3001 pnpm --filter docs dev",
     "dev:all": "(PORT=3000 pnpm --filter web dev) & (PORT=3001 pnpm --filter docs dev) & wait",
+    "sync:legal": "node scripts/sync-legal-content.js",
     "build": "npm run build --workspace=apps/web",
     "start": "npm run start --workspace=apps/web",
     "version:patch": "node scripts/version.js patch",

@@ -17,6 +17,11 @@ const sidebars = {
     'intro',
     {
       type: 'category',
+      label: 'Legal',
+      items: ['legal/terms', 'legal/privacy'],
+    },
+    {
+      type: 'category',
       label: 'Getting Started',
       items: ['getting-started/what-is-lukas', 'getting-started/how-it-works'],
     },

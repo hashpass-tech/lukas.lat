@@ -1,0 +1,22 @@
+{
+  "entities": {
+    "hashpass": {
+      "name": "HashPass Tech",
+      "address": "Carrera 32D 9 - 35 Medellín, Provenza"
+    },
+    "bfl": {
+      "name": "Blockchain Foundation Latam",
+      "address": "Carrera 32D 9 - 35 Medellín, Provenza"
+    }
+  },
+  "contact": {
+    "legal": "legal@hashpass.tech",
+    "privacy": "privacy@hashpass.tech",
+    "foundation": "contact@blockchainfoundation.lat",
+    "support": "support@lukas.lat"
+  },
+  "jurisdiction": {
+    "law": "Colombia",
+    "venue": "Colombia"
+  }
+}

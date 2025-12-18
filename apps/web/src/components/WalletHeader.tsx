@@ -301,11 +301,11 @@ export function WalletHeader({ connectText = "Connect Wallet", connectTextKey }:
         <div className="mt-6 p-3 bg-muted/30 rounded-lg border border-border/50">
           <p className="text-xs text-muted-foreground text-center leading-relaxed">
             By connecting your wallet, you agree to our{" "}
-            <a href="#" className="text-primary hover:text-primary/80 underline transition-colors">
+            <a href="/terms" className="text-primary hover:text-primary/80 underline transition-colors">
               Terms of Service
             </a>{" "}
             and{" "}
-            <a href="#" className="text-primary hover:text-primary/80 underline transition-colors">
+            <a href="/privacy" className="text-primary hover:text-primary/80 underline transition-colors">
               Privacy Policy
             </a>
           </p>

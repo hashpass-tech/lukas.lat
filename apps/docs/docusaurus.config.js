@@ -77,8 +77,8 @@ const config = {
             title: 'Community',
             items: [
               {
-                label: 'Twitter',
-                href: 'https://twitter.com/lukaslatam',
+                label: 'X',
+                href: 'https://x.com/Lukas_lat',
               },
             ],
           },

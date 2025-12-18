@@ -1,29 +1,67 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import { marked } from "marked";
+import { translator, Locale, useTranslation } from "@/lib/translator";
+
+function stripFrontmatter(md: string) {
+  return md.replace(/^---\s*[\s\S]*?\s*---\s*/m, "");
+}
+
+function stripLeadingH1(md: string) {
+  return md.replace(/^#\s+.*\n+/, "");
+}
+
 export default function TermsPage() {
+  const [html, setHtml] = useState<string>("");
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const { locale: currentLocale } = useTranslation();
+
+  useEffect(() => {
+    const load = async () => {
+      try {
+        const detected = currentLocale || translator.detectBrowserLocale();
+        const locale: Exclude<Locale, "cl"> = detected === "cl" ? "es" : detected;
+
+        const res = await fetch(`/legal/${locale}/terms.md`, { cache: "no-store" });
+        if (!res.ok) throw new Error(`Failed to load terms (${res.status})`);
+        const raw = await res.text();
+        const md = stripLeadingH1(stripFrontmatter(raw));
+
+        setHtml(marked.parse(md) as string);
+        setError(null);
+      } catch (e) {
+        setError(e instanceof Error ? e.message : "Failed to load terms");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    load();
+  }, [currentLocale]);
+
   return (
-    <main className="mx-auto w-full max-w-4xl px-6 py-12">
+    <main className="mx-auto w-full max-w-4xl px-6 pt-24 pb-28">
       <h1 className="text-3xl font-semibold tracking-tight">Terms of Service</h1>
-      <p className="mt-4 text-sm text-muted-foreground">
-        This Terms of Service page is a placeholder. Replace this text with your official terms.
-      </p>
-
-      <section className="mt-10 space-y-4 text-sm leading-6 text-foreground">
-        <h2 className="text-lg font-medium">1. Overview</h2>
-        <p>
-          These terms govern your use of this website and any related services. By accessing or using the site, you agree
-          to be bound by these terms.
-        </p>
-
-        <h2 className="text-lg font-medium">2. Wallet & Web3</h2>
-        <p>
-          You are responsible for your wallet security, private keys, and any transactions you authorize. Blockchain
-          transactions may be irreversible.
-        </p>
-
-        <h2 className="text-lg font-medium">3. Contact</h2>
-        <p>
-          Add contact details and required legal disclosures here.
-        </p>
-      </section>
+      {loading ? (
+        <div className="text-sm text-muted-foreground">Loading…</div>
+      ) : error ? (
+        <div className="text-sm text-red-400">{error}</div>
+      ) : (
+        <article
+          className="prose prose-sm dark:prose-invert max-w-none mt-6 select-none pointer-events-none"
+          onClickCapture={(e) => {
+            const target = e.target as HTMLElement | null;
+            if (target?.tagName === "A") {
+              e.preventDefault();
+              e.stopPropagation();
+            }
+          }}
+          dangerouslySetInnerHTML={{ __html: html }}
+        />
+      )}
     </main>
   );
 }

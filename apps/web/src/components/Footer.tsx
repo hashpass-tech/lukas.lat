@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Link from "next/link";
 import versionInfo from "../../public/version.json";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
@@ -121,6 +122,11 @@ export default function Footer({ version = versionInfo.version, className = "" }
   const [currentPage, setCurrentPage] = useState(0);
   const [changelogData, setChangelogData] = useState<ChangelogEntry[]>([]);
   const [loading, setLoading] = useState(false);
+
+  const getDocumentationHref = () => {
+    if (process.env.NODE_ENV === "development") return "http://localhost:3001";
+    return "/documentation";
+  };
 
   // Load changelog data when modal opens
   useEffect(() => {
@@ -326,7 +332,36 @@ export default function Footer({ version = versionInfo.version, className = "" }
               </Dialog>
             </div>
 
-            <div className="flex flex-wrap items-center justify-start sm:justify-end gap-2 sm:gap-4" />
+            <div className="flex flex-wrap items-center justify-start sm:justify-end gap-2 sm:gap-4">
+              <a
+                href={getDocumentationHref()}
+                target={process.env.NODE_ENV === "development" ? "_blank" : undefined}
+                rel={process.env.NODE_ENV === "development" ? "noopener noreferrer" : undefined}
+                className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+              >
+                Documentation
+              </a>
+              <Link
+                href="/privacy"
+                className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+              >
+                Privacy
+              </Link>
+              <Link
+                href="/terms"
+                className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+              >
+                Terms
+              </Link>
+              <a
+                href="https://x.com/Lukas_lat"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+              >
+                X
+              </a>
+            </div>
           </div>
         </div>
       </footer>
