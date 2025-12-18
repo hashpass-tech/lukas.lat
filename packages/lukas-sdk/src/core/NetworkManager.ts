@@ -17,7 +17,7 @@ const SUPPORTED_NETWORKS: Record<number, NetworkConfig & { contracts: ContractAd
       stabilizerVault: '0x0000000000000000000000000000000000000000', // Placeholder
       latAmBasketIndex: '0x0000000000000000000000000000000000000000', // Placeholder
       lukasHook: '0x0000000000000000000000000000000000000000', // Placeholder
-      usdc: '0xA0b86a33E6441b8C4505B8C4505B8C4505B8C45050', // USDC on mainnet
+      usdc: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48', // USDC on mainnet
     },
   },
   // Sepolia Testnet
@@ -232,12 +232,19 @@ export class NetworkManager {
     }
 
     // Merge user config with base config
+    // Filter out undefined values from customContracts to preserve defaults
+    const filteredCustomContracts = customContracts 
+      ? Object.fromEntries(
+          Object.entries(customContracts).filter(([_, value]) => value !== undefined)
+        )
+      : {};
+
     const mergedConfig = {
       ...baseConfig,
       ...userConfig,
       contracts: {
         ...baseConfig.contracts,
-        ...customContracts,
+        ...filteredCustomContracts,
       },
     };
 

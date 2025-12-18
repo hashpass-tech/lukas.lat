@@ -7,17 +7,17 @@ A comprehensive TypeScript SDK for interacting with the Lukas Protocol smart con
 ### Installation
 
 ```bash
-npm install @lukas/sdk
+npm install @lukas-protocol/sdk
 # or
-yarn add @lukas/sdk
+yarn add @lukas-protocol/sdk
 # or
-pnpm add @lukas/sdk
+pnpm add @lukas-protocol/sdk
 ```
 
 ### Basic Usage
 
 ```typescript
-import { LukasSDK } from '@lukas/sdk';
+import { LukasSDK } from '@lukas-protocol/sdk';
 
 // Initialize the SDK (read-only mode)
 const sdk = new LukasSDK({
@@ -39,7 +39,7 @@ console.log('Network:', networkInfo);
 ### With Wallet Provider
 
 ```typescript
-import { LukasSDK } from '@lukas/sdk';
+import { LukasSDK } from '@lukas-protocol/sdk';
 import { BrowserProvider } from 'ethers';
 
 // Connect with MetaMask or other wallet
@@ -63,7 +63,7 @@ if (signer) {
 ### React Integration
 
 ```typescript
-import { useLukasSDK } from '@lukas/sdk/react';
+import { useLukasSDK } from '@lukas-protocol/sdk/react';
 
 function MyComponent() {
   const { sdk, isConnected } = useLukasSDK();
@@ -199,7 +199,7 @@ try {
 ## 📦 Package Structure
 
 ```
-@lukas/sdk
+@lukas-protocol/sdk
 ├── core/           # Core SDK functionality
 ├── services/       # Service interfaces
 ├── types/          # TypeScript type definitions

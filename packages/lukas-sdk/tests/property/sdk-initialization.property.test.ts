@@ -1,7 +1,7 @@
-import { describe, it } from 'vitest';
+import { describe, it, expect } from 'vitest';
 import * as fc from 'fast-check';
 import { LukasSDK } from '../../src/core/LukasSDK';
-import { NetworkManager, SUPPORTED_NETWORKS } from '../../src/core/NetworkManager';
+import { NetworkManager } from '../../src/core/NetworkManager';
 import type { LukasSDKConfig, NetworkConfig } from '../../src/core/types';
 
 /**
@@ -13,8 +13,11 @@ import type { LukasSDKConfig, NetworkConfig } from '../../src/core/types';
  */
 describe('SDK Initialization Property Tests', () => {
   it('Property 1: Network initialization consistency', () => {
+    // Get supported networks using the public API
+    const supportedNetworks = NetworkManager.getSupportedNetworks();
+    
     // Generator for supported network configurations
-    const supportedNetworkConfigGen = fc.constantFrom(...Object.values(SUPPORTED_NETWORKS))
+    const supportedNetworkConfigGen = fc.constantFrom(...supportedNetworks)
       .map((networkConfig): NetworkConfig => ({
         chainId: networkConfig.chainId,
         name: networkConfig.name,
