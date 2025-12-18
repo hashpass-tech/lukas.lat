@@ -369,3 +369,28 @@ export class LukasSDK {
     }
   }
 }
+
+  /**
+   * Get Token Service for LUKAS token operations
+   */
+  getTokenService(): any {
+    const contractManager = this.getContractManager();
+    const lukasTokenContract = contractManager.getLukasTokenContract();
+    
+    // Lazy import to avoid circular dependencies
+    const { TokenServiceImpl } = require('../services/TokenServiceImpl');
+    return new TokenServiceImpl(lukasTokenContract, this.networkConfig.contracts.lukasToken);
+  }
+
+  /**
+   * Get USDC Token Service
+   */
+  getUSDCService(): any {
+    const contractManager = this.getContractManager();
+    const usdcContract = contractManager.getUSDCContract();
+    
+    const { TokenServiceImpl } = require('../services/TokenServiceImpl');
+    return new TokenServiceImpl(usdcContract, this.networkConfig.contracts.usdc);
+  }
+}
+
