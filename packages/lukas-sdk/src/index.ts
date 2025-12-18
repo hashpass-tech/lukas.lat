@@ -27,9 +27,9 @@ export { LukasSDKError, LukasSDKErrorCode } from './errors/LukasSDKError';
 // Utility exports
 export * from './utils';
 
-// React hooks and providers (optional, only if React is available)
-// These are exported separately to avoid build issues when React is not installed
-export * from './react';
+// React hooks and providers are exported separately via the './react' export path
+// Import from '@lukas-protocol/sdk/react' to use React-specific features
+// This prevents React from being bundled when only using the core SDK
 
 // Version - dynamically imported from package.json
 import packageJson from '../package.json';

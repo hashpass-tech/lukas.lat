@@ -60,8 +60,8 @@ importers:
         specifier: ^0.3.2
         version: 0.3.2(viem@2.40.0(bufferutil@4.0.9)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@4.1.13))
       '@lukas-protocol/sdk':
-        specifier: ^0.2.4
-        version: 0.2.4(@react-native-async-storage/async-storage@1.24.0(react-native@0.83.0(@babel/core@7.28.5)(@types/react@18.3.11)(bufferutil@4.0.9)(react@18.3.1)(utf-8-validate@5.0.10)))(@types/react@18.3.11)(bufferutil@4.0.9)(react-dom@18.3.1(react@18.3.1))(react-native@0.83.0(@babel/core@7.28.5)(@types/react@18.3.11)(bufferutil@4.0.9)(react@18.3.1)(utf-8-validate@5.0.10))(react@18.3.1)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@4.1.13)
+        specifier: ^0.2.6
+        version: 0.2.6(@react-native-async-storage/async-storage@1.24.0(react-native@0.83.0(@babel/core@7.28.5)(@types/react@18.3.11)(bufferutil@4.0.9)(react@18.3.1)(utf-8-validate@5.0.10)))(@types/react@18.3.11)(bufferutil@4.0.9)(react-dom@18.3.1(react@18.3.1))(react-native@0.83.0(@babel/core@7.28.5)(@types/react@18.3.11)(bufferutil@4.0.9)(react@18.3.1)(utf-8-validate@5.0.10))(react@18.3.1)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@4.1.13)
       '@radix-ui/react-dialog':
         specifier: ^1.1.15
         version: 1.1.15(@types/react-dom@18.3.0)(@types/react@18.3.11)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -2217,8 +2217,8 @@ packages:
   '@lit/reactive-element@2.1.1':
     resolution: {integrity: sha512-N+dm5PAYdQ8e6UlywyyrgI2t++wFGXfHx+dSJ1oBrg6FAxUj40jId++EaRm80MKX5JnlH1sBsyZ5h0bcZKemCg==}
 
-  '@lukas-protocol/sdk@0.2.4':
-    resolution: {integrity: sha512-jdRllw0QZJOKWO92s7EdJKihWnXMRoOnP+Ig7rudgC3pK2zO74G9P++P5HNdFG4vuD2xCB5Z54R6AvXMYVFMEA==}
+  '@lukas-protocol/sdk@0.2.6':
+    resolution: {integrity: sha512-qK9dbD/2Mp3UD3xmI3yAUgwNG0pNO8KbPgvXbVZQa3hL8Tp9OjlNXZY/pyQyf/C+C5nHGX1nDYPMbyHdadcZGA==}
     engines: {node: '>=16.0.0'}
     peerDependencies:
       react: '>=16.8.0'
@@ -15270,7 +15270,7 @@ snapshots:
     dependencies:
       '@lit-labs/ssr-dom-shim': 1.4.0
 
-  '@lukas-protocol/sdk@0.2.4(@react-native-async-storage/async-storage@1.24.0(react-native@0.83.0(@babel/core@7.28.5)(@types/react@18.3.11)(bufferutil@4.0.9)(react@18.3.1)(utf-8-validate@5.0.10)))(@types/react@18.3.11)(bufferutil@4.0.9)(react-dom@18.3.1(react@18.3.1))(react-native@0.83.0(@babel/core@7.28.5)(@types/react@18.3.11)(bufferutil@4.0.9)(react@18.3.1)(utf-8-validate@5.0.10))(react@18.3.1)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@4.1.13)':
+  '@lukas-protocol/sdk@0.2.6(@react-native-async-storage/async-storage@1.24.0(react-native@0.83.0(@babel/core@7.28.5)(@types/react@18.3.11)(bufferutil@4.0.9)(react@18.3.1)(utf-8-validate@5.0.10)))(@types/react@18.3.11)(bufferutil@4.0.9)(react-dom@18.3.1(react@18.3.1))(react-native@0.83.0(@babel/core@7.28.5)(@types/react@18.3.11)(bufferutil@4.0.9)(react@18.3.1)(utf-8-validate@5.0.10))(react@18.3.1)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@4.1.13)':
     dependencies:
       ethers: 6.16.0(bufferutil@4.0.9)(utf-8-validate@5.0.10)
       viem: 1.21.4(bufferutil@4.0.9)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@4.1.13)

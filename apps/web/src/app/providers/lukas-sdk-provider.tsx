@@ -1,7 +1,7 @@
 "use client";
 
 import React, { ReactNode, createContext, useContext, useEffect, useState, useMemo } from 'react';
-import { LukasSDK, LukasSDKConfig, NetworkInfo } from '@lukas-protocol/sdk';
+import { LukasSDK, LukasSDKConfig, NetworkInfo, VERSION } from '@lukas-protocol/sdk';
 import { useWallet } from './wallet-provider';
 
 interface LukasSDKContextType {
@@ -38,10 +38,17 @@ export function LukasSDKProvider({ children }: LukasSDKProviderProps) {
   const [isInitialized, setIsInitialized] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Memoize network info to avoid unnecessary re-renders
-  const networkInfo = useMemo(() => {
-    return sdk?.getNetworkInfo() || null;
-  }, [sdk]);
+  // Track network info separately to force updates
+  const [networkInfo, setNetworkInfo] = useState<NetworkInfo | null>(null);
+
+  // Update network info when SDK changes
+  useEffect(() => {
+    if (sdk && isInitialized) {
+      setNetworkInfo(sdk.getNetworkInfo());
+    } else {
+      setNetworkInfo(null);
+    }
+  }, [sdk, isInitialized]);
 
   // Initialize SDK when component mounts or wallet connects
   useEffect(() => {
@@ -57,7 +64,7 @@ export function LukasSDKProvider({ children }: LukasSDKProviderProps) {
         setSdk(lukasSDK);
         setIsInitialized(true);
         
-        console.log('Lukas SDK v0.2.3 initialized:', lukasSDK.getNetworkInfo());
+        console.log(`Lukas SDK v${VERSION} initialized:`, lukasSDK.getNetworkInfo());
       } catch (err) {
         console.error('Failed to initialize Lukas SDK:', err);
         setError(err instanceof Error ? err.message : 'Failed to initialize SDK');
@@ -93,8 +100,8 @@ export function LukasSDKProvider({ children }: LukasSDKProviderProps) {
           
           console.log('SDK network switched to:', chainId, sdk.getNetworkInfo());
           
-          // Trigger a re-render
-          setSdk(sdk);
+          // Update network info after switching
+          setNetworkInfo(sdk.getNetworkInfo());
         }
       } catch (err) {
         console.error('Failed to sync SDK network:', err);
