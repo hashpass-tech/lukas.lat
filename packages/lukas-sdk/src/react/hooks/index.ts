@@ -8,6 +8,12 @@ export { useTokenBalance } from './useTokenBalance';
 
 export { useTokenInfo } from './useTokenInfo';
 
+export { useSwap } from './useSwap';
+export type { UseSwapOptions, UseSwapResult } from './useSwap';
+
+export { useLukasPrice } from './useLukasPrice';
+export type { UseLukasPriceOptions, UseLukasPriceResult } from './useLukasPrice';
+
 export { usePegStatus } from './usePegStatus';
 export type { UsePegStatusOptions, UsePegStatusResult } from './usePegStatus';
 

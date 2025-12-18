@@ -1,16 +1,5 @@
 import type { TransactionResponse } from 'ethers';
-import type { BigNumber } from '../types';
-
-/**
- * Swap quote information
- */
-export interface SwapQuote {
-  amountIn: BigNumber;
-  amountOut: BigNumber;
-  priceImpact: number; // Percentage
-  minimumAmountOut: BigNumber; // With slippage
-  path: string[]; // Token addresses in swap path
-}
+import type { BigNumber, SwapQuote } from '../types';
 
 /**
  * Swap service interface for token swapping operations

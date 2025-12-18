@@ -138,3 +138,19 @@ export interface CurrencyPriceInfo {
   /** Whether price is stale */
   isStale: boolean;
 }
+
+/**
+ * Swap quote information
+ */
+export interface SwapQuote {
+  /** Input amount */
+  amountIn: BigNumber;
+  /** Expected output amount */
+  amountOut: BigNumber;
+  /** Price impact percentage */
+  priceImpact: number;
+  /** Minimum amount out with slippage */
+  minimumAmountOut: BigNumber;
+  /** Token addresses in swap path */
+  path: string[];
+}

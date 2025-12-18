@@ -14,9 +14,12 @@ export type { LukasSDKConfig, SDKOptions, NetworkConfig, ContractAddresses, Netw
 
 // Service exports
 export type { TokenService } from './services/TokenService';
+export type { SwapService } from './services/SwapService';
 export type { VaultService } from './services/VaultService';
 export type { OracleService } from './services/OracleService';
 export type { LiquidityService } from './services/LiquidityService';
+export { TokenServiceImpl } from './services/TokenServiceImpl';
+export { SwapServiceImpl } from './services/SwapServiceImpl';
 
 // Type exports
 export type * from './types';
