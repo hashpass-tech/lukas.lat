@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+
+## [0.2.20] - 2025-12-18
+
+### Changed
+- Manual version and tag sync to resolve version mismatches between local and remote
+- Forced v0.2.19 tag to latest commit for correct production/CI versioning
+- Ran versioning script and changelog updates to ensure all version files are in sync
+
+### Fixed
+- Fixed production showing outdated version due to tag mismatch
+
 ## [Unreleased]
 
 ### Added
