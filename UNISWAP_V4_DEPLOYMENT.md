@@ -1,10 +1,20 @@
 # Uniswap V4 Pool Deployment Guide
 
+**Status**: ✅ Scripts Ready | ⏳ Awaiting Deployment
+**Last Updated**: December 18, 2025
+
 ## Overview
 
 This guide covers deploying Uniswap V4 with the LukasHook for the LUKAS/USDC trading pair on Polygon Amoy testnet.
 
 **IMPORTANT**: The Lukas Protocol uses Uniswap V4 hooks (LukasHook) for custom swap logic and stabilization mechanisms. V4 deployment is **required** - V3 is not compatible with our hook-based architecture.
+
+## Current Status
+
+✅ **Compilation**: All contracts compile successfully with Solidity 0.8.26
+✅ **Tests**: Core contracts tested (LukasToken, LatAmBasketIndex pass 100%)
+✅ **Scripts**: All 5 deployment scripts ready and tested
+⏳ **Deployment**: Awaiting execution on Polygon Amoy testnet
 
 ## Prerequisites
 
@@ -21,8 +31,8 @@ The Lukas Protocol integrates deeply with Uniswap V4's hook system:
 
 1. **LukasHook Contract**: Custom hook that implements stabilization logic during swaps
 2. **Peg Monitoring**: Hook monitors price deviations and triggers stabilization
-3. **Dynamic Fees**: Hook can adjust fees based on market conditions
-4. **Liquidity Management**: Hook controls liquidity provision and removal
+3. **beforeInitialize**: Validates pool parameters on creation
+4. **afterSwap**: Monitors every swap and triggers StabilizerVault when needed
 
 **V3 does not support hooks**, making it incompatible with our protocol design.
 
@@ -32,7 +42,7 @@ The Lukas Protocol integrates deeply with Uniswap V4's hook system:
 ┌─────────────────────────────────────────────────────────────┐
 │                    Uniswap V4 Core                          │
 │  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐     │
-│  │ PoolManager  │  │ SwapRouter   │  │ PositionMgr  │     │
+│  │ PoolManager  │  │ SwapRouter   │  │ LiquidityMgr │     │
 │  └──────────────┘  └──────────────┘  └──────────────┘     │
 └─────────────────────────────────────────────────────────────┘
                             │
@@ -41,10 +51,10 @@ The Lukas Protocol integrates deeply with Uniswap V4's hook system:
 ┌─────────────────────────────────────────────────────────────┐
 │                      LukasHook                              │
 │  ┌──────────────────────────────────────────────────────┐  │
-│  │ • beforeSwap: Check peg status                       │  │
-│  │ • afterSwap: Trigger stabilization if needed         │  │
-│  │ • beforeAddLiquidity: Validate liquidity params      │  │
-│  │ • afterAddLiquidity: Update pool state               │  │
+│  │ • beforeInitialize: Validate LUKAS/USDC pool         │  │
+│  │ • afterSwap: Monitor price & trigger stabilization   │  │
+│  │ • Integration with LatAmBasketIndex oracle           │  │
+│  │ • Integration with StabilizerVault                   │  │
 │  └──────────────────────────────────────────────────────┘  │
 └─────────────────────────────────────────────────────────────┘
                             │
@@ -58,9 +68,135 @@ The Lukas Protocol integrates deeply with Uniswap V4's hook system:
 └─────────────────────────────────────────────────────────────┘
 ```
 
+## Quick Start: Using Ready-Made Scripts
+
+The Lukas Protocol repository includes complete, tested deployment scripts. Skip to this section if you want to use our pre-built scripts.
+
+### Environment Setup
+
+```bash
+cd packages/contracts
+
+# Set environment variables
+export AMOY_RPC_URL="https://rpc-amoy.polygon.technology"
+export PRIVATE_KEY="your_deployer_private_key"
+export ETHERSCAN_API_KEY="your_polygonscan_api_key"
+```
+
+### Step-by-Step Deployment
+
+#### 1. Deploy LatAmBasketIndex Oracle
+
+```bash
+forge script script/DeployLatAmBasketIndex.s.sol \
+  --rpc-url $AMOY_RPC_URL \
+  --broadcast \
+  --verify \
+  -vvvv
+```
+
+**Expected Output**: Oracle address with mock price feeds for BRL, MXN, ARS, CLP, COP
+
+#### 2. Deploy Uniswap V4 Core
+
+```bash
+forge script script/DeployUniswapV4.s.sol \
+  --rpc-url $AMOY_RPC_URL \
+  --broadcast \
+  --verify \
+  -vvvv
+```
+
+**Expected Output**:
+- PoolManager address
+- PoolSwapTest (router) address
+- PoolModifyLiquidityTest (liquidity manager) address
+
+#### 3. Deploy LukasHook
+
+⚠️ **Before running**: Update `script/DeployLukasHook.s.sol` with addresses from steps 1-2.
+
+```bash
+forge script script/DeployLukasHook.s.sol \
+  --rpc-url $AMOY_RPC_URL \
+  --broadcast \
+  --verify \
+  -vvvv
+```
+
+**Expected Output**: LukasHook address
+
+#### 4. Initialize LUKAS/USDC Pool
+
+⚠️ **Before running**: Update `script/InitializePool.s.sol` with PoolManager and Hook addresses.
+
+```bash
+forge script script/InitializePool.s.sol \
+  --rpc-url $AMOY_RPC_URL \
+  --broadcast \
+  -vvvv
+```
+
+**Expected Output**: Pool initialized with:
+- Fee: 0.3% (3000)
+- Tick spacing: 60
+- Initial price: 1 LUKAS = 1 USDC
+
+#### 5. Add Initial Liquidity
+
+⚠️ **Before running**: Update `script/AddLiquidity.s.sol` with PoolManager address.
+
+```bash
+# Approve tokens first
+cast send $LUKAS_TOKEN "approve(address,uint256)" $POOL_MANAGER $(cast --to-wei 10000) \
+  --rpc-url $AMOY_RPC_URL \
+  --private-key $PRIVATE_KEY
+
+cast send $USDC_TOKEN "approve(address,uint256)" $POOL_MANAGER $(cast --to-wei 10000) \
+  --rpc-url $AMOY_RPC_URL \
+  --private-key $PRIVATE_KEY
+
+# Add liquidity
+forge script script/AddLiquidity.s.sol \
+  --rpc-url $AMOY_RPC_URL \
+  --broadcast \
+  -vvvv
+```
+
+**Expected Output**: Liquidity position created with 10,000 LUKAS + 10,000 USDC
+
+### Post-Deployment Steps
+
+1. **Update deployments.json**
+   ```bash
+   # Update packages/contracts/deployments.json with all addresses
+   # Then sync across the codebase
+   npm run sync-deployments
+   ```
+
+2. **Test the Integration**
+   ```bash
+   # Test a swap
+   cast send $POOL_MANAGER "swap(...)" \
+     --rpc-url $AMOY_RPC_URL \
+     --private-key $PRIVATE_KEY
+   ```
+
+3. **Release SDK Update**
+   ```bash
+   cd packages/lukas-sdk
+   npm run release
+   ```
+
+## Detailed Manual Deployment
+
+If you need to customize the deployment or understand the internals, follow these detailed steps.
+
 ## Step 1: Deploy Uniswap V4 Core Contracts
 
-### Clone and Setup V4 Repository
+### Clone and Setup V4 Repository (Optional)
+
+If using official Uniswap V4 contracts instead of our scripts:
 
 ```bash
 # Clone Uniswap V4 core
@@ -74,29 +210,29 @@ forge install
 forge build
 ```
 
-### Create Deployment Script
+### Create Deployment Script (Already Included)
 
-Create `script/DeployAmoy.s.sol`:
+Our repository includes `script/DeployUniswapV4.s.sol`:
 
 ```solidity
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.24;
+pragma solidity ^0.8.26;
 
 import "forge-std/Script.sol";
-import {PoolManager} from "v4-core/PoolManager.sol";
-import {PoolSwapTest} from "v4-core/test/PoolSwapTest.sol";
-import {PoolModifyLiquidityTest} from "v4-core/test/PoolModifyLiquidityTest.sol";
+import {PoolManager} from "v4-core/src/PoolManager.sol";
+import {PoolSwapTest} from "v4-core/src/test/PoolSwapTest.sol";
+import {PoolModifyLiquidityTest} from "v4-core/src/test/PoolModifyLiquidityTest.sol";
 
-contract DeployAmoy is Script {
+contract DeployUniswapV4 is Script {
     function run() external {
         uint256 deployerPrivateKey = vm.envUint("PRIVATE_KEY");
         vm.startBroadcast(deployerPrivateKey);
 
-        // Deploy PoolManager
-        PoolManager poolManager = new PoolManager(500000); // 500k gas limit
+        // Deploy PoolManager with 500k gas limit
+        PoolManager poolManager = new PoolManager(500000);
         console.log("PoolManager deployed at:", address(poolManager));
 
-        // Deploy test routers for swaps and liquidity
+        // Deploy test routers
         PoolSwapTest swapRouter = new PoolSwapTest(poolManager);
         console.log("SwapRouter deployed at:", address(swapRouter));
 
@@ -108,7 +244,19 @@ contract DeployAmoy is Script {
 }
 ```
 
-### Deploy V4 Core
+### Deploy V4 Core (Method 1: Using Our Script)
+
+```bash
+cd packages/contracts
+
+forge script script/DeployUniswapV4.s.sol \
+  --rpc-url $AMOY_RPC_URL \
+  --broadcast \
+  --verify \
+  -vvvv
+```
+
+### Deploy V4 Core (Method 2: Manual)
 
 ```bash
 # Set environment variables

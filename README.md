@@ -46,6 +46,26 @@ This is a **Turborepo** monorepo containing:
 └── package.json
 ```
 
+---
+
+## 📚 Documentation
+
+**Complete documentation is now available!** Start here:
+
+### Quick Start
+- 📖 **[DOCUMENTATION_INDEX.md](./DOCUMENTATION_INDEX.md)** - Complete documentation index
+- 🎯 **[CONTRACT_UPDATE_BASELINE.md](./CONTRACT_UPDATE_BASELINE.md)** - Current deployment baseline
+- ✅ **[DEPLOYMENT_CHECKLIST.md](./DEPLOYMENT_CHECKLIST.md)** - Step-by-step deployment
+- 🦄 **[UNISWAP_V4_DEPLOYMENT.md](./UNISWAP_V4_DEPLOYMENT.md)** - Uniswap V4 integration
+
+### Status Reports
+- 📊 **[TESTING_COMPLETE.md](./TESTING_COMPLETE.md)** - Latest test results
+- 📦 **[packages/contracts/DEPLOYMENT_STATUS.md](./packages/contracts/DEPLOYMENT_STATUS.md)** - Live deployment tracking
+
+**All documentation was updated December 18, 2025 and is synced with the current codebase.**
+
+---
+
 ### Apps
 
 - **web**: Next.js 14 app with cybernetic grid shader background

@@ -271,14 +271,14 @@ contract StabilizerVault is IStabilizerVault, Owned {
     /**
      * @notice Check if stabilization should be triggered
      * @param poolPrice Current pool price (1e18)
-     * @return shouldStabilize True if deviation exceeds threshold
+     * @return _shouldStabilize True if deviation exceeds threshold
      * @return isOverPeg True if over-peg (should mint)
      * @return deviationBps Absolute deviation in basis points
      */
     function shouldStabilize(uint256 poolPrice) 
         external 
         view 
-        returns (bool shouldStabilize, bool isOverPeg, uint256 deviationBps) 
+        returns (bool _shouldStabilize, bool isOverPeg, uint256 deviationBps) 
     {
         uint256 fairPrice = basketIndex.getLukasFairPriceInUSDC();
         
@@ -290,8 +290,10 @@ contract StabilizerVault is IStabilizerVault, Owned {
             isOverPeg = false;
         }
         
-        shouldStabilize = deviationBps >= deviationThreshold && 
+        _shouldStabilize = deviationBps >= deviationThreshold && 
                           block.timestamp >= lastStabilization + cooldownPeriod;
+        
+        return (_shouldStabilize, isOverPeg, deviationBps);
     }
 
     /// @notice Receive ETH for collateral

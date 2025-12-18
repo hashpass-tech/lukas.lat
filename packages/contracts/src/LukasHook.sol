@@ -1,13 +1,13 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.24;
+pragma solidity ^0.8.26;
 
-import {BaseHook} from "v4-periphery/src/utils/BaseHook.sol";
+import {BaseHook} from "./periphery/utils/BaseHook.sol";
 
 import {Hooks} from "v4-core/src/libraries/Hooks.sol";
 import {IPoolManager} from "v4-core/src/interfaces/IPoolManager.sol";
 import {PoolKey} from "v4-core/src/types/PoolKey.sol";
 import {PoolId, PoolIdLibrary} from "v4-core/src/types/PoolId.sol";
-import {BalanceDelta} from "v4-core/src/types/BalanceDelta.sol";
+import {BalanceDelta, BalanceDeltaLibrary} from "v4-core/src/types/BalanceDelta.sol";
 import {BeforeSwapDelta, BeforeSwapDeltaLibrary} from "v4-core/src/types/BeforeSwapDelta.sol";
 import {Currency} from "v4-core/src/types/Currency.sol";
 import {StateLibrary} from "v4-core/src/libraries/StateLibrary.sol";
@@ -88,6 +88,8 @@ contract LukasHook is BaseHook {
         
         autoStabilize = false; // Disabled by default, enable after testing
         minSwapForStabilization = 100e18; // 100 LUKAS/USDC minimum
+
+        validateHookAddress(this);
     }
 
     function getHookPermissions()
@@ -115,6 +117,10 @@ contract LukasHook is BaseHook {
             });
     }
 
+    function validateHookAddress(BaseHook _this) internal pure override {
+        Hooks.validateHookPermissions(_this, getHookPermissions());
+    }
+
     /**
      * @notice Validate pool initialization
      * @dev Ensures the pool is LUKAS/USDC with correct configuration
@@ -123,7 +129,7 @@ contract LukasHook is BaseHook {
         address,
         PoolKey calldata key,
         uint160
-    ) internal view override returns (bytes4) {
+    ) internal override returns (bytes4) {
         // Verify this is a LUKAS/USDC pool
         address token0 = Currency.unwrap(key.currency0);
         address token1 = Currency.unwrap(key.currency1);
@@ -275,6 +281,84 @@ contract LukasHook is BaseHook {
     function setMinSwapForStabilization(uint256 minSwap) external {
         // In production, add access control
         minSwapForStabilization = minSwap;
+    }
+
+    function _beforeAddLiquidity(
+        address,
+        PoolKey calldata,
+        IPoolManager.ModifyLiquidityParams calldata,
+        bytes calldata
+    ) internal override returns (bytes4) {
+        return BaseHook.beforeAddLiquidity.selector;
+    }
+
+    function _beforeRemoveLiquidity(
+        address,
+        PoolKey calldata,
+        IPoolManager.ModifyLiquidityParams calldata,
+        bytes calldata
+    ) internal override returns (bytes4) {
+        return BaseHook.beforeRemoveLiquidity.selector;
+    }
+
+    function _afterAddLiquidity(
+        address,
+        PoolKey calldata,
+        IPoolManager.ModifyLiquidityParams calldata,
+        BalanceDelta,
+        BalanceDelta,
+        bytes calldata
+    ) internal override returns (bytes4, BalanceDelta) {
+        return (BaseHook.afterAddLiquidity.selector, BalanceDeltaLibrary.ZERO_DELTA);
+    }
+
+    function _afterRemoveLiquidity(
+        address,
+        PoolKey calldata,
+        IPoolManager.ModifyLiquidityParams calldata,
+        BalanceDelta,
+        BalanceDelta,
+        bytes calldata
+    ) internal override returns (bytes4, BalanceDelta) {
+        return (BaseHook.afterRemoveLiquidity.selector, BalanceDeltaLibrary.ZERO_DELTA);
+    }
+
+    function _beforeSwap(
+        address,
+        PoolKey calldata,
+        IPoolManager.SwapParams calldata,
+        bytes calldata
+    ) internal override returns (bytes4, BeforeSwapDelta, uint24) {
+        return (BaseHook.beforeSwap.selector, BeforeSwapDeltaLibrary.ZERO_DELTA, 0);
+    }
+
+    function _afterInitialize(
+        address,
+        PoolKey calldata,
+        uint160,
+        int24
+    ) internal override returns (bytes4) {
+        return BaseHook.afterInitialize.selector;
+    }
+
+    function _beforeDonate(
+        address,
+        PoolKey calldata,
+        uint256,
+        uint256,
+        bytes calldata
+    ) internal override returns (bytes4) {
+        return BaseHook.beforeDonate.selector;
+    }
+
+    function _afterDonate(
+        address,
+        PoolKey calldata,
+        uint256,
+        uint256,
+        bytes calldata
+    ) internal override returns (bytes4) {
+        return BaseHook.afterDonate.selector;
     }
 
     // ============ View Functions ============
