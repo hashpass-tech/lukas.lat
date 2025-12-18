@@ -4,6 +4,7 @@ import { NetworkManager } from './NetworkManager';
 import { ProviderManager } from './ProviderManager';
 import { ContractManager } from './ContractManager';
 import { LukasSDKError, LukasSDKErrorCode } from '../errors/LukasSDKError';
+import { TokenServiceImpl } from '../services/TokenServiceImpl';
 
 /**
  * Main Lukas SDK client class
@@ -372,23 +373,18 @@ export class LukasSDK {
   /**
    * Get Token Service for LUKAS token operations
    */
-  getTokenService(): any {
+  getTokenService(): TokenServiceImpl {
     const contractManager = this.getContractManager();
     const lukasTokenContract = contractManager.getLukasTokenContract();
-    
-    // Lazy import to avoid circular dependencies
-    const { TokenServiceImpl } = require('../services/TokenServiceImpl');
     return new TokenServiceImpl(lukasTokenContract, this.networkConfig.contracts.lukasToken);
   }
 
   /**
    * Get USDC Token Service
    */
-  getUSDCService(): any {
+  getUSDCService(): TokenServiceImpl {
     const contractManager = this.getContractManager();
     const usdcContract = contractManager.getUSDCContract();
-    
-    const { TokenServiceImpl } = require('../services/TokenServiceImpl');
     return new TokenServiceImpl(usdcContract, this.networkConfig.contracts.usdc);
   }
 }

@@ -11,6 +11,9 @@ export class TokenServiceImpl implements TokenService {
   private contractAddress: string;
 
   constructor(contract: Contract, contractAddress: string) {
+    if (!contract) {
+      throw new Error('Contract instance is required');
+    }
     this.contract = contract;
     this.contractAddress = contractAddress;
   }
@@ -21,10 +24,10 @@ export class TokenServiceImpl implements TokenService {
   async getTokenInfo(): Promise<TokenInfo> {
     try {
       const [name, symbol, decimals, totalSupply] = await Promise.all([
-        this.contract.name(),
-        this.contract.symbol(),
-        this.contract.decimals(),
-        this.contract.totalSupply(),
+        (this.contract as any).name(),
+        (this.contract as any).symbol(),
+        (this.contract as any).decimals(),
+        (this.contract as any).totalSupply(),
       ]);
 
       return {
@@ -48,7 +51,7 @@ export class TokenServiceImpl implements TokenService {
    */
   async getBalance(address: string): Promise<BigNumber> {
     try {
-      const balance = await this.contract.balanceOf(address);
+      const balance = await (this.contract as any).balanceOf(address);
       return balance.toString();
     } catch (error) {
       throw new LukasSDKError(
@@ -64,7 +67,7 @@ export class TokenServiceImpl implements TokenService {
    */
   async getAllowance(owner: string, spender: string): Promise<BigNumber> {
     try {
-      const allowance = await this.contract.allowance(owner, spender);
+      const allowance = await (this.contract as any).allowance(owner, spender);
       return allowance.toString();
     } catch (error) {
       throw new LukasSDKError(
@@ -80,7 +83,7 @@ export class TokenServiceImpl implements TokenService {
    */
   async getTotalSupply(): Promise<BigNumber> {
     try {
-      const totalSupply = await this.contract.totalSupply();
+      const totalSupply = await (this.contract as any).totalSupply();
       return totalSupply.toString();
     } catch (error) {
       throw new LukasSDKError(
@@ -96,7 +99,7 @@ export class TokenServiceImpl implements TokenService {
    */
   async transfer(to: string, amount: BigNumber): Promise<TransactionResponse> {
     try {
-      const tx = await this.contract.transfer(to, amount);
+      const tx = await (this.contract as any).transfer(to, amount);
       return tx;
     } catch (error) {
       throw new LukasSDKError(
@@ -112,7 +115,7 @@ export class TokenServiceImpl implements TokenService {
    */
   async approve(spender: string, amount: BigNumber): Promise<TransactionResponse> {
     try {
-      const tx = await this.contract.approve(spender, amount);
+      const tx = await (this.contract as any).approve(spender, amount);
       return tx;
     } catch (error) {
       throw new LukasSDKError(
@@ -128,7 +131,7 @@ export class TokenServiceImpl implements TokenService {
    */
   async transferFrom(from: string, to: string, amount: BigNumber): Promise<TransactionResponse> {
     try {
-      const tx = await this.contract.transferFrom(from, to, amount);
+      const tx = await (this.contract as any).transferFrom(from, to, amount);
       return tx;
     } catch (error) {
       throw new LukasSDKError(
