@@ -82,8 +82,40 @@ const config = {
               },
             ],
           },
+          {
+            title: 'Navigation',
+            items: [
+              {
+                label: '← Back to Home',
+                href: '#',
+                target: '_self',
+                className: 'footer-back-main',
+              },
+            ],
+          },
         ],
-        copyright: `Copyright © ${new Date().getFullYear()} $LUKAS. Built with Docusaurus.`,
+        copyright: `
+          <div style="display:flex;flex-direction:column;align-items:center;gap:0.25em;">
+            <span>Copyright © ${new Date().getFullYear()} $LUKAS. Built with Docusaurus.</span>
+            <span style="font-size:0.95em;opacity:0.7;">v0.2.18</span>
+          </div>
+          <script>
+            (function() {
+              var setHomeLink = function() {
+                var link = document.querySelector('.footer-back-main');
+                if (link) {
+                  var isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+                  link.setAttribute('href', isLocal ? 'http://localhost:3000' : 'https://lukas.lat');
+                }
+              };
+              if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', setHomeLink);
+              } else {
+                setHomeLink();
+              }
+            })();
+          </script>
+        `,
       },
       prism: {
         theme: prismThemes.github,
