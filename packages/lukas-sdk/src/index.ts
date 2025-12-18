@@ -31,5 +31,6 @@ export * from './utils';
 // These are exported separately to avoid build issues when React is not installed
 export * from './react';
 
-// Version
-export const VERSION = '0.2.5';
+// Version - dynamically imported from package.json
+import packageJson from '../package.json';
+export const VERSION = packageJson.version;
