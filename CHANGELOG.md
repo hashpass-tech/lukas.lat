@@ -24,6 +24,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+## [0.2.22] - 2025-12-18
+
+### Added
+
+
+
+### Changed
+
+
+
+### Fixed
+
+
+
+
+
 ## [0.2.21] - 2025-12-18
 
 ### Added
