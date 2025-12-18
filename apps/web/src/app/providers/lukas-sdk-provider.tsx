@@ -56,7 +56,8 @@ export function LukasSDKProvider({ children }: LukasSDKProviderProps) {
       try {
         setError(null);
         
-        const targetChainId = chainId || 80002; // Default to Amoy testnet
+        // Use chainId from wallet if available, otherwise default to Amoy
+        const targetChainId = chainId || 80002;
         const config = createSDKConfig(targetChainId, isConnected);
 
         console.log(`Initializing Lukas SDK v${VERSION} for chain ${targetChainId}...`);
@@ -86,18 +87,16 @@ export function LukasSDKProvider({ children }: LukasSDKProviderProps) {
       }
     };
 
-    initializeSDK();
+    // Only initialize if we don't have an SDK yet, or if the chain changed
+    if (!sdk || (chainId && sdk.getNetworkInfo().chainId !== chainId)) {
+      initializeSDK();
+    }
 
     return () => {
-      if (sdk) {
-        try {
-          sdk.disconnect();
-        } catch (err) {
-          console.warn('Error disconnecting SDK:', err);
-        }
-      }
+      // Don't disconnect on every unmount, only when component is truly destroyed
+      // This prevents issues with React strict mode and hot reloading
     };
-  }, [isConnected, chainId]); // Reinitialize when connection status or initial chain changes
+  }, [chainId]); // Only depend on chainId, not isConnected
 
   // Handle network changes
   useEffect(() => {
@@ -219,9 +218,6 @@ function getContractAddresses(chainId: number, environment: 'stable' | 'testing'
     }
     return address;
   };
-
-  // Get contracts from the specified environment (stable or testing)
-  const contracts = network.contracts[environment] || network.contracts.stable;
   
   // Use environment variable to override default (useful for development)
   const useTestingContracts = process.env.NEXT_PUBLIC_USE_TESTING_CONTRACTS === 'true';
