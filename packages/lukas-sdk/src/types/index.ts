@@ -154,3 +154,255 @@ export interface SwapQuote {
   /** Token addresses in swap path */
   path: string[];
 }
+
+/**
+ * Transfer event
+ */
+export interface TransferEvent {
+  /** From address */
+  from: string;
+  /** To address */
+  to: string;
+  /** Transfer amount */
+  amount: BigNumber;
+  /** Block number */
+  blockNumber: number;
+  /** Transaction hash */
+  transactionHash: string;
+  /** Event timestamp */
+  timestamp: number;
+}
+
+/**
+ * Approval event
+ */
+export interface ApprovalEvent {
+  /** Owner address */
+  owner: string;
+  /** Spender address */
+  spender: string;
+  /** Approved amount */
+  amount: BigNumber;
+  /** Block number */
+  blockNumber: number;
+  /** Transaction hash */
+  transactionHash: string;
+  /** Event timestamp */
+  timestamp: number;
+}
+
+
+/**
+ * Stabilization mint event
+ */
+export interface StabilizationMintEvent {
+  /** Mint amount */
+  amount: BigNumber;
+  /** Pool price at time of mint */
+  poolPrice: BigNumber;
+  /** Fair price at time of mint */
+  fairPrice: BigNumber;
+  /** Recipient address */
+  recipient: string;
+  /** Block number */
+  blockNumber: number;
+  /** Transaction hash */
+  transactionHash: string;
+  /** Event timestamp */
+  timestamp: number;
+}
+
+/**
+ * Stabilization buyback event
+ */
+export interface StabilizationBuybackEvent {
+  /** Buyback amount */
+  amount: BigNumber;
+  /** Pool price at time of buyback */
+  poolPrice: BigNumber;
+  /** Fair price at time of buyback */
+  fairPrice: BigNumber;
+  /** Block number */
+  blockNumber: number;
+  /** Transaction hash */
+  transactionHash: string;
+  /** Event timestamp */
+  timestamp: number;
+}
+
+/**
+ * Vault parameter update event
+ */
+export interface VaultParameterUpdateEvent {
+  /** Parameter name that was updated */
+  parameterName: string;
+  /** Old parameter value */
+  oldValue: BigNumber;
+  /** New parameter value */
+  newValue: BigNumber;
+  /** Block number */
+  blockNumber: number;
+  /** Transaction hash */
+  transactionHash: string;
+  /** Event timestamp */
+  timestamp: number;
+}
+
+
+/**
+ * Union type for all event data
+ */
+export type EventData =
+  | TransferEvent
+  | ApprovalEvent
+  | StabilizationMintEvent
+  | StabilizationBuybackEvent
+  | VaultParameterUpdateEvent
+  | IndexUpdateEvent
+  | PegDeviationEvent
+  | LiquidityAddedEvent
+  | LiquidityRemovedEvent;
+
+/**
+ * Index update event
+ */
+export interface IndexUpdateEvent {
+  /** Updated index value in USD */
+  valueUSD: BigNumber;
+  /** Currencies in the basket */
+  currencies: string[];
+  /** Currency weights in basis points */
+  weights: number[];
+  /** Individual currency prices */
+  prices: BigNumber[];
+  /** Block number */
+  blockNumber: number;
+  /** Transaction hash */
+  transactionHash: string;
+  /** Event timestamp */
+  timestamp: number;
+}
+
+/**
+ * Peg deviation event
+ */
+export interface PegDeviationEvent {
+  /** Pool price */
+  poolPrice: BigNumber;
+  /** Fair price */
+  fairPrice: BigNumber;
+  /** Deviation in basis points */
+  deviationBps: number;
+  /** Whether price is over peg */
+  isOverPeg: boolean;
+  /** Block number */
+  blockNumber: number;
+  /** Transaction hash */
+  transactionHash: string;
+  /** Event timestamp */
+  timestamp: number;
+}
+
+/**
+ * Liquidity added event
+ */
+export interface LiquidityAddedEvent {
+  /** Provider address */
+  provider: string;
+  /** Liquidity amount */
+  liquidity: BigNumber;
+  /** Lower tick */
+  tickLower: number;
+  /** Upper tick */
+  tickUpper: number;
+  /** Amount of token 0 */
+  amount0: BigNumber;
+  /** Amount of token 1 */
+  amount1: BigNumber;
+  /** Block number */
+  blockNumber: number;
+  /** Transaction hash */
+  transactionHash: string;
+  /** Event timestamp */
+  timestamp: number;
+}
+
+/**
+ * Liquidity removed event
+ */
+export interface LiquidityRemovedEvent {
+  /** Provider address */
+  provider: string;
+  /** Liquidity amount */
+  liquidity: BigNumber;
+  /** Lower tick */
+  tickLower: number;
+  /** Upper tick */
+  tickUpper: number;
+  /** Amount of token 0 */
+  amount0: BigNumber;
+  /** Amount of token 1 */
+  amount1: BigNumber;
+  /** Block number */
+  blockNumber: number;
+  /** Transaction hash */
+  transactionHash: string;
+  /** Event timestamp */
+  timestamp: number;
+}
+
+/**
+ * Stabilization history entry
+ */
+export interface StabilizationHistoryEntry {
+  /** Type of stabilization action (mint or buyback) */
+  actionType: 'mint' | 'buyback';
+  /** Amount of stabilization */
+  amount: BigNumber;
+  /** Pool price at time of action */
+  poolPrice: BigNumber;
+  /** Fair price at time of action */
+  fairPrice: BigNumber;
+  /** Recipient address (for mint actions) */
+  recipient?: string;
+  /** Block number */
+  blockNumber: number;
+  /** Transaction hash */
+  transactionHash: string;
+  /** Timestamp of action */
+  timestamp: number;
+}
+
+/**
+ * Stabilization history query result
+ */
+export interface StabilizationHistory {
+  /** Array of stabilization history entries */
+  entries: StabilizationHistoryEntry[];
+  /** Total number of entries matching the query */
+  total: number;
+  /** Current page number */
+  page: number;
+  /** Number of entries per page */
+  pageSize: number;
+  /** Whether there are more pages */
+  hasMore: boolean;
+}
+
+/**
+ * Stabilization history query options
+ */
+export interface StabilizationHistoryOptions {
+  /** Start timestamp (inclusive) */
+  startTime?: number;
+  /** End timestamp (inclusive) */
+  endTime?: number;
+  /** Filter by action type */
+  actionType?: 'mint' | 'buyback';
+  /** Page number (1-indexed) */
+  page?: number;
+  /** Number of entries per page */
+  pageSize?: number;
+  /** Sort order */
+  sortOrder?: 'asc' | 'desc';
+}

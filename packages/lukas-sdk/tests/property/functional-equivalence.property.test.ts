@@ -59,7 +59,7 @@ describe('Functional Equivalence Property Tests', () => {
     );
   });
 
-  it('Property 24: Functional equivalence - Network switching maintains consistency', () => {
+  it('Property 24: Functional equivalence - Network switching maintains consistency', async () => {
     // Generator for two different supported networks
     const supportedNetworks = NetworkManager.getSupportedNetworks();
     const twoNetworksGen = fc.tuple(
@@ -67,8 +67,8 @@ describe('Functional Equivalence Property Tests', () => {
       fc.constantFrom(...supportedNetworks)
     ).filter(([net1, net2]) => net1.chainId !== net2.chainId);
 
-    fc.assert(
-      fc.property(twoNetworksGen, async ([network1, network2]) => {
+    await fc.assert(
+      fc.asyncProperty(twoNetworksGen, async ([network1, network2]) => {
         // Initialize SDK with first network
         const sdk = new LukasSDK({
           network: {

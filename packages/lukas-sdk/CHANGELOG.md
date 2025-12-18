@@ -5,6 +5,26 @@ All notable changes to the Lukas SDK will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.11] - 2024-12-18
+
+### Added
+- Comprehensive testing suite with 160+ tests
+- Event subscription stress tests for high-volume scenarios
+- Performance testing framework for concurrent operations
+- Property-based tests for core SDK functionality
+- Integration test templates for contract interactions
+
+### Improved
+- Test coverage for all core services
+- Event manager stress testing with up to 1000 concurrent subscriptions
+- Memory efficiency validation
+- Error handling and edge case coverage
+
+### Fixed
+- Test infrastructure and mocking patterns
+- Event subscription lifecycle management
+- History buffer management in EventManager
+
 ## [0.2.1] - 2024-12-17
 
 ### Added

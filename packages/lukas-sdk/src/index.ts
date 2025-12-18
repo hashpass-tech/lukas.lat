@@ -10,7 +10,13 @@ export { LukasSDK } from './core/LukasSDK';
 export { NetworkManager } from './core/NetworkManager';
 export { ProviderManager } from './core/ProviderManager';
 export { ContractManager } from './core/ContractManager';
+export { EventManager } from './core/EventManager';
+export { WebSocketEventMonitor, RealtimeEventMonitor, WebSocketState } from './core/WebSocketEventMonitor';
+export { EventValidator, EventFormatter } from './core/EventValidator';
 export type { LukasSDKConfig, SDKOptions, NetworkConfig, ContractAddresses, NetworkInfo } from './core/types';
+export type { EventType, EventData, EventFilter, EventSubscriptionOptions, EventCallback, SubscriptionId } from './core/EventManager';
+export type { WebSocketMonitorConfig } from './core/WebSocketEventMonitor';
+export type { EventSchema, ValidationResult } from './core/EventValidator';
 
 // Service exports
 export type { TokenService } from './services/TokenService';

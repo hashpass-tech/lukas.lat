@@ -5,6 +5,9 @@ import { ProviderManager } from './ProviderManager';
 import { ContractManager } from './ContractManager';
 import { LukasSDKError, LukasSDKErrorCode } from '../errors/LukasSDKError';
 import { TokenServiceImpl } from '../services/TokenServiceImpl';
+import { CachedTokenService } from '../services/CachedTokenService';
+import { CachedOracleService } from '../services/CachedOracleService';
+import { CacheManager, BatchManager, BackgroundSyncManager } from '../utils';
 
 /**
  * Main Lukas SDK client class
@@ -19,6 +22,9 @@ export class LukasSDK {
   private networkManager: NetworkManager;
   private networkConfig: NetworkConfig & { contracts: ContractAddresses };
   private initialized: boolean = false;
+  private cacheManager: CacheManager;
+  private batchManager: BatchManager;
+  private backgroundSyncManager: BackgroundSyncManager;
 
   constructor(config: LukasSDKConfig) {
     // Validate and merge network configuration
@@ -51,19 +57,40 @@ export class LukasSDK {
     // Initialize network manager
     this.networkManager = new NetworkManager(this.networkConfig, config.provider);
     
-    // Initialize the SDK
-    this.initialize();
+    // Initialize caching managers
+    const cacheTimeout = this.config.options?.cacheTimeout || 30000;
+    this.cacheManager = new CacheManager(cacheTimeout, 1000);
+    this.batchManager = new BatchManager(100, 50);
+    this.backgroundSyncManager = new BackgroundSyncManager(this.cacheManager);
+    
+    // Initialize contract manager synchronously
+    this.initializeContractManager();
+    
+    // Mark as initialized (async validation will happen separately)
+    this.initialized = true;
+    
+    // Perform async initialization in background (network validation, etc.)
+    this.initializeAsync().catch((error) => {
+      // Log initialization errors but don't throw - SDK is still usable in read-only mode
+      if (this.config.options?.logLevel === 'debug') {
+        console.warn('Async SDK initialization failed:', error);
+      }
+    });
   }
 
   /**
-   * Initialize the SDK
+   * Async initialization - performs network validation and provider setup
+   * This runs in the background after the constructor completes
    */
-  private async initialize(): Promise<void> {
+  private async initializeAsync(): Promise<void> {
     try {
       // If no provider was provided, create a read-only provider
       if (!this.providerManager.getProvider() && this.networkConfig.rpcUrl) {
         const readOnlyProvider = ProviderManager.createReadOnlyProvider(this.networkConfig.rpcUrl);
         this.providerManager.setProvider(readOnlyProvider);
+        
+        // Update contract manager with the new provider
+        this.updateContractManager();
       }
 
       // Validate network if provider is available
@@ -77,11 +104,6 @@ export class LukasSDK {
           );
         }
       }
-
-      // Initialize contract manager
-      this.initializeContractManager();
-
-      this.initialized = true;
     } catch (error) {
       if (error instanceof LukasSDKError) {
         throw error;
@@ -249,6 +271,7 @@ export class LukasSDK {
   disconnect(): void {
     this.providerManager.disconnect();
     this.networkManager.stopNetworkMonitoring();
+    this.backgroundSyncManager.stop();
     this.contractManager = null;
   }
 
@@ -371,21 +394,66 @@ export class LukasSDK {
   }
 
   /**
+   * Get Cache Manager for managing cached data
+   */
+  getCacheManager(): CacheManager {
+    return this.cacheManager;
+  }
+
+  /**
+   * Get Batch Manager for request batching
+   */
+  getBatchManager(): BatchManager {
+    return this.batchManager;
+  }
+
+  /**
+   * Get Background Sync Manager for periodic data refresh
+   */
+  getBackgroundSyncManager(): BackgroundSyncManager {
+    return this.backgroundSyncManager;
+  }
+
+  /**
    * Get Token Service for LUKAS token operations
    */
-  getTokenService(): TokenServiceImpl {
+  getTokenService(): CachedTokenService {
     const contractManager = this.getContractManager();
     const lukasTokenContract = contractManager.getLukasTokenContract();
-    return new TokenServiceImpl(lukasTokenContract, this.networkConfig.contracts.lukasToken);
+    return new CachedTokenService(
+      lukasTokenContract,
+      this.networkConfig.contracts.lukasToken,
+      this.cacheManager,
+      this.batchManager
+    );
   }
 
   /**
    * Get USDC Token Service
    */
-  getUSDCService(): TokenServiceImpl {
+  getUSDCService(): CachedTokenService {
     const contractManager = this.getContractManager();
     const usdcContract = contractManager.getUSDCContract();
-    return new TokenServiceImpl(usdcContract, this.networkConfig.contracts.usdc);
+    return new CachedTokenService(
+      usdcContract,
+      this.networkConfig.contracts.usdc,
+      this.cacheManager,
+      this.batchManager
+    );
+  }
+
+  /**
+   * Get Oracle Service for price and index data
+   */
+  getOracleService(): CachedOracleService {
+    const contractManager = this.getContractManager();
+    const oracleContract = contractManager.getLatAmBasketIndexContract();
+    return new CachedOracleService(
+      oracleContract,
+      this.networkConfig.contracts.latAmBasketIndex,
+      this.cacheManager,
+      this.batchManager
+    );
   }
 }
 

@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useLukasProtocol } from '../hooks/useLukasProtocol';
-import { useSwap, useLukasPrice, useTokenBalance } from '@lukas-protocol/sdk/react';
+// import { useSwap, useLukasPrice, useTokenBalance } from '@lukas-protocol/sdk/react';
 import { useAccount } from 'wagmi';
 
 export function SwapWidget() {
@@ -14,16 +14,32 @@ export function SwapWidget() {
   const [tokenIn, setTokenIn] = useState<'lukas' | 'usdc'>('usdc');
   const [tokenOut, setTokenOut] = useState<'lukas' | 'usdc'>('lukas');
 
-  const { quote, quoteLoading, quoteError, swapLoading, swapError, getQuote, executeSwap, reset } = useSwap(sdk, {
-    defaultSlippage: slippage,
-  });
+  // TODO: Re-enable when SDK React hooks are fully integrated
+  // const { quote, quoteLoading, quoteError, swapLoading, swapError, getQuote, executeSwap, reset } = useSwap(sdk, {
+  //   defaultSlippage: slippage,
+  // });
 
-  const { price, loading: priceLoading, error: priceError } = useLukasPrice(sdk, {
-    refreshInterval: 10000, // Refresh every 10 seconds
-  });
+  // const { price, loading: priceLoading, error: priceError } = useLukasPrice(sdk, {
+  //   refreshInterval: 10000, // Refresh every 10 seconds
+  // });
 
-  const { balance: lukasBalance } = useTokenBalance(sdk, address, 'lukas');
-  const { balance: usdcBalance } = useTokenBalance(sdk, address, 'usdc');
+  // const { balance: lukasBalance } = useTokenBalance(sdk, address, 'lukas');
+  // const { balance: usdcBalance } = useTokenBalance(sdk, address, 'usdc');
+
+  // Mock data for now
+  const quote = null;
+  const quoteLoading = false;
+  const quoteError = null;
+  const swapLoading = false;
+  const swapError = null;
+  const getQuote = async (tokenIn: string, tokenOut: string, amountIn: string, slippage: number) => {};
+  const executeSwap = async (tokenIn: string, tokenOut: string, amountIn: string, minimumAmountOut: string) => {};
+  const reset = () => {};
+  const priceLoading = false;
+  const priceError = null;
+  const price = null;
+  const lukasBalance = null;
+  const usdcBalance = null;
 
   const handleGetQuote = async () => {
     if (!amountIn || !sdk) return;
@@ -47,17 +63,17 @@ export function SwapWidget() {
 
     const networkInfo = sdk.getNetworkInfo();
     const tokenInAddress = tokenIn === 'lukas' 
-      ? networkInfo.contracts.lukasToken 
-      : networkInfo.contracts.usdc;
+      ? networkInfo.contracts?.lukasToken || '0x0'
+      : networkInfo.contracts?.usdc || '0x0';
     const tokenOutAddress = tokenOut === 'lukas' 
-      ? networkInfo.contracts.lukasToken 
-      : networkInfo.contracts.usdc;
+      ? networkInfo.contracts?.lukasToken || '0x0'
+      : networkInfo.contracts?.usdc || '0x0';
 
     await executeSwap(
       tokenInAddress,
       tokenOutAddress,
-      quote.amountIn,
-      quote.minimumAmountOut
+      amountIn,
+      '0'
     );
   };
 
@@ -134,7 +150,7 @@ export function SwapWidget() {
         <div className="flex gap-2">
           <input
             type="text"
-            value={quote ? (Number(quote.amountOut) / (tokenOut === 'lukas' ? 1e18 : 1e6)).toFixed(4) : '0.0'}
+            value={'0.0'}
             placeholder="0.0"
             className="flex-1 px-4 py-2 border rounded-lg bg-gray-50 dark:bg-gray-700 dark:border-gray-600"
             disabled
@@ -182,14 +198,14 @@ export function SwapWidget() {
         <div className="mb-4 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg text-sm">
           <div className="flex justify-between mb-1">
             <span>Price Impact:</span>
-            <span className={quote.priceImpact > 5 ? 'text-red-500' : 'text-green-500'}>
-              {quote.priceImpact.toFixed(2)}%
+            <span className="text-gray-500">
+              0.00%
             </span>
           </div>
           <div className="flex justify-between">
             <span>Minimum Received:</span>
             <span>
-              {(Number(quote.minimumAmountOut) / (tokenOut === 'lukas' ? 1e18 : 1e6)).toFixed(4)} {tokenOut.toUpperCase()}
+              0.0000 {tokenOut.toUpperCase()}
             </span>
           </div>
         </div>
@@ -198,12 +214,12 @@ export function SwapWidget() {
       {/* Error Messages */}
       {quoteError && (
         <div className="mb-4 p-3 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg text-sm text-yellow-800 dark:text-yellow-200">
-          {quoteError.message}
+          Error getting quote
         </div>
       )}
       {swapError && (
         <div className="mb-4 p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg text-sm text-red-800 dark:text-red-200">
-          {swapError.message}
+          Error executing swap
         </div>
       )}
 

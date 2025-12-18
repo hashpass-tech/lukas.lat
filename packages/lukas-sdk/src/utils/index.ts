@@ -1,13 +1,42 @@
+import { LukasSDKError, LukasSDKErrorCode } from '../errors/LukasSDKError';
+
+// Re-export resilience utilities
+export { retryWithBackoff, CircuitBreaker, withTimeout, resilientCall, batchWithResilience } from './Resilience';
+export type { RetryConfig, CircuitBreakerConfig } from './Resilience';
+
+// Re-export validation utilities
+export {
+  isValidAddress,
+  validateAddress,
+  validateAmount,
+  validateAddresses,
+  validateRequired,
+  validateNonEmptyString,
+  sanitizeInput,
+  validateRange,
+  validateEnum,
+  validateObjectShape,
+  validatePositiveInteger,
+  validateNonNegativeInteger,
+  validateUrl,
+  validateJson,
+  validateBatch,
+} from './Validation';
+
+// Re-export caching utilities
+export { CacheManager } from './CacheManager';
+export type { CacheStats } from './CacheManager';
+
+// Re-export batching utilities
+export { BatchManager } from './BatchManager';
+
+// Re-export background sync utilities
+export { BackgroundSyncManager } from './BackgroundSyncManager';
+export type { SyncTask, SyncTaskStatus } from './BackgroundSyncManager';
+
 /**
  * Utility functions for the Lukas SDK
  */
-
-/**
- * Check if a string is a valid Ethereum address
- */
-export function isValidAddress(address: string): boolean {
-  return /^0x[a-fA-F0-9]{40}$/.test(address);
-}
 
 /**
  * Format a BigNumber to a human-readable string
@@ -33,12 +62,13 @@ export function sleep(ms: number): Promise<void> {
 }
 
 /**
- * Retry a function with exponential backoff
+ * Retry a function with exponential backoff (legacy, use retryWithBackoff instead)
  */
 export async function retry<T>(
   fn: () => Promise<T>,
   attempts: number = 3,
-  delay: number = 1000
+  delay: number = 1000,
+  maxDelay: number = 30000
 ): Promise<T> {
   try {
     return await fn();
@@ -46,8 +76,11 @@ export async function retry<T>(
     if (attempts <= 1) {
       throw error;
     }
-    
+
+    // Calculate next delay with exponential backoff, capped at maxDelay
+    const nextDelay = Math.min(delay * 2, maxDelay);
+
     await sleep(delay);
-    return retry(fn, attempts - 1, delay * 2);
+    return retry(fn, attempts - 1, nextDelay, maxDelay);
   }
 }
