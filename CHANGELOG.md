@@ -8,61 +8,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
-- Network-specific color coding for UI components
-
-### Changed
-- Enhanced SwapWidget with network awareness
-
-### Fixed
-- Fixed hydration mismatch in Footer component
-
-## [0.2.34] - 2025-12-19
-
-### Added
-
-
 
 ### Changed
 
-
-
 ### Fixed
-
-
-
-
-
-## [0.2.34] - 2025-12-19
-
-### Added
-
-
-
-### Changed
-
-
-
-### Fixed
-
-
-
-
-
-## [0.2.34] - 2025-12-19
-
-### Added
-
-
-
-### Changed
-
-
-
-### Fixed
-
-
-
-
 
 ## [0.2.34] - 2025-12-19
 
@@ -71,6 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Independent Live indicator that shows green when contracts are deployed, grey when not
 - Network icons (Ξ for Ethereum, ◆ for Polygon) in wallet connect button and swap widget
 - Comprehensive network color system with tailwind class support
+- TODO documentation for contract detection logic improvements
 
 ### Changed
 - Updated SwapWidget to display network-aware UI with proper Live/Not Live status
@@ -85,25 +35,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Corrected network color application across all components
 - Improved contract address validation in SDK provider
 
-
-
-
-
 ## [0.2.33] - 2025-12-19
 
 ### Added
-
-
+- Comprehensive protocol documentation in Docusaurus (overview, tokenomics, architecture, roadmap, integrations)
+- Dynamic locale-based titles for Privacy and Terms pages
+- Translation keys for footer links in all locales (en, es, pt, cl)
 
 ### Changed
-
-
+- Updated Footer "Documentation" link to "Docs"
+- Updated SDK documentation to v0.2.22
+- Enhanced Docusaurus sidebar with protocol documentation section
 
 ### Fixed
-
-
-
-
+- Fixed LukasSDKProvider context initialization for SSR
+- Fixed Footer hydration mismatch with mounted state for Dialog component
 
 ## [0.2.32] - 2025-12-19
 
