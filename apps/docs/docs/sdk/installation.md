@@ -2,6 +2,8 @@
 
 This guide will help you install and set up the Lukas SDK in your project.
 
+**Current Version:** v0.2.22
+
 ## Prerequisites
 
 - Node.js 16.x or higher
@@ -15,13 +17,13 @@ Install the Lukas SDK using your preferred package manager:
 
 ```bash
 # Using npm
-npm install @lukas-protocol/sdk
+npm install @lukas-protocol/sdk@^0.2.22
 
 # Using yarn
-yarn add @lukas-protocol/sdk
+yarn add @lukas-protocol/sdk@^0.2.22
 
 # Using pnpm
-pnpm add @lukas-protocol/sdk
+pnpm add @lukas-protocol/sdk@^0.2.22
 ```
 
 ## Peer Dependencies

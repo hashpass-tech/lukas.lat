@@ -6,6 +6,8 @@ sidebar_position: 1
 
 Welcome to **$LUKAS** - The Gravity Center of LatAm Pesos.
 
+**Current Version:** v0.2.26 | **SDK Version:** v0.2.22
+
 ## What is $LUKAS?
 
 $LUKAS is the first regional Latin American basket-stable meme coin, designed to represent a weighted basket of major Latin American currencies.
@@ -22,8 +24,15 @@ $LUKAS is the first regional Latin American basket-stable meme coin, designed to
 
 $LUKAS provides a stable, regional alternative for Latin American users, combining the stability of multiple currencies with the accessibility of blockchain technology.
 
+## Quick Links
+
+- 🌐 **Website:** [lukas.lat](https://lukas.lat)
+- 📦 **SDK:** [@lukas-protocol/sdk](https://www.npmjs.com/package/@lukas-protocol/sdk)
+- 💻 **GitHub:** [hashpass-tech/lukas-protocol](https://github.com/hashpass-tech/lukas-protocol)
+
 ## Get Started
 
 - [What is $LUKAS?](./getting-started/what-is-lukas)
 - [How It Works](./getting-started/how-it-works)
 - [Smart Contracts](./contracts/overview)
+- [SDK Installation](./sdk/installation)

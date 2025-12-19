@@ -1,5 +1,7 @@
 # Lukas SDK Overview
 
+**Current Version:** v0.2.22 | [npm](https://www.npmjs.com/package/@lukas-protocol/sdk) | [GitHub](https://github.com/hashpass-tech/lukas-protocol/tree/main/packages/lukas-sdk)
+
 The Lukas SDK is a comprehensive TypeScript library that provides developers with a clean, type-safe interface for interacting with the Lukas Protocol smart contracts.
 
 ## What is the Lukas SDK?
@@ -72,6 +74,13 @@ Manages wallet provider abstraction and signer detection.
 ## Getting Started
 
 Ready to start building? Check out the [Installation Guide](./installation.md) to get started with the Lukas SDK.
+
+## Recent Updates (v0.2.22)
+
+- **Fixed:** ReactCurrentDispatcher error in Next.js and SSR environments
+- **Fixed:** Hydration mismatch issues with React context
+- **Improved:** Lazy context initialization for better SSR compatibility
+- **Improved:** External JSX runtime to prevent React bundling conflicts
 
 ## Need Help?
 

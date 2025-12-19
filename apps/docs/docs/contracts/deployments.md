@@ -221,6 +221,8 @@ In case of security issues or concerns:
 
 ---
 
-**Last Updated:** December 17, 2025
+**Last Updated:** December 19, 2025
+
+**SDK Version:** v0.2.22 | **Web App Version:** v0.2.26
 
 **Note:** This page is automatically updated when new contracts are deployed. Always verify contract addresses through multiple sources before interacting with them.

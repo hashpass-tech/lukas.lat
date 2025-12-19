@@ -346,6 +346,38 @@ npm install ethers@^6.0.0
 
 ## React Integration Issues
 
+### ReactCurrentDispatcher Error (Fixed in v0.2.22)
+
+**Problem:** `TypeError: can't access property "ReactCurrentDispatcher", h is undefined`
+
+**Solution:**
+This was fixed in SDK v0.2.22. Update to the latest version:
+```bash
+npm install @lukas-protocol/sdk@^0.2.22
+```
+
+The fix involved:
+1. Externalizing `react/jsx-runtime` in the SDK build
+2. Using lazy context initialization to prevent module-load-time hook calls
+
+### Hydration Mismatch Errors
+
+**Problem:** Server/client HTML mismatch with SDK components
+
+**Solution:**
+1. Use the `'use client'` directive for components using the SDK:
+   ```typescript
+   'use client';
+   
+   import { useLukasSDK } from '@lukas-protocol/sdk/react';
+   ```
+2. For components with dynamic calculations, use a mounted check:
+   ```typescript
+   const [mounted, setMounted] = useState(false);
+   useEffect(() => { setMounted(true); }, []);
+   if (!mounted) return null;
+   ```
+
 ### Hooks Not Working
 
 **Problem:** React hooks not updating or causing errors
@@ -359,7 +391,7 @@ npm install ethers@^6.0.0
      return () => unsubscribe();
    }, []);
    ```
-3. Verify React version compatibility
+3. Verify React version compatibility (React 16.8+ required)
 
 ### State Not Updating
 

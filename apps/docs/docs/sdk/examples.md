@@ -227,9 +227,15 @@ console.log('Custom network added:', networkInfo.name);
 
 Using the SDK in React applications.
 
+:::info SDK v0.2.22 Update
+The React integration now uses lazy context initialization to prevent hydration issues in Next.js and other SSR frameworks. The provider should be used in client components only.
+:::
+
 ### SDK Provider Setup
 
 ```typescript
+'use client'; // Required for Next.js App Router
+
 import { LukasSDKProvider } from '@lukas-protocol/sdk/react';
 
 function App() {
@@ -249,6 +255,8 @@ function App() {
 ### Using the SDK Hook
 
 ```typescript
+'use client';
+
 import { useLukasSDK } from '@lukas-protocol/sdk/react';
 
 function MyComponent() {
