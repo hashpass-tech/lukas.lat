@@ -1,11 +1,12 @@
 "use client";
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useWallet } from '@/app/providers/wallet-provider';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogTrigger, DialogTitle } from '@/components/ui/dialog';
 import { Loader2, Wallet, ArrowRight } from 'lucide-react';
+import { getNetworkColors } from '@/lib/network-colors';
 
 export function WalletConnectButton() {
   const { 
@@ -15,11 +16,26 @@ export function WalletConnectButton() {
     connect, 
     disconnect, 
     availableWallets,
+    chainId,
     error 
   } = useWallet();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedWallet, setSelectedWallet] = useState<string | null>(null);
+  const [networkColors, setNetworkColors] = useState(getNetworkColors(chainId));
+  const [mounted, setMounted] = useState(false);
+
+  // Ensure component is mounted before rendering
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  // Update network colors when chainId changes - with immediate update
+  useEffect(() => {
+    const newColors = getNetworkColors(chainId);
+    setNetworkColors(newColors);
+    console.log('Network colors updated:', { chainId, colors: newColors });
+  }, [chainId]);
 
   const formatAddress = (addr: string) => {
     return `${addr.slice(0, 6)}...${addr.slice(-4)}`;
@@ -54,9 +70,19 @@ export function WalletConnectButton() {
   if (isConnected && address) {
     return (
       <div className="flex items-center gap-3">
-        <div className="flex items-center gap-2 px-4 py-2 bg-green-500/10 border border-green-500/30 rounded-full">
-          <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-          <span className="text-sm font-medium text-green-400">
+        <div 
+          className="flex items-center gap-2 px-4 py-2 border rounded-full transition-all duration-300"
+          style={{
+            backgroundColor: networkColors.bgLight,
+            borderColor: networkColors.borderLight,
+            color: networkColors.textLight
+          }}
+        >
+          <div 
+            className="w-2 h-2 rounded-full animate-pulse"
+            style={{ backgroundColor: networkColors.primary }}
+          ></div>
+          <span className="text-sm font-medium">
             {formatAddress(address)}
           </span>
         </div>
@@ -90,12 +116,24 @@ export function WalletConnectButton() {
   return (
     <Dialog open={isModalOpen} onOpenChange={handleModalOpenChange}>
       <DialogTrigger asChild>
-        <button className="relative group w-full px-6 py-3 text-white font-medium rounded-2xl transition-all duration-300 flex items-center justify-center gap-2 hover:scale-105 active:scale-95 overflow-hidden">
+        <button 
+          key={`wallet-btn-${chainId}`}
+          className="relative group w-full px-6 py-3 text-white font-medium rounded-2xl transition-all duration-300 flex items-center justify-center gap-2 hover:scale-105 active:scale-95 overflow-hidden"
+          style={{
+            backgroundColor: networkColors.primary,
+          }}
+        >
           {/* Animated shimmer background */}
           <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent animate-shimmer opacity-60" />
           
           {/* Glassmorphic base */}
-          <div className="absolute inset-0 bg-white/10 dark:bg-black/20 backdrop-blur-md border border-white/20 dark:border-white/10" />
+          <div 
+            className="absolute inset-0 backdrop-blur-md border"
+            style={{
+              backgroundColor: `${networkColors.primary}dd`,
+              borderColor: networkColors.primaryLight
+            }}
+          />
           
           {/* Button content */}
           <Wallet className="w-4 h-4 relative z-10" />

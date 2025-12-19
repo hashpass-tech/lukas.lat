@@ -19,6 +19,7 @@ import {
 import { useWallet } from "@/app/providers/wallet-provider";
 import { useLukasSDK } from "@/app/providers/lukas-sdk-provider";
 import { WEB3_NETWORKS, getNetworkByChainId } from "@/lib/web3-config";
+import { getNetworkColors, getNetworkEmoji, getNetworkName, getNetworkIcon } from "@/lib/network-colors";
 import { cn } from "@/lib/utils";
 
 type Props = {
@@ -28,33 +29,12 @@ type Props = {
 
 // Network icons mapping
 const NetworkIcon = ({ chainId, className }: { chainId: number; className?: string }) => {
-  const icons: Record<number, string> = {
-    1: "⟠",       // Ethereum
-    10: "🔴",      // Optimism
-    42161: "🔵",   // Arbitrum
-    42220: "🟢",   // Celo
-    137: "🟣",     // Polygon
-    80002: "🟣",   // Polygon Amoy
-    11155111: "🔵", // Sepolia
-  };
-  return <span className={className}>{icons[chainId] || "🌐"}</span>;
+  return <span className={className}>{getNetworkIcon(chainId)}</span>;
 };
 
 // Get human-readable chain name
 const getChainName = (chainId: number | null): string => {
-  if (!chainId) return 'Not Connected';
-  
-  const chainNames: Record<number, string> = {
-    1: 'Ethereum Mainnet',
-    10: 'Optimism',
-    42161: 'Arbitrum One',
-    42220: 'Celo',
-    137: 'Polygon',
-    80002: 'Polygon Amoy',
-    11155111: 'Sepolia',
-  };
-  
-  return chainNames[chainId] || `Chain ${chainId}`;
+  return getNetworkName(chainId);
 };
 
 // Contract type with icon
@@ -108,6 +88,7 @@ async function getContractsForChain(chainId: number | null): Promise<ContractInf
 export function Web3SettingsDialog({ open, onOpenChange }: Props) {
   const { address, chainId, switchNetwork } = useWallet();
   const { networkInfo, isInitialized } = useLukasSDK();
+  const networkColors = getNetworkColors(chainId);
   const [copiedAddress, setCopiedAddress] = useState<string | null>(null);
   const [networkSyncError, setNetworkSyncError] = useState<string | null>(null);
   const [switchingTo, setSwitchingTo] = useState<number | null>(null);
@@ -390,10 +371,10 @@ export function Web3SettingsDialog({ open, onOpenChange }: Props) {
               <div className="mt-3 pt-3 border-t border-slate-200 dark:border-slate-700/40 flex flex-wrap items-center gap-2">
                 <Badge 
                   variant="secondary" 
-                  className="text-[10px] sm:text-xs px-2 py-0.5 bg-emerald-100 dark:bg-emerald-500/20 text-emerald-700 dark:text-emerald-400 border-0"
+                  className={`text-[10px] sm:text-xs px-2 py-0.5 border-0 ${networkColors.tailwind.badge}`}
                 >
                   <NetworkIcon chainId={chainId || 0} className="mr-1" />
-                  {getChainName(chainId)}
+                  {getNetworkName(chainId)}
                 </Badge>
                 {explorerAccountUrl && (
                   <a
@@ -421,6 +402,7 @@ export function Web3SettingsDialog({ open, onOpenChange }: Props) {
               {WEB3_NETWORKS.map((n) => {
                 const isActive = n.chainId === chainId;
                 const isSwitching = switchingTo === n.chainId;
+                const nColors = getNetworkColors(n.chainId);
                 
                 return (
                   <motion.button
@@ -432,28 +414,34 @@ export function Web3SettingsDialog({ open, onOpenChange }: Props) {
                     className={cn(
                       "relative flex items-center gap-3 w-full p-3 sm:p-3.5 rounded-xl border transition-all duration-200",
                       isActive 
-                        ? "border-emerald-400 dark:border-emerald-500/50 bg-emerald-50 dark:bg-emerald-500/10 shadow-sm shadow-emerald-500/10" 
+                        ? `border-opacity-50 shadow-sm` 
                         : "border-slate-200 dark:border-slate-700/60 bg-white dark:bg-slate-800/50 hover:border-slate-300 dark:hover:border-slate-600 hover:bg-slate-50 dark:hover:bg-slate-800/80",
                       !address && "opacity-50 cursor-not-allowed",
                       isSwitching && "opacity-70"
                     )}
+                    style={isActive ? {
+                      borderColor: nColors.primary,
+                      backgroundColor: nColors.bgLight,
+                    } : {}}
                   >
                     {/* Network Icon */}
-                    <div className={cn(
-                      "w-9 h-9 sm:w-10 sm:h-10 rounded-lg flex items-center justify-center text-lg sm:text-xl",
-                      isActive 
-                        ? "bg-emerald-100 dark:bg-emerald-500/20" 
-                        : "bg-slate-100 dark:bg-slate-700/50"
-                    )}>
+                    <div 
+                      className="w-9 h-9 sm:w-10 sm:h-10 rounded-lg flex items-center justify-center text-lg sm:text-xl"
+                      style={{
+                        backgroundColor: isActive ? nColors.bgLight : 'rgb(241, 245, 249)'
+                      }}
+                    >
                       <NetworkIcon chainId={n.chainId} />
                     </div>
 
                     {/* Network Info */}
                     <div className="flex-1 text-left">
-                      <p className={cn(
-                        "text-sm sm:text-base font-medium",
-                        isActive ? "text-emerald-700 dark:text-emerald-400" : "text-slate-900 dark:text-white"
-                      )}>
+                      <p 
+                        className="text-sm sm:text-base font-medium"
+                        style={{
+                          color: isActive ? nColors.textLight : 'rgb(15, 23, 42)'
+                        }}
+                      >
                         {n.shortName}
                       </p>
                       <p className="text-[10px] sm:text-xs text-slate-500 dark:text-slate-400">
@@ -467,9 +455,12 @@ export function Web3SettingsDialog({ open, onOpenChange }: Props) {
                         {n.nativeCurrencySymbol}
                       </span>
                       {isSwitching ? (
-                        <Loader2 className="w-4 h-4 animate-spin text-emerald-600 dark:text-emerald-400" />
+                        <Loader2 className="w-4 h-4 animate-spin" style={{ color: nColors.primary }} />
                       ) : isActive ? (
-                        <CheckCircle2 className="w-4 h-4 sm:w-5 sm:h-5 text-emerald-600 dark:text-emerald-400" />
+                        <div className="flex items-center gap-1">
+                          <NetworkIcon chainId={n.chainId} className="text-lg" />
+                          <CheckCircle2 className="w-4 h-4 sm:w-5 sm:h-5" style={{ color: nColors.primary }} />
+                        </div>
                       ) : null}
                     </div>
                   </motion.button>

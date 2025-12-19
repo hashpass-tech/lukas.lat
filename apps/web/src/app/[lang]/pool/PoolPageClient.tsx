@@ -33,9 +33,6 @@ export default function PoolPageClient() {
               <h1 className="text-lg sm:text-2xl font-bold text-foreground truncate">LUKAS/USDC</h1>
             </div>
             <div className="flex items-center gap-2">
-              <span className="inline-block px-2 sm:px-3 py-1 bg-green-500/20 text-green-400 rounded-full text-xs sm:text-sm font-medium">
-                Live
-              </span>
               {/* Explorer Links - Hidden on mobile, shown on larger screens */}
               <div className="hidden md:flex items-center gap-2">
                 <a

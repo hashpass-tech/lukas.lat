@@ -515,6 +515,16 @@ export function WalletProvider({ children }: { children: ReactNode }) {
         }
       };
     }
+
+    // Also listen for chain changes on the provider ref (for WalletConnect)
+    if (providerRef.current?.on && providerRef.current?.removeListener) {
+      providerRef.current.on('chainChanged', handleChainChanged);
+      return () => {
+        if (providerRef.current?.removeListener) {
+          providerRef.current.removeListener('chainChanged', handleChainChanged);
+        }
+      };
+    }
   }, []);
 
   return (

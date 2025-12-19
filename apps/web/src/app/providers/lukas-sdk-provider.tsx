@@ -94,8 +94,10 @@ async function loadContractsFromDeployments(chainId: number): Promise<Partial<Re
     const deployments = await response.json();
     const network = deployments?.networks?.[chainId.toString()];
     
-    if (!network?.contracts?.stable) {
-      return getContractAddresses(chainId);
+    // If network not found, return zero addresses
+    if (!network) {
+      console.log(`Network ${chainId} not found in deployments.json, using zero addresses`);
+      return getZeroAddresses();
     }
 
     const normalizeAddress = (address: string | null | undefined): string => {
@@ -106,15 +108,18 @@ async function loadContractsFromDeployments(chainId: number): Promise<Partial<Re
     };
 
     const contracts = network.contracts.stable;
-    return {
+    const addresses = {
       lukasToken: normalizeAddress(contracts.LukasToken?.address),
       stabilizerVault: normalizeAddress(contracts.StabilizerVault?.address),
       latAmBasketIndex: normalizeAddress(contracts.LatAmBasketIndex?.address),
       lukasHook: normalizeAddress(contracts.LukasHook?.address),
       usdc: normalizeAddress(contracts.USDC?.address),
     };
+    
+    console.log(`Loaded contracts from deployments.json for chain ${chainId}:`, addresses);
+    return addresses;
   } catch (e) {
-    console.warn('Failed to load contracts from deployments.json, using defaults:', e);
+    console.warn(`Failed to load contracts from deployments.json for chain ${chainId}:`, e);
     return getContractAddresses(chainId);
   }
 }
@@ -124,7 +129,9 @@ function getContractAddresses(chainId: number) {
     const deployments = require('../../../../../packages/contracts/deployments.json');
     const network = deployments.networks[chainId.toString()];
     
+    // If network not found in deployments, return zero addresses
     if (!network) {
+      console.log(`Network ${chainId} not found in deployments, returning zero addresses`);
       return getZeroAddresses();
     }
 
@@ -138,14 +145,18 @@ function getContractAddresses(chainId: number) {
     const useTestingContracts = process.env.NEXT_PUBLIC_USE_TESTING_CONTRACTS === 'true';
     const selectedContracts = network.contracts[useTestingContracts ? 'testing' : 'stable'] || network.contracts.stable;
 
-    return {
+    const addresses = {
       lukasToken: normalizeAddress(selectedContracts.LukasToken?.address),
       stabilizerVault: normalizeAddress(selectedContracts.StabilizerVault?.address),
       latAmBasketIndex: normalizeAddress(selectedContracts.LatAmBasketIndex?.address),
       lukasHook: normalizeAddress(selectedContracts.LukasHook?.address),
       usdc: normalizeAddress(selectedContracts.USDC?.address),
     };
-  } catch {
+    
+    console.log(`Loaded contracts for chain ${chainId}:`, addresses);
+    return addresses;
+  } catch (e) {
+    console.warn(`Failed to load contracts for chain ${chainId}:`, e);
     return getZeroAddresses();
   }
 }

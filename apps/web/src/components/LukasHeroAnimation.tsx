@@ -6,6 +6,8 @@ import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
 import { Play } from 'lucide-react';
 import { useTranslation } from '@/lib/translator';
 import { useSidebar } from '@/contexts/SidebarContext';
+import { useWallet } from '@/app/providers/wallet-provider';
+import { getNetworkColors } from '@/lib/network-colors';
 
 // Orb component for the background
 const Orb = ({ size, x, y, color, delay }: { size: number; x: number; y: number; color: string; delay: number }) => {
@@ -40,7 +42,9 @@ const Orb = ({ size, x, y, color, delay }: { size: number; x: number; y: number;
 export const LukasHeroAnimation = () => {
     const { locale } = useTranslation();
     const { isMobileSidebarOpen } = useSidebar();
+    const { chainId } = useWallet();
     const [isMobile, setIsMobile] = useState(false);
+    const [networkColors, setNetworkColors] = useState(getNetworkColors(chainId));
     const titleWords = (isMobile ? '$LUKAS' : '$(LKS) LUKAS').split('');
     const [visibleWords, setVisibleWords] = useState(0);
     const [subtitleVisible, setSubtitleVisible] = useState(false);
@@ -56,6 +60,11 @@ export const LukasHeroAnimation = () => {
     const [isHoveringCoin, setIsHoveringCoin] = useState(false);
     const [countdown, setCountdown] = useState(0);
     const [isCountingDown, setIsCountingDown] = useState(false);
+
+    // Update network colors when chainId changes
+    useEffect(() => {
+        setNetworkColors(getNetworkColors(chainId));
+    }, [chainId]);
 
     useEffect(() => {
         if (typeof window === 'undefined') return;
@@ -249,7 +258,7 @@ export const LukasHeroAnimation = () => {
     };
 
     return (
-        <div key={`${mounted}-${themeKey}`} className="h-svh relative overflow-hidden bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 light:from-blue-100 light:via-gray-50 light:to-blue-100">
+        <div key={`${mounted}-${themeKey}-${chainId}`} className="h-svh relative overflow-hidden bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 light:from-blue-100 light:via-gray-50 light:to-blue-100">
             {/* Background Orbs */}
             {orbs.map(orb => (
                 <Orb key={orb.id} {...orb} />
@@ -315,32 +324,53 @@ export const LukasHeroAnimation = () => {
                         >
                             {/* Coin Container */}
                             <div className="relative w-24 h-24 md:w-32 md:h-32">
-                                {/* Glow Effect */}
-                                <div className={`absolute inset-0 rounded-full transition-all duration-500 ${
-                                    isHoveringCoin
-                                        ? 'bg-yellow-400/50 blur-xl animate-pulse' 
-                                        : coinAnchored 
-                                            ? 'bg-slate-500/40 blur-xl animate-pulse' 
-                                            : 'bg-slate-500/15 blur-md'
-                                }`} />
+                                {/* Glow Effect - Network-specific color */}
+                                <div 
+                                    className={`absolute inset-0 rounded-full transition-all duration-500 ${
+                                        isHoveringCoin
+                                            ? 'blur-xl animate-pulse' 
+                                            : coinAnchored 
+                                                ? 'blur-xl animate-pulse' 
+                                                : 'blur-md'
+                                    }`}
+                                    style={{
+                                        backgroundColor: isHoveringCoin 
+                                            ? `${networkColors.glowLight}` 
+                                            : coinAnchored 
+                                                ? `${networkColors.bgDark}` 
+                                                : `${networkColors.bgLight}`
+                                    }}
+                                />
                                 
-                                {/* Coin Ring */}
-                                <div className={`absolute inset-2 rounded-full border-4 transition-all duration-500 ${
-                                    isHoveringCoin
-                                        ? 'border-yellow-500 shadow-lg shadow-yellow-500/50' 
-                                        : coinAnchored 
-                                            ? 'border-slate-600 shadow-lg shadow-slate-600/50' 
-                                            : 'border-slate-500/60'
-                                }`} />
+                                {/* Coin Ring - Network-specific color */}
+                                <div 
+                                    className={`absolute inset-2 rounded-full border-4 shadow-lg transition-all duration-500`}
+                                    style={{
+                                        borderColor: isHoveringCoin 
+                                            ? networkColors.primary 
+                                            : coinAnchored 
+                                                ? networkColors.primary 
+                                                : networkColors.borderLight,
+                                        boxShadow: isHoveringCoin || coinAnchored
+                                            ? `0 0 20px ${networkColors.glow}`
+                                            : 'none'
+                                    }}
+                                />
                                 
-                                {/* Coin Center */}
-                                <div className={`absolute inset-4 rounded-full bg-gradient-to-br flex items-center justify-center transition-all duration-500 ${
-                                    isHoveringCoin
-                                        ? 'from-yellow-400 to-yellow-600 shadow-inner shadow-yellow-700/50' 
-                                        : coinAnchored 
-                                            ? 'from-slate-600 to-slate-800 shadow-inner shadow-slate-900/50' 
-                                            : 'from-slate-600 to-slate-800 shadow-sm'
-                                }`}>
+                                {/* Coin Center - Network-specific gradient */}
+                                <div 
+                                    className={`absolute inset-4 rounded-full bg-gradient-to-br flex items-center justify-center transition-all duration-500 shadow-inner`}
+                                    style={{
+                                        backgroundImage: isHoveringCoin 
+                                            ? `linear-gradient(135deg, ${networkColors.primaryLight}, ${networkColors.primary})`
+                                            : coinAnchored 
+                                                ? `linear-gradient(135deg, ${networkColors.primary}, ${networkColors.primaryDark})`
+                                                : 'linear-gradient(135deg, rgb(71, 85, 105), rgb(30, 41, 59))',
+                                        boxShadow: isHoveringCoin || coinAnchored
+                                            ? `inset 0 2px 8px ${networkColors.glow}`
+                                            : 'inset 0 1px 3px rgba(0, 0, 0, 0.3)'
+                                    }}
+                                >
                                     {coinAnchored ? (
                                         <button
                                             onClick={handlePlayButtonClick}

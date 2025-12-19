@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useWallet } from '@/app/providers/wallet-provider';
 import { Button } from '@/components/ui/button';
 import { 
@@ -31,6 +31,7 @@ import {
 import { DitheringShader } from '@/components/ui/dithering-shader';
 import { useTranslation } from '@/lib/translator';
 import { Web3SettingsDialog } from '@/components/Web3SettingsDialog';
+import { getNetworkColors, getNetworkIcon } from '@/lib/network-colors';
 
 interface WalletHeaderProps {
   connectText?: string;
@@ -48,6 +49,7 @@ export function WalletHeader({ connectText = "Connect Wallet", connectTextKey }:
     connect, 
     disconnect, 
     availableWallets,
+    chainId,
     error 
   } = useWallet();
 
@@ -56,6 +58,12 @@ export function WalletHeader({ connectText = "Connect Wallet", connectTextKey }:
   const [copiedAddress, setCopiedAddress] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
+  const [networkColors, setNetworkColors] = useState(getNetworkColors(chainId));
+
+  // Update network colors when chainId changes
+  useEffect(() => {
+    setNetworkColors(getNetworkColors(chainId));
+  }, [chainId]);
 
   // Prevent hydration mismatch - Radix Dialog generates different IDs on server vs client
   React.useEffect(() => {
@@ -134,14 +142,14 @@ export function WalletHeader({ connectText = "Connect Wallet", connectTextKey }:
     return (
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <div className="relative group cursor-pointer">
-            {/* Dithering shader background for connected state */}
+          <div className="relative group cursor-pointer" key={`wallet-header-${chainId}`}>
+            {/* Dithering shader background for connected state - network-specific colors */}
             <div className="absolute inset-0 rounded-full overflow-hidden">
               <DitheringShader
                 width={140}
                 height={32}
-                colorBack="#064e3b"
-                colorFront="#10b981"
+                colorBack={networkColors.primaryDark}
+                colorFront={networkColors.primary}
                 shape="ripple"
                 type="4x4"
                 pxSize={2}
@@ -152,7 +160,14 @@ export function WalletHeader({ connectText = "Connect Wallet", connectTextKey }:
             
             {/* Button content overlay */}
             <div className="relative px-3 py-1.5 flex items-center gap-2 text-white font-medium transition-all duration-300">
-              <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse shadow-lg shadow-green-400/50" />
+              <div 
+                className="w-2 h-2 rounded-full animate-pulse shadow-lg"
+                style={{
+                  backgroundColor: networkColors.primary,
+                  boxShadow: `0 0 8px ${networkColors.glow}`
+                }}
+              />
+              <span className="text-xs font-bold">{getNetworkIcon(chainId)}</span>
               <span className="text-sm font-semibold">{formatAddress(address)}</span>
               <ChevronDown className="w-3.5 h-3.5 transition-transform duration-200 group-hover:rotate-180" />
             </div>
@@ -160,8 +175,13 @@ export function WalletHeader({ connectText = "Connect Wallet", connectTextKey }:
             {/* Hover overlay */}
             <div className="absolute inset-0 bg-white/10 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
             
-            {/* Subtle glow effect */}
-            <div className="absolute inset-0 rounded-full bg-gradient-to-r from-green-400/20 to-emerald-400/20 blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+            {/* Subtle glow effect - network-specific */}
+            <div 
+              className="absolute inset-0 rounded-full blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+              style={{
+                backgroundImage: `linear-gradient(to right, ${networkColors.primaryLight}20, ${networkColors.primary}20)`
+              }}
+            />
           </div>
         </DropdownMenuTrigger>
         

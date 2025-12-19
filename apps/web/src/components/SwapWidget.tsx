@@ -5,6 +5,7 @@ import { useLukasSDK } from '@/app/providers/lukas-sdk-provider';
 import { useWallet } from '@/app/providers/wallet-provider';
 import { TransactionConfirmation } from './TransactionConfirmation';
 import { Web3SettingsDialog } from './Web3SettingsDialog';
+import { getNetworkColors, getNetworkName, getNetworkIcon } from '@/lib/network-colors';
 import type { SwapQuote } from '@lukas-protocol/sdk';
 
 export interface SwapWidgetProps {
@@ -20,6 +21,7 @@ const TOKEN_METADATA: Record<string, { icon: string; name: string; symbol: strin
 export function SwapWidget({ onViewMetrics }: SwapWidgetProps = {}) {
   const { sdk, networkInfo, isInitialized } = useLukasSDK();
   const { address, chainId } = useWallet();
+  const networkColors = getNetworkColors(chainId);
   const [mounted, setMounted] = useState(false);
   
   useEffect(() => {
@@ -49,6 +51,12 @@ export function SwapWidget({ onViewMetrics }: SwapWidgetProps = {}) {
   const [hasContracts, setHasContracts] = useState(false);
 
   // Check if contracts are available on current network
+  // TODO: Fix contract detection logic - currently not reliably detecting when contracts are deployed
+  // Issue: SDK networkInfo.contracts may not be properly updated when switching networks
+  // Potential solutions:
+  // 1. Add explicit contract validation by calling eth_call to check if contracts exist on-chain
+  // 2. Implement a separate contract registry service that's independent of SDK
+  // 3. Add network-specific contract detection with fallback to on-chain verification
   useEffect(() => {
     if (!isInitialized || !networkInfo) {
       setNetworkWarning('SDK initializing...');
@@ -60,13 +68,20 @@ export function SwapWidget({ onViewMetrics }: SwapWidgetProps = {}) {
     const { lukasToken, usdc } = networkInfo.contracts;
     const zeroAddr = '0x0000000000000000000000000000000000000000';
     
-    if (lukasToken === zeroAddr || usdc === zeroAddr) {
+    // Check if both required contracts are deployed (not zero addresses)
+    const hasLukas = lukasToken && lukasToken !== zeroAddr && lukasToken !== '0x';
+    const hasUsdc = usdc && usdc !== zeroAddr && usdc !== '0x';
+    const contractsDeployed = hasLukas && hasUsdc;
+    
+    if (!contractsDeployed) {
       setNetworkWarning(`Contracts not deployed on this network (Chain ${chainId})`);
       setHasContracts(false);
       setPrice(null);
+      console.log('No contracts on chain', chainId, { lukasToken, usdc, hasLukas, hasUsdc });
     } else {
       setNetworkWarning(null);
       setHasContracts(true);
+      console.log('Contracts available on chain', chainId, { lukasToken, usdc });
     }
   }, [isInitialized, networkInfo, chainId]);
 
@@ -304,11 +319,24 @@ export function SwapWidget({ onViewMetrics }: SwapWidgetProps = {}) {
     return `Chain ${chainId}`;
   };
 
-  // Get network status indicator
+  // Get network status indicator with network-specific colors
   const getNetworkStatus = () => {
-    if (!isInitialized) return { color: 'bg-yellow-500', text: 'Initializing' };
-    if (networkWarning) return { color: 'bg-red-500', text: 'No Contracts' };
-    return { color: 'bg-green-500', text: 'Ready' };
+    if (!isInitialized) return { 
+      color: 'bg-yellow-500', 
+      textColor: 'text-yellow-400',
+      text: 'Initializing' 
+    };
+    if (networkWarning) return { 
+      color: 'bg-red-500', 
+      textColor: 'text-red-400',
+      text: 'No Contracts' 
+    };
+    // Use network-specific color
+    return { 
+      color: networkColors.tailwind.bg, 
+      textColor: networkColors.tailwind.text,
+      text: 'Ready' 
+    };
   };
 
   const networkStatus = getNetworkStatus();
@@ -319,15 +347,52 @@ export function SwapWidget({ onViewMetrics }: SwapWidgetProps = {}) {
 
   return (
     <div className="w-full h-full flex flex-col p-3 sm:p-4 md:p-6 bg-card/90 backdrop-blur-xl border border-border rounded-3xl shadow-2xl hover:shadow-3xl transition-all duration-300 hover:-translate-y-1 min-w-[280px] mx-auto">
-      {/* Header */}
-      <div className="flex items-center justify-between mb-3 sm:mb-4 md:mb-6">
-        <div className="flex items-center gap-2">
-          <span className="text-xl sm:text-2xl md:text-3xl">💱</span>
-          <h2 className="text-lg sm:text-xl md:text-2xl font-bold text-foreground">Swap</h2>
-        </div>
-        <div className={`flex items-center gap-1 px-2 py-0.5 sm:py-1 ${networkStatus.color}/20 text-${networkStatus.color.split('-')[1]}-400 rounded-full animate-in fade-in duration-500`}>
-          <span className={`w-1.5 h-1.5 sm:w-2 sm:h-2 ${networkStatus.color} rounded-full animate-pulse`}></span>
-          <span className="text-xs font-medium whitespace-nowrap">{getNetworkName()}</span>
+      {/* Header - Just title */}
+      <div className="flex items-center gap-2 mb-3 sm:mb-4 md:mb-6">
+        <span className="text-xl sm:text-2xl md:text-3xl">💱</span>
+        <h2 className="text-lg sm:text-xl md:text-2xl font-bold text-foreground">Swap</h2>
+      </div>
+
+      {/* Network Status Pill - Live indicator */}
+      <div 
+        className={`flex items-center gap-2 px-3 py-1.5 sm:py-2 rounded-full mb-3 sm:mb-4 md:mb-6 w-fit group relative`}
+        style={{
+          backgroundColor: networkColors.bgLight,
+          border: `1px solid ${networkColors.borderLight}`
+        }}
+        title={hasContracts ? 'Contracts deployed and active on this network' : 'Contracts not available on this network'}
+      >
+        {/* Network icon */}
+        <span 
+          className="text-xs font-bold"
+          style={{ color: networkColors.textLight }}
+        >
+          {getNetworkIcon(chainId)}
+        </span>
+        
+        {/* Network name */}
+        <span 
+          className="text-xs font-semibold whitespace-nowrap"
+          style={{ color: networkColors.textLight }}
+        >
+          {getNetworkName()}
+        </span>
+        
+        {/* Live status - INDEPENDENT of network color */}
+        <span 
+          className="text-xs font-bold ml-1 flex items-center gap-1"
+          style={{ color: hasContracts ? '#10b981' : '#6b7280' }}
+        >
+          <span 
+            className={`w-1.5 h-1.5 rounded-full ${hasContracts ? 'animate-pulse' : ''}`}
+            style={{ backgroundColor: hasContracts ? '#10b981' : '#6b7280' }}
+          ></span>
+          {hasContracts ? 'Live' : 'Not Live'}
+        </span>
+
+        {/* Tooltip */}
+        <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-slate-900 dark:bg-slate-800 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-50">
+          {hasContracts ? 'Contracts deployed and active' : 'Contracts not available'}
         </div>
       </div>
 
@@ -351,10 +416,10 @@ export function SwapWidget({ onViewMetrics }: SwapWidgetProps = {}) {
       {networkWarning ? (
         <div className="w-full mb-3 sm:mb-4 md:mb-6 p-3 sm:p-4 bg-blue-500/10 border border-blue-500/30 rounded-lg text-center">
           <div className="text-sm text-blue-600 dark:text-blue-400 font-medium mb-2">
-            🔗 Unsupported Network
+            🔗 Contracts Not Available
           </div>
           <p className="text-xs text-blue-600/80 dark:text-blue-400/80 mb-3">
-            Contracts are deployed on Ethereum Sepolia and Polygon Amoy testnet
+            Contracts are only deployed on testnet networks
           </p>
           <div className="flex gap-2 justify-center flex-wrap">
             <span className="text-xs px-2 py-1 bg-blue-500/20 rounded text-blue-600 dark:text-blue-400">🔵 Sepolia</span>

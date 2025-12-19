@@ -119,11 +119,17 @@ async function parseChangelog(): Promise<ChangelogEntry[]> {
 }
 
 export default function Footer({ version = versionInfo.version, className = "" }: FooterProps) {
+  const [mounted, setMounted] = useState(false);
   const [isChangelogOpen, setIsChangelogOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(0);
   const [changelogData, setChangelogData] = useState<ChangelogEntry[]>([]);
   const [loading, setLoading] = useState(false);
   const { t } = useTranslation();
+
+  // Ensure component is mounted before rendering Dialog to avoid hydration mismatch
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const getDocumentationHref = () => {
     if (process.env.NODE_ENV === "development") return "http://localhost:3001";
@@ -174,6 +180,7 @@ export default function Footer({ version = versionInfo.version, className = "" }
             <div className="flex flex-wrap items-center gap-2 sm:gap-4 text-muted-foreground text-sm">
               <Package className="w-4 h-4" />
               <span className="whitespace-nowrap">Lukas Latam</span>
+              {mounted && (
               <Dialog open={isChangelogOpen} onOpenChange={setIsChangelogOpen}>
                 <DialogTrigger asChild>
                   <button type="button" className="focus:outline-none">
@@ -333,6 +340,7 @@ export default function Footer({ version = versionInfo.version, className = "" }
                 )}
                 </DialogContent>
               </Dialog>
+              )}
             </div>
 
             <div className="flex flex-wrap items-center justify-start sm:justify-end gap-2 sm:gap-4">
