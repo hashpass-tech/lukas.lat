@@ -13,6 +13,29 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+## [0.2.30] - 2025-12-19
+
+### Added
+- Network state verification in Web3SettingsDialog to detect and report stale state
+- Network sync status indicator showing "Synced" or "Verifying..." state
+- Error banner for network state mismatches with reload option
+- Better error handling for network switch failures
+
+### Changed
+- Improved mobile responsiveness for video modal in hero section
+- Enhanced dialog component with better mobile constraints (95vw width, max-height)
+- Optimized changelog modal for mobile with responsive padding and text sizes
+- Improved Web3SettingsDialog with real-time network state tracking
+- Better error messages for network switching failures
+
+### Fixed
+- Fixed video modal x-axis overflow on mobile devices
+- Fixed changelog modal overflow issues on small screens
+- Resolved stale network state being displayed in Web3SettingsDialog
+- Fixed dialog close button positioning on mobile
+- Improved text wrapping in changelog entries to prevent overflow
+- Better handling of network mismatches between UI and wallet
+
 ## [0.2.29] - 2025-12-19
 
 ### Added
