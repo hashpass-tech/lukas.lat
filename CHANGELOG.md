@@ -32,49 +32,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed React infinite loop issues in provider initialization
 - Resolved footer text hardcoding by implementing proper translations
 
-## [0.2.33] - 2025-12-19
-
-### Added
-
-
-
-### Changed
-
-
-
-### Fixed
-
-
-
-
-
-## [0.2.33] - 2025-12-19
-
-### Added
-- Comprehensive Protocol documentation section in Docusaurus with 5 new docs
-- Protocol Overview with system architecture and key components
-- Tokenomics documentation with currency basket composition and supply mechanics
-- Technical Architecture guide with ASCII diagrams and smart contract details
-- Development Roadmap with phases, milestones, and long-term vision
-- Integrations documentation for Chainlink, Uniswap V4, Fhenix FHE, and EigenLayer AVS
-- Dynamic page titles for Privacy and Terms pages based on user locale
-- Footer translation keys for Docs, Privacy, and Terms in all locales (en, es, pt, cl)
-- Docusaurus footer links to Fhenix, EigenLayer, Uniswap V4, and Chainlink
-
-### Changed
-- Updated Footer component to use translator for dynamic text rendering
-- Improved Privacy and Terms pages with locale-specific titles
-- Updated Docusaurus sidebar to include new Protocol section
-- Updated Docusaurus footer with integration partner links
-- Updated SDK documentation to v0.2.22 with current features
-- Updated contract deployments documentation with latest Polygon Amoy addresses
-- Converted all Mermaid diagrams to ASCII art for better compatibility
-
-### Fixed
-- Fixed LukasSDKProvider context initialization for SSR environments
-- Fixed React infinite loop issues in provider initialization
-- Resolved footer text hardcoding by implementing proper translations
-
 ## [0.2.32] - 2025-12-19
 
 ### Added
