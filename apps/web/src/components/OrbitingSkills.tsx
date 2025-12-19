@@ -1,5 +1,6 @@
 "use client"
 import React, { useEffect, useState, memo, useRef } from 'react';
+import dynamic from 'next/dynamic';
 
 // --- Type Definitions ---
 type IconType = 'brl' | 'mxn' | 'cop' | 'clp' | 'ars';
@@ -201,8 +202,14 @@ const GlowingOrbitPath = memo(({ radius, glowColor = 'cyan', animationDelay = 0 
 GlowingOrbitPath.displayName = 'GlowingOrbitPath';
 
 // --- Main App Component ---
-export default function OrbitingSkills() {
+function OrbitingSkillsInner() {
+    const [mounted, setMounted] = useState(false);
     const [time, setTime] = useState(0);
+
+    // Only render after mount to avoid hydration mismatch
+    useEffect(() => {
+        setMounted(true);
+    }, []);
     const containerRef = useRef<HTMLDivElement>(null);
     // Start stationary; only follow the cursor after the user clicks a coin
     const isFollowing = useRef(false);
@@ -330,6 +337,11 @@ export default function OrbitingSkills() {
         { radius: 180, glowColor: 'purple', delay: 1.5 }
     ];
 
+    // Don't render until mounted to avoid hydration mismatch
+    if (!mounted) {
+        return null;
+    }
+
     return (
         <div
             ref={containerRef}
@@ -383,4 +395,17 @@ export default function OrbitingSkills() {
             })}
         </div>
     );
+}
+
+// Export with dynamic import to prevent SSR
+export default function OrbitingSkills() {
+    const [mounted, setMounted] = useState(false);
+    
+    useEffect(() => {
+        setMounted(true);
+    }, []);
+    
+    if (!mounted) return null;
+    
+    return <OrbitingSkillsInner />;
 }

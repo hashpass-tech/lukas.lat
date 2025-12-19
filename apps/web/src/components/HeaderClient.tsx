@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import Link from 'next/link';
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { LightPullThemeSwitcher } from "@/components/LightPullThemeSwitcher";
@@ -15,14 +15,6 @@ import { useSidebar } from "@/contexts/SidebarContext";
 export function HeaderClient() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const { setMobileSidebarOpen } = useSidebar();
-  const [homeHref, setHomeHref] = useState<string>('/');
-
-  useEffect(() => {
-    if (typeof window === 'undefined') return;
-    const hostname = window.location.hostname;
-    const isLocal = hostname === 'localhost' || hostname === '127.0.0.1';
-    setHomeHref(isLocal ? 'http://localhost:3000' : 'https://lukas.lat');
-  }, []);
 
   return (
     <div className="pointer-events-auto w-full px-3 sm:px-4 py-2">
@@ -64,19 +56,29 @@ export function HeaderClient() {
       </header>
 
       {mobileOpen && (
-        <div className="fixed inset-0 z-[70] flex sm:hidden">
-          <div className="w-3/4 max-w-xs h-full bg-background/95 backdrop-blur-xl border-r border-border flex flex-col p-4 gap-4">
+        <>
+          {/* Backdrop - rendered outside the flex container for proper coverage */}
+          <div 
+            className="fixed inset-0 z-[69] bg-background/80 dark:bg-black/60 backdrop-blur-sm sm:hidden"
+            onClick={() => {
+              setMobileOpen(false);
+              setMobileSidebarOpen(false);
+            }}
+            aria-hidden="true"
+          />
+          {/* Sidebar Panel */}
+          <div className="fixed inset-y-0 left-0 z-[70] w-3/4 max-w-xs bg-background border-r border-border flex flex-col p-4 gap-4 sm:hidden shadow-xl">
             <div className="flex items-center justify-between mb-2">
-              <Link href="/" className="text-base font-mono font-bold"><Trans i18nKey="brand.name" fallback="$LUKAS" /></Link>
+              <Link href="/" className="text-base font-mono font-bold text-foreground"><Trans i18nKey="brand.name" fallback="$LUKAS" /></Link>
               <button
                 type="button"
-                className="flex h-8 w-8 items-center justify-center rounded-md border border-border bg-background/80"
+                className="flex h-8 w-8 items-center justify-center rounded-md border border-border bg-card hover:bg-accent transition-colors"
                 onClick={() => {
                   setMobileOpen(false);
                   setMobileSidebarOpen(false);
                 }}
               >
-                <X className="h-4 w-4" />
+                <X className="h-4 w-4 text-foreground" />
               </button>
             </div>
             <div className="flex flex-col gap-4 flex-1">
@@ -95,15 +97,7 @@ export function HeaderClient() {
               <Footer className="relative !z-10" />
             </div>
           </div>
-          <button
-            type="button"
-            className="flex-1 h-full bg-black/40"
-            onClick={() => {
-              setMobileOpen(false);
-              setMobileSidebarOpen(false);
-            }}
-          />
-        </div>
+        </>
       )}
     </div>
   );

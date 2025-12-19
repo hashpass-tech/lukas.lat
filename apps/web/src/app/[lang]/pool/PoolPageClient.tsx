@@ -18,138 +18,165 @@ export default function PoolPageClient() {
   const [activeView, setActiveView] = useState<'swap' | 'metrics' | 'detailed'>('swap');
 
   return (
-    <div className="min-h-screen bg-background text-foreground pt-24 pb-12 transition-colors duration-300">
-      {/* Navigation Header */}
-      <div className="sticky top-20 z-40 bg-card/80 backdrop-blur-md border-b border-border transition-colors duration-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
-            <div className="flex items-center gap-4">
+    <div className="min-h-screen bg-background text-foreground pt-20 sm:pt-24 pb-12 transition-colors duration-300">
+      {/* Navigation Header - Fixed on mobile */}
+      <div className="sticky top-16 sm:top-20 z-40 bg-card/95 backdrop-blur-md border-b border-border transition-colors duration-200">
+        <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-14 sm:h-16">
+            <div className="flex items-center gap-2 sm:gap-4 min-w-0">
               <Link
                 href="/"
-                className="text-muted-foreground hover:text-foreground transition-colors"
+                className="text-muted-foreground hover:text-foreground transition-colors text-sm sm:text-base shrink-0"
               >
                 ← Back
               </Link>
-              <h1 className="text-2xl font-bold text-foreground">LUKAS/USDC Pool</h1>
+              <h1 className="text-lg sm:text-2xl font-bold text-foreground truncate">LUKAS/USDC</h1>
             </div>
-            <div className="flex items-center gap-3">
-              <span className="inline-block px-3 py-1 bg-green-500/20 text-green-400 rounded-full text-sm font-medium transition-colors duration-200">
+            <div className="flex items-center gap-2">
+              <span className="inline-block px-2 sm:px-3 py-1 bg-green-500/20 text-green-400 rounded-full text-xs sm:text-sm font-medium">
                 Live
               </span>
-              {/* Explorer Links */}
-              <a
-                href="https://polygonscan.com/address/0x0000000000000000000000000000000000000000"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="px-3 py-1.5 text-xs font-medium text-primary hover:text-primary/80 border border-border/50 hover:border-border rounded-lg transition-all duration-200 hover:bg-primary/5"
-                title="View on Polygonscan"
-              >
-                🔍 Polygonscan
-              </a>
-              <a
-                href="https://app.uniswap.org/explore/pools/polygon/0x0000000000000000000000000000000000000000"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="px-3 py-1.5 text-xs font-medium text-primary hover:text-primary/80 border border-border/50 hover:border-border rounded-lg transition-all duration-200 hover:bg-primary/5"
-                title="View on Uniswap"
-              >
-                🦄 Uniswap
-              </a>
+              {/* Explorer Links - Hidden on mobile, shown on larger screens */}
+              <div className="hidden md:flex items-center gap-2">
+                <a
+                  href="https://polygonscan.com/address/0x0000000000000000000000000000000000000000"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="px-3 py-1.5 text-xs font-medium text-primary hover:text-primary/80 border border-border/50 hover:border-border rounded-lg transition-all duration-200 hover:bg-primary/5"
+                >
+                  🔍 Polygonscan
+                </a>
+                <a
+                  href="https://app.uniswap.org/explore/pools/polygon/0x0000000000000000000000000000000000000000"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="px-3 py-1.5 text-xs font-medium text-primary hover:text-primary/80 border border-border/50 hover:border-border rounded-lg transition-all duration-200 hover:bg-primary/5"
+                >
+                  🦄 Uniswap
+                </a>
+              </div>
             </div>
           </div>
         </div>
       </div>
 
-      {/* View Tabs */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-8">
-        <div className="flex gap-4 mb-8 border-b border-border transition-colors duration-200">
-          <button
-            onClick={() => setActiveView('swap')}
-            className={`px-4 py-3 font-medium border-b-2 transition-all duration-200 ${
-              activeView === 'swap'
-                ? 'border-primary text-primary'
-                : 'border-transparent text-muted-foreground hover:text-foreground'
-            }`}
-          >
-            Swap
-          </button>
-          <button
-            onClick={() => setActiveView('metrics')}
-            className={`px-4 py-3 font-medium border-b-2 transition-all duration-200 ${
-              activeView === 'metrics'
-                ? 'border-primary text-primary'
-                : 'border-transparent text-muted-foreground hover:text-foreground'
-            }`}
-          >
-            Pool Metrics
-          </button>
-          <button
-            onClick={() => setActiveView('detailed')}
-            className={`px-4 py-3 font-medium border-b-2 transition-all duration-200 ${
-              activeView === 'detailed'
-                ? 'border-primary text-primary'
-                : 'border-transparent text-muted-foreground hover:text-foreground'
-            }`}
-          >
-            Detailed View
-          </button>
+      {/* View Tabs - Fixed, no horizontal scroll */}
+      <div className="sticky top-[120px] sm:top-[136px] z-30 bg-background/95 backdrop-blur-sm border-b border-border">
+        <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
+          <div className="flex justify-center sm:justify-start">
+            <div className="inline-flex">
+              <button
+                onClick={() => setActiveView('swap')}
+                className={`px-4 sm:px-6 py-3 text-sm sm:text-base font-medium border-b-2 transition-all duration-200 whitespace-nowrap ${
+                  activeView === 'swap'
+                    ? 'border-primary text-primary'
+                    : 'border-transparent text-muted-foreground hover:text-foreground'
+                }`}
+              >
+                Swap
+              </button>
+              <button
+                onClick={() => setActiveView('metrics')}
+                className={`px-4 sm:px-6 py-3 text-sm sm:text-base font-medium border-b-2 transition-all duration-200 whitespace-nowrap ${
+                  activeView === 'metrics'
+                    ? 'border-primary text-primary'
+                    : 'border-transparent text-muted-foreground hover:text-foreground'
+                }`}
+              >
+                Metrics
+              </button>
+              <button
+                onClick={() => setActiveView('detailed')}
+                className={`px-4 sm:px-6 py-3 text-sm sm:text-base font-medium border-b-2 transition-all duration-200 whitespace-nowrap ${
+                  activeView === 'detailed'
+                    ? 'border-primary text-primary'
+                    : 'border-transparent text-muted-foreground hover:text-foreground'
+                }`}
+              >
+                Details
+              </button>
+            </div>
+          </div>
         </div>
+      </div>
 
+      {/* Content */}
+      <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 mt-6 sm:mt-8">
         {/* Swap View */}
         {activeView === 'swap' && (
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            {/* Swap Widget */}
-            <div className="lg:col-span-1">
-              <div className="sticky top-32">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
+            {/* Swap Widget - Full width on mobile, sticky on desktop */}
+            <div className="lg:col-span-1 order-1">
+              <div className="lg:sticky lg:top-48">
                 <SwapWidget />
               </div>
             </div>
 
-            {/* Quick Stats */}
-            <div className="lg:col-span-2 space-y-6">
+            {/* Quick Stats - Below swap on mobile */}
+            <div className="lg:col-span-2 space-y-4 sm:space-y-6 order-2">
               {/* Transaction History */}
               <TransactionHistory />
               
-              <div className="bg-card/50 backdrop-blur border border-border rounded-lg p-6 transition-colors duration-200">
-                <h2 className="text-xl font-bold text-foreground mb-4">Quick Stats</h2>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                  <div className="bg-card/80 rounded-lg p-4 border border-border/50 hover:border-border transition-all duration-200 shadow-sm hover:shadow-md">
-                    <p className="text-muted-foreground text-sm mb-1">Current Price</p>
-                    <p className="text-2xl font-bold text-foreground">1.024</p>
+              <div className="bg-card/50 backdrop-blur border border-border rounded-lg p-4 sm:p-6 transition-colors duration-200">
+                <h2 className="text-lg sm:text-xl font-bold text-foreground mb-4">Quick Stats</h2>
+                <div className="grid grid-cols-2 gap-3 sm:gap-4">
+                  <div className="bg-card/80 rounded-lg p-3 sm:p-4 border border-border/50 hover:border-border transition-all duration-200">
+                    <p className="text-muted-foreground text-xs sm:text-sm mb-1">Current Price</p>
+                    <p className="text-xl sm:text-2xl font-bold text-foreground">1.024</p>
                     <p className="text-xs text-muted-foreground mt-1">LUKAS/USDC</p>
                   </div>
-                  <div className="bg-card/80 rounded-lg p-4 border border-border/50 hover:border-border transition-all duration-200 shadow-sm hover:shadow-md">
-                    <p className="text-muted-foreground text-sm mb-1">24h Volume</p>
-                    <p className="text-2xl font-bold text-foreground">$12.5K</p>
+                  <div className="bg-card/80 rounded-lg p-3 sm:p-4 border border-border/50 hover:border-border transition-all duration-200">
+                    <p className="text-muted-foreground text-xs sm:text-sm mb-1">24h Volume</p>
+                    <p className="text-xl sm:text-2xl font-bold text-foreground">$12.5K</p>
                     <p className="text-xs text-green-400 mt-1">↑ 5.2%</p>
                   </div>
-                  <div className="bg-card/80 rounded-lg p-4 border border-border/50 hover:border-border transition-all duration-200 shadow-sm hover:shadow-md">
-                    <p className="text-muted-foreground text-sm mb-1">Total Liquidity</p>
-                    <p className="text-2xl font-bold text-foreground">$10.2K</p>
+                  <div className="bg-card/80 rounded-lg p-3 sm:p-4 border border-border/50 hover:border-border transition-all duration-200">
+                    <p className="text-muted-foreground text-xs sm:text-sm mb-1">Liquidity</p>
+                    <p className="text-xl sm:text-2xl font-bold text-foreground">$10.2K</p>
                     <p className="text-xs text-muted-foreground mt-1">10 LUKAS</p>
                   </div>
-                  <div className="bg-card/80 rounded-lg p-4 border border-border/50 hover:border-border transition-all duration-200 shadow-sm hover:shadow-md">
-                    <p className="text-muted-foreground text-sm mb-1">Fee Tier</p>
-                    <p className="text-2xl font-bold text-foreground">0.30%</p>
+                  <div className="bg-card/80 rounded-lg p-3 sm:p-4 border border-border/50 hover:border-border transition-all duration-200">
+                    <p className="text-muted-foreground text-xs sm:text-sm mb-1">Fee Tier</p>
+                    <p className="text-xl sm:text-2xl font-bold text-foreground">0.30%</p>
                     <p className="text-xs text-muted-foreground mt-1">Pool fee</p>
                   </div>
                 </div>
               </div>
 
               {/* Info Cards */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="bg-card/80 border border-border/50 rounded-lg p-4 transition-all duration-200 shadow-sm hover:shadow-md hover:border-border">
-                  <h3 className="text-primary font-semibold mb-2">📊 Pool Status</h3>
-                  <p className="text-foreground text-sm">
-                    The LUKAS/USDC pool is active and accepting trades. Liquidity is stable.
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+                <div className="bg-card/80 border border-border/50 rounded-lg p-4 transition-all duration-200">
+                  <h3 className="text-primary font-semibold mb-2 text-sm sm:text-base">📊 Pool Status</h3>
+                  <p className="text-foreground text-xs sm:text-sm">
+                    The LUKAS/USDC pool is active and accepting trades.
                   </p>
                 </div>
-                <div className="bg-card/80 border border-border/50 rounded-lg p-4 transition-all duration-200 shadow-sm hover:shadow-md hover:border-border">
-                  <h3 className="text-primary font-semibold mb-2">✅ Fair Price</h3>
-                  <p className="text-foreground text-sm">
-                    Price deviation from fair value is within acceptable range (&lt;2%).
+                <div className="bg-card/80 border border-border/50 rounded-lg p-4 transition-all duration-200">
+                  <h3 className="text-primary font-semibold mb-2 text-sm sm:text-base">✅ Fair Price</h3>
+                  <p className="text-foreground text-xs sm:text-sm">
+                    Price deviation from fair value is within range (&lt;2%).
                   </p>
                 </div>
+              </div>
+
+              {/* Mobile Explorer Links */}
+              <div className="flex gap-2 md:hidden">
+                <a
+                  href="https://polygonscan.com/address/0x0000000000000000000000000000000000000000"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex-1 px-3 py-2 text-xs font-medium text-center text-primary border border-border/50 rounded-lg"
+                >
+                  🔍 Polygonscan
+                </a>
+                <a
+                  href="https://app.uniswap.org/explore/pools/polygon/0x0000000000000000000000000000000000000000"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex-1 px-3 py-2 text-xs font-medium text-center text-primary border border-border/50 rounded-lg"
+                >
+                  🦄 Uniswap
+                </a>
               </div>
             </div>
           </div>
@@ -157,32 +184,32 @@ export default function PoolPageClient() {
 
         {/* Metrics View */}
         {activeView === 'metrics' && (
-          <div className="space-y-6">
+          <div className="space-y-4 sm:space-y-6">
             {/* Transaction History */}
             <TransactionHistory />
             
-            <div className="bg-card/50 backdrop-blur border border-border rounded-lg p-6 transition-colors duration-200">
-              <h2 className="text-xl font-bold text-foreground mb-4">Pool Overview</h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                <div className="bg-card/80 rounded-lg p-4 border border-border/50 hover:border-border transition-all duration-200 shadow-sm hover:shadow-md">
-                  <p className="text-muted-foreground text-sm mb-2">Current Price</p>
-                  <p className="text-3xl font-bold text-foreground">1.024</p>
-                  <p className="text-xs text-muted-foreground mt-2">LUKAS per USDC</p>
+            <div className="bg-card/50 backdrop-blur border border-border rounded-lg p-4 sm:p-6 transition-colors duration-200">
+              <h2 className="text-lg sm:text-xl font-bold text-foreground mb-4">Pool Overview</h2>
+              <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+                <div className="bg-card/80 rounded-lg p-3 sm:p-4 border border-border/50">
+                  <p className="text-muted-foreground text-xs sm:text-sm mb-1 sm:mb-2">Current Price</p>
+                  <p className="text-2xl sm:text-3xl font-bold text-foreground">1.024</p>
+                  <p className="text-xs text-muted-foreground mt-1 sm:mt-2">LUKAS per USDC</p>
                 </div>
-                <div className="bg-card/80 rounded-lg p-4 border border-border/50 hover:border-border transition-all duration-200 shadow-sm hover:shadow-md">
-                  <p className="text-muted-foreground text-sm mb-2">24h High</p>
-                  <p className="text-3xl font-bold text-green-400">1.032</p>
-                  <p className="text-xs text-muted-foreground mt-2">Peak price</p>
+                <div className="bg-card/80 rounded-lg p-3 sm:p-4 border border-border/50">
+                  <p className="text-muted-foreground text-xs sm:text-sm mb-1 sm:mb-2">24h High</p>
+                  <p className="text-2xl sm:text-3xl font-bold text-green-400">1.032</p>
+                  <p className="text-xs text-muted-foreground mt-1 sm:mt-2">Peak price</p>
                 </div>
-                <div className="bg-card/80 rounded-lg p-4 border border-border/50 hover:border-border transition-all duration-200 shadow-sm hover:shadow-md">
-                  <p className="text-muted-foreground text-sm mb-2">24h Low</p>
-                  <p className="text-3xl font-bold text-red-400">1.018</p>
-                  <p className="text-xs text-muted-foreground mt-2">Low price</p>
+                <div className="bg-card/80 rounded-lg p-3 sm:p-4 border border-border/50">
+                  <p className="text-muted-foreground text-xs sm:text-sm mb-1 sm:mb-2">24h Low</p>
+                  <p className="text-2xl sm:text-3xl font-bold text-red-400">1.018</p>
+                  <p className="text-xs text-muted-foreground mt-1 sm:mt-2">Low price</p>
                 </div>
-                <div className="bg-card/80 rounded-lg p-4 border border-border/50 hover:border-border transition-all duration-200 shadow-sm hover:shadow-md">
-                  <p className="text-muted-foreground text-sm mb-2">24h Change</p>
-                  <p className="text-3xl font-bold text-blue-400">+0.39%</p>
-                  <p className="text-xs text-muted-foreground mt-2">Price change</p>
+                <div className="bg-card/80 rounded-lg p-3 sm:p-4 border border-border/50">
+                  <p className="text-muted-foreground text-xs sm:text-sm mb-1 sm:mb-2">24h Change</p>
+                  <p className="text-2xl sm:text-3xl font-bold text-blue-400">+0.39%</p>
+                  <p className="text-xs text-muted-foreground mt-1 sm:mt-2">Price change</p>
                 </div>
               </div>
             </div>
@@ -194,71 +221,71 @@ export default function PoolPageClient() {
 
         {/* Detailed View */}
         {activeView === 'detailed' && (
-          <div className="space-y-6">
+          <div className="space-y-4 sm:space-y-6">
             {/* Explorer Links Card */}
-            <div className="bg-gradient-to-r from-primary/10 to-primary/5 border border-primary/20 rounded-lg p-6 transition-colors duration-200">
-              <h3 className="text-lg font-semibold text-foreground mb-4">Explore Pool</h3>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="bg-gradient-to-r from-primary/10 to-primary/5 border border-primary/20 rounded-lg p-4 sm:p-6">
+              <h3 className="text-base sm:text-lg font-semibold text-foreground mb-4">Explore Pool</h3>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
                 <a
                   href="https://polygonscan.com/address/0x0000000000000000000000000000000000000000"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-3 p-4 bg-card/80 border border-border/50 hover:border-border rounded-lg transition-all duration-200 hover:shadow-md group"
+                  className="flex items-center gap-3 p-3 sm:p-4 bg-card/80 border border-border/50 hover:border-border rounded-lg transition-all duration-200 group"
                 >
-                  <span className="text-2xl">🔍</span>
-                  <div>
-                    <p className="font-semibold text-foreground group-hover:text-primary transition-colors">Polygonscan</p>
-                    <p className="text-xs text-muted-foreground">View on block explorer</p>
+                  <span className="text-xl sm:text-2xl">🔍</span>
+                  <div className="min-w-0">
+                    <p className="font-semibold text-foreground group-hover:text-primary transition-colors text-sm sm:text-base truncate">Polygonscan</p>
+                    <p className="text-xs text-muted-foreground truncate">View on explorer</p>
                   </div>
                 </a>
                 <a
                   href="https://app.uniswap.org/explore/pools/polygon/0x0000000000000000000000000000000000000000"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-3 p-4 bg-card/80 border border-border/50 hover:border-border rounded-lg transition-all duration-200 hover:shadow-md group"
+                  className="flex items-center gap-3 p-3 sm:p-4 bg-card/80 border border-border/50 hover:border-border rounded-lg transition-all duration-200 group"
                 >
-                  <span className="text-2xl">🦄</span>
-                  <div>
-                    <p className="font-semibold text-foreground group-hover:text-primary transition-colors">Uniswap</p>
-                    <p className="text-xs text-muted-foreground">Trade on Uniswap</p>
+                  <span className="text-xl sm:text-2xl">🦄</span>
+                  <div className="min-w-0">
+                    <p className="font-semibold text-foreground group-hover:text-primary transition-colors text-sm sm:text-base truncate">Uniswap</p>
+                    <p className="text-xs text-muted-foreground truncate">Trade on Uniswap</p>
                   </div>
                 </a>
                 <a
                   href="https://dexscreener.com/polygon/0x0000000000000000000000000000000000000000"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-3 p-4 bg-card/80 border border-border/50 hover:border-border rounded-lg transition-all duration-200 hover:shadow-md group"
+                  className="flex items-center gap-3 p-3 sm:p-4 bg-card/80 border border-border/50 hover:border-border rounded-lg transition-all duration-200 group"
                 >
-                  <span className="text-2xl">📊</span>
-                  <div>
-                    <p className="font-semibold text-foreground group-hover:text-primary transition-colors">DexScreener</p>
-                    <p className="text-xs text-muted-foreground">View analytics</p>
+                  <span className="text-xl sm:text-2xl">📊</span>
+                  <div className="min-w-0">
+                    <p className="font-semibold text-foreground group-hover:text-primary transition-colors text-sm sm:text-base truncate">DexScreener</p>
+                    <p className="text-xs text-muted-foreground truncate">View analytics</p>
                   </div>
                 </a>
               </div>
             </div>
 
-            <div className="bg-card/50 backdrop-blur border border-border rounded-lg p-6 transition-colors duration-200">
-              <h2 className="text-xl font-bold text-foreground mb-6">Detailed Pool Analysis</h2>
+            <div className="bg-card/50 backdrop-blur border border-border rounded-lg p-4 sm:p-6">
+              <h2 className="text-lg sm:text-xl font-bold text-foreground mb-4 sm:mb-6">Detailed Pool Analysis</h2>
 
               {/* Pool Information */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6 sm:mb-8">
                 <div>
-                  <h3 className="text-lg font-semibold text-foreground mb-4">Pool Configuration</h3>
-                  <div className="space-y-3">
-                    <div className="flex justify-between items-center py-2 border-b border-border/50 transition-colors duration-200">
+                  <h3 className="text-base sm:text-lg font-semibold text-foreground mb-3 sm:mb-4">Pool Configuration</h3>
+                  <div className="space-y-2 sm:space-y-3 text-sm">
+                    <div className="flex justify-between items-center py-2 border-b border-border/50">
                       <span className="text-muted-foreground">Token 0</span>
                       <span className="text-foreground font-mono">LUKAS</span>
                     </div>
-                    <div className="flex justify-between items-center py-2 border-b border-border/50 transition-colors duration-200">
+                    <div className="flex justify-between items-center py-2 border-b border-border/50">
                       <span className="text-muted-foreground">Token 1</span>
                       <span className="text-foreground font-mono">USDC</span>
                     </div>
-                    <div className="flex justify-between items-center py-2 border-b border-border/50 transition-colors duration-200">
+                    <div className="flex justify-between items-center py-2 border-b border-border/50">
                       <span className="text-muted-foreground">Fee Tier</span>
                       <span className="text-foreground font-mono">0.30%</span>
                     </div>
-                    <div className="flex justify-between items-center py-2 border-b border-border/50 transition-colors duration-200">
+                    <div className="flex justify-between items-center py-2 border-b border-border/50">
                       <span className="text-muted-foreground">Tick Spacing</span>
                       <span className="text-foreground font-mono">60</span>
                     </div>
@@ -270,22 +297,22 @@ export default function PoolPageClient() {
                 </div>
 
                 <div>
-                  <h3 className="text-lg font-semibold text-foreground mb-4">Liquidity Details</h3>
-                  <div className="space-y-3">
-                    <div className="flex justify-between items-center py-2 border-b border-border/50 transition-colors duration-200">
+                  <h3 className="text-base sm:text-lg font-semibold text-foreground mb-3 sm:mb-4">Liquidity Details</h3>
+                  <div className="space-y-2 sm:space-y-3 text-sm">
+                    <div className="flex justify-between items-center py-2 border-b border-border/50">
                       <span className="text-muted-foreground">Total Liquidity</span>
                       <span className="text-foreground font-mono">$10.2K</span>
                     </div>
-                    <div className="flex justify-between items-center py-2 border-b border-border/50 transition-colors duration-200">
+                    <div className="flex justify-between items-center py-2 border-b border-border/50">
                       <span className="text-muted-foreground">LUKAS Locked</span>
                       <span className="text-foreground font-mono">10.00</span>
                     </div>
-                    <div className="flex justify-between items-center py-2 border-b border-border/50 transition-colors duration-200">
+                    <div className="flex justify-between items-center py-2 border-b border-border/50">
                       <span className="text-muted-foreground">USDC Locked</span>
                       <span className="text-foreground font-mono">0.976</span>
                     </div>
-                    <div className="flex justify-between items-center py-2 border-b border-border/50 transition-colors duration-200">
-                      <span className="text-muted-foreground">Liquidity Providers</span>
+                    <div className="flex justify-between items-center py-2 border-b border-border/50">
+                      <span className="text-muted-foreground">LP Count</span>
                       <span className="text-foreground font-mono">1</span>
                     </div>
                     <div className="flex justify-between items-center py-2">
@@ -299,17 +326,17 @@ export default function PoolPageClient() {
               {/* Trading Statistics */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <h3 className="text-lg font-semibold text-foreground mb-4">Trading Statistics</h3>
-                  <div className="space-y-3">
-                    <div className="flex justify-between items-center py-2 border-b border-border/50 transition-colors duration-200">
+                  <h3 className="text-base sm:text-lg font-semibold text-foreground mb-3 sm:mb-4">Trading Statistics</h3>
+                  <div className="space-y-2 sm:space-y-3 text-sm">
+                    <div className="flex justify-between items-center py-2 border-b border-border/50">
                       <span className="text-muted-foreground">Total Swaps</span>
                       <span className="text-foreground font-mono">42</span>
                     </div>
-                    <div className="flex justify-between items-center py-2 border-b border-border/50 transition-colors duration-200">
+                    <div className="flex justify-between items-center py-2 border-b border-border/50">
                       <span className="text-muted-foreground">24h Swaps</span>
                       <span className="text-foreground font-mono">8</span>
                     </div>
-                    <div className="flex justify-between items-center py-2 border-b border-border/50 transition-colors duration-200">
+                    <div className="flex justify-between items-center py-2 border-b border-border/50">
                       <span className="text-muted-foreground">Total Volume</span>
                       <span className="text-foreground font-mono">$156.3K</span>
                     </div>
@@ -321,17 +348,17 @@ export default function PoolPageClient() {
                 </div>
 
                 <div>
-                  <h3 className="text-lg font-semibold text-foreground mb-4">Price Information</h3>
-                  <div className="space-y-3">
-                    <div className="flex justify-between items-center py-2 border-b border-border/50 transition-colors duration-200">
+                  <h3 className="text-base sm:text-lg font-semibold text-foreground mb-3 sm:mb-4">Price Information</h3>
+                  <div className="space-y-2 sm:space-y-3 text-sm">
+                    <div className="flex justify-between items-center py-2 border-b border-border/50">
                       <span className="text-muted-foreground">Current Price</span>
                       <span className="text-foreground font-mono">1.024</span>
                     </div>
-                    <div className="flex justify-between items-center py-2 border-b border-border/50 transition-colors duration-200">
+                    <div className="flex justify-between items-center py-2 border-b border-border/50">
                       <span className="text-muted-foreground">24h High</span>
                       <span className="text-foreground font-mono">1.032</span>
                     </div>
-                    <div className="flex justify-between items-center py-2 border-b border-border/50 transition-colors duration-200">
+                    <div className="flex justify-between items-center py-2 border-b border-border/50">
                       <span className="text-muted-foreground">24h Low</span>
                       <span className="text-foreground font-mono">1.018</span>
                     </div>
