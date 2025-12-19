@@ -13,6 +13,35 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+## [0.2.31] - 2025-12-19
+
+### Added
+
+### Changed
+- Improved video modal overflow prevention with aggressive CSS constraints
+- Enhanced dialog sizing for better mobile responsiveness
+
+### Fixed
+- Fixed video modal x-axis overflow on mobile devices with !important overrides
+- Resolved video modal height constraints across all breakpoints
+- Fixed dialog content padding and gap for video display
+
+## [0.2.31] - 2025-12-19
+
+### Added
+
+
+
+### Changed
+
+
+
+### Fixed
+
+
+
+
+
 ## [0.2.30] - 2025-12-19
 
 ### Added
