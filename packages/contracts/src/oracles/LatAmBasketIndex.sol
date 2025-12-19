@@ -164,6 +164,26 @@ contract LatAmBasketIndex is ILatAmBasketIndex, Owned {
     }
 
     /**
+     * @notice Get individual currency price with timestamp
+     * @param currency The ISO 4217 currency code
+     * @return price Price in USD normalized to 1e8
+     * @return timestamp Last update timestamp
+     */
+    function getCurrencyPriceUSD(string calldata currency) 
+        external 
+        view 
+        returns (uint256 price, uint256 timestamp) 
+    {
+        uint256 weight = weights[currency];
+        if (weight == 0) revert FeedNotSet(currency);
+        
+        IPriceFeed feed = feeds[currency];
+        if (address(feed) == address(0)) revert FeedNotSet(currency);
+        
+        return feed.getPriceUSD();
+    }
+
+    /**
      * @inheritdoc ILatAmBasketIndex
      */
     function hasStaleFeeds() external view override returns (bool) {
@@ -190,6 +210,39 @@ contract LatAmBasketIndex is ILatAmBasketIndex, Owned {
         
         for (uint256 i = 0; i < currencies.length; i++) {
             _weights[i] = weights[currencies[i]];
+        }
+    }
+
+    /**
+     * @notice Get complete basket composition with prices
+     * @return currencySymbols Array of currency codes
+     * @return _weights Array of weights in basis points
+     * @return prices Array of current prices in USD (1e8)
+     * @return timestamps Array of last update timestamps
+     */
+    function getBasketComposition() 
+        external 
+        view 
+        returns (
+            string[] memory currencySymbols,
+            uint256[] memory _weights,
+            uint256[] memory prices,
+            uint256[] memory timestamps
+        ) 
+    {
+        currencySymbols = currencies;
+        _weights = new uint256[](currencies.length);
+        prices = new uint256[](currencies.length);
+        timestamps = new uint256[](currencies.length);
+        
+        for (uint256 i = 0; i < currencies.length; i++) {
+            string memory curr = currencies[i];
+            _weights[i] = weights[curr];
+            
+            IPriceFeed feed = feeds[curr];
+            if (address(feed) != address(0)) {
+                (prices[i], timestamps[i]) = feed.getPriceUSD();
+            }
         }
     }
 

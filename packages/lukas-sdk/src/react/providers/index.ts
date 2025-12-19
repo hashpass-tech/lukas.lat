@@ -2,5 +2,5 @@
  * React providers for Lukas SDK
  */
 
-export { LukasSDKProvider, withLukasSDK } from './LukasSDKProvider';
+export { LukasSDKProvider, useLukasSDK } from './LukasSDKProvider';
 export type { LukasSDKProviderProps } from './LukasSDKProvider';

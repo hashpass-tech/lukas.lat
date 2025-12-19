@@ -109,10 +109,10 @@ export function DonutChartSection({
 
 
   return (
-    <div className="relative">
+    <div className="relative w-full h-full flex">
       <div 
         data-no-orbit
-        className="relative bg-card/95 backdrop-blur-xl border border-border shadow-2xl hover:shadow-3xl rounded-3xl transition-all duration-300 cursor-pointer overflow-hidden"
+        className="relative w-full h-full bg-card/95 backdrop-blur-xl border border-border shadow-2xl hover:shadow-3xl rounded-3xl transition-all duration-300 cursor-pointer overflow-hidden flex flex-col"
       >
         {/* Static background effect */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
@@ -129,9 +129,9 @@ export function DonutChartSection({
         </div>
         
         {/* Card Content */}
-        <div className="p-10 rounded-3xl bg-card/90 border border-border">
-          <h2 className="text-4xl font-bold mb-8 text-foreground flex items-center justify-center gap-3">
-            <span className="text-5xl">⚖️</span> 
+        <div className="p-6 sm:p-10 rounded-3xl bg-card/90 border border-border flex-1 flex flex-col">
+          <h2 className="text-2xl sm:text-4xl font-bold mb-6 sm:mb-8 text-foreground flex items-center justify-center gap-3">
+            <span className="text-3xl sm:text-5xl">⚖️</span> 
             <Trans i18nKey="Currency Weights" fallback="Currency Weights" />
           </h2>
           <DonutChart
@@ -230,10 +230,10 @@ function CurrencyLegend({
     }, 100);
   };
   return (
-    <div className="flex flex-wrap justify-center gap-6 max-w-3xl mx-auto mt-8">
+    <div className="flex flex-wrap justify-center gap-3 sm:gap-6 max-w-3xl mx-auto mt-8">
       {/* LUKAS Reset Card */}
       <div 
-        className={`relative aspect-[5/4] w-32 cursor-pointer transition-all duration-300 rounded-2xl ${
+        className={`relative aspect-[5/4] w-24 sm:w-32 cursor-pointer transition-all duration-300 rounded-2xl ${
           !selectedCurrency
             ? 'scale-105 shadow-2xl' 
             : 'hover:scale-105 hover:shadow-xl'
@@ -264,11 +264,11 @@ function CurrencyLegend({
           </div>
           
           {/* Content */}
-          <div className="relative h-full p-3 flex flex-col justify-between">
+          <div className="relative h-full p-2 sm:p-3 flex flex-col justify-between">
             <div className="flex items-center justify-between">
-              <span className="text-lg">🌟</span>
+              <span className="text-base sm:text-lg">🌟</span>
               <div className="flex items-center gap-1">
-                <span className="text-xs opacity-80 text-foreground">
+                <span className="text-xs opacity-80 text-foreground truncate">
                 <Trans i18nKey="all" fallback="All" />
               </span>
                 <button
@@ -291,7 +291,7 @@ function CurrencyLegend({
               </div>
             </div>
             <div className="text-center">
-              <div className="text-sm font-bold text-foreground">$LUKAS</div>
+              <div className="text-xs sm:text-sm font-bold text-foreground truncate">$LUKAS</div>
               <div className="text-xs font-black text-foreground">{lukasDisplayWeight}%</div>
             </div>
           </div>
@@ -383,7 +383,7 @@ function CurrencyCard({
   };
   return (
     <div 
-      className={`relative aspect-[5/4] w-32 cursor-pointer transition-all duration-300 rounded-2xl overflow-hidden ${
+      className={`relative aspect-[5/4] w-24 sm:w-32 cursor-pointer transition-all duration-300 rounded-2xl overflow-hidden ${
         selectedCurrency === currency.code
           ? 'scale-105 shadow-2xl' 
           : selectedCurrency && selectedCurrency !== currency.code
@@ -420,23 +420,23 @@ function CurrencyCard({
         </div>
         
         {/* Content */}
-        <div className="relative h-full p-3 flex flex-col justify-between text-foreground">
+        <div className="relative h-full p-2 sm:p-3 flex flex-col justify-between text-foreground">
           <div className="flex items-center justify-between">
-            <span className="text-lg">{currency.country}</span>
+            <span className="text-base sm:text-lg">{currency.country}</span>
             <button
               onClick={(e) => {
                 e.stopPropagation();
                 onActiveCurrency(currency);
               }}
-              className="w-5 h-5 rounded-full bg-card/10 flex items-center justify-center hover:bg-card/20 transition-all duration-200 group/info border border-border"
+              className="w-4 h-4 sm:w-5 sm:h-5 rounded-full bg-card/10 flex items-center justify-center hover:bg-card/20 transition-all duration-200 group/info border border-border flex-shrink-0"
             >
-              <svg className="w-3 h-3 text-foreground/60 group-hover/info:text-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-2 h-2 sm:w-3 sm:h-3 text-foreground/60 group-hover/info:text-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12 a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
             </button>
           </div>
           <div className="text-center">
-            <div className="text-sm font-bold">${currency.code}</div>
+            <div className="text-xs sm:text-sm font-bold truncate">${currency.code}</div>
             <div className="text-xs opacity-80">{displayWeight}%</div>
           </div>
         </div>

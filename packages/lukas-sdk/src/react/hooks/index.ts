@@ -11,6 +11,18 @@ export { useTokenInfo } from './useTokenInfo';
 export { useSwap } from './useSwap';
 export type { UseSwapOptions, UseSwapResult } from './useSwap';
 
+export { usePoolMetrics } from './usePoolMetrics';
+export type { UsePoolMetricsOptions, UsePoolMetricsResult } from './usePoolMetrics';
+
+// Context hooks are exported from providers, not here
+
+export { useTransactionHistory } from './useTransactionHistory';
+export type { 
+  TransactionFilter, 
+  UseTransactionHistoryOptions, 
+  UseTransactionHistoryResult 
+} from './useTransactionHistory';
+
 export { useLukasPrice } from './useLukasPrice';
 export type { UseLukasPriceOptions, UseLukasPriceResult } from './useLukasPrice';
 

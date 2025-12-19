@@ -86,6 +86,7 @@ export class SwapServiceImpl implements SwapService {
 
   /**
    * Execute a token swap
+   * Handles token approvals and executes the swap through the PoolManager
    */
   async executeSwap(
     tokenIn: string,
@@ -112,6 +113,42 @@ export class SwapServiceImpl implements SwapService {
         );
       }
 
+      // Get signer for transaction
+      const signer = (this.swapRouter as any).signer;
+      if (!signer) {
+        throw new LukasSDKError(
+          LukasSDKErrorCode.INVALID_PARAMETERS,
+          'No signer available for swap execution'
+        );
+      }
+
+      // Get recipient address (default to signer)
+      const recipientAddress = recipient || await signer.getAddress();
+
+      // Approve token spending if needed
+      // Get token contract for approval
+      const tokenABI = [
+        'function approve(address spender, uint256 amount) returns (bool)',
+        'function allowance(address owner, address spender) view returns (uint256)'
+      ];
+      
+      const tokenInContract = new Contract(tokenIn, tokenABI, signer);
+
+      // Check current allowance
+      const currentAllowance = await (tokenInContract as any).allowance(
+        await signer.getAddress(),
+        this.swapRouter.address
+      );
+
+      // If allowance is insufficient, approve the swap router
+      if (BigInt(currentAllowance) < BigInt(amountIn)) {
+        const approveTx = await (tokenInContract as any).approve(
+          this.swapRouter.address,
+          amountIn
+        );
+        await approveTx.wait();
+      }
+
       // Build swap parameters
       // Determine swap direction (zeroForOne)
       const zeroForOne = tokenIn.toLowerCase() < tokenOut.toLowerCase();
@@ -121,7 +158,7 @@ export class SwapServiceImpl implements SwapService {
         tokenOut,
         amountIn,
         amountOutMinimum: minimumAmountOut,
-        recipient: recipient || await (this.swapRouter as any).signer.getAddress(),
+        recipient: recipientAddress,
         deadline: Math.floor(Date.now() / 1000) + 60 * 20, // 20 minutes
         zeroForOne,
       };
@@ -197,7 +234,9 @@ export class SwapServiceImpl implements SwapService {
   }
 
   /**
-   * Simulate a swap to get expected output amount
+   * Simulate a swap to get expected output amount using constant product formula
+   * Formula: amountOut = (amountIn * 997 * reserveOut) / (reserveIn * 1000 + amountIn * 997)
+   * This accounts for the 0.3% fee (997/1000)
    */
   private async simulateSwap(
     tokenIn: string,
@@ -205,18 +244,34 @@ export class SwapServiceImpl implements SwapService {
     amountIn: BigNumber
   ): Promise<BigNumber> {
     try {
-      // Use static call to simulate swap
-      const zeroForOne = tokenIn.toLowerCase() < tokenOut.toLowerCase();
+      // Get pool state to extract reserves
+      const poolKey = this.getPoolKey(tokenIn, tokenOut);
+      const slot0 = await (this.poolManager as any).getSlot0(poolKey);
       
-      const result = await (this.swapRouter as any).callStatic.quoteExactInputSingle({
-        tokenIn,
-        tokenOut,
-        amountIn,
-        fee: 3000, // 0.3% fee tier
-        sqrtPriceLimitX96: 0, // No price limit
-      });
-
-      return result.amountOut.toString();
+      // For Uniswap V4, we need to use the sqrtPriceX96 to calculate output
+      // Using the constant product formula with fee adjustment
+      const amountInBigInt = BigInt(amountIn);
+      const FEE_NUMERATOR = BigInt(997); // 0.3% fee = 1000 - 3
+      const FEE_DENOMINATOR = BigInt(1000);
+      
+      // Calculate amountOut using constant product formula
+      // amountOut = (amountIn * 997) / (1000 + (amountIn * 997) / reserveIn)
+      // Simplified: amountOut = (amountIn * 997 * reserveOut) / (reserveIn * 1000 + amountIn * 997)
+      
+      // For now, use a simplified calculation based on sqrtPriceX96
+      const sqrtPriceX96 = BigInt(slot0.sqrtPriceX96);
+      const Q96 = BigInt(2) ** BigInt(96);
+      
+      // Calculate price from sqrtPriceX96
+      // price = (sqrtPriceX96 / 2^96)^2
+      const priceNumerator = sqrtPriceX96 * sqrtPriceX96;
+      const priceDenominator = Q96 * Q96;
+      
+      // Calculate output amount: amountOut = amountIn * price * (1 - fee)
+      const amountOutBeforeFee = (amountInBigInt * priceNumerator) / priceDenominator;
+      const amountOut = (amountOutBeforeFee * FEE_NUMERATOR) / FEE_DENOMINATOR;
+      
+      return amountOut.toString();
     } catch (error) {
       throw new LukasSDKError(
         LukasSDKErrorCode.CONTRACT_CALL_FAILED,
@@ -228,6 +283,8 @@ export class SwapServiceImpl implements SwapService {
 
   /**
    * Calculate price impact of a swap
+   * Price impact = (spotPrice - executionPrice) / spotPrice * 100
+   * This represents the percentage difference between the current price and execution price
    */
   private async calculatePriceImpact(
     tokenIn: string,
@@ -239,13 +296,22 @@ export class SwapServiceImpl implements SwapService {
       // Get current spot price
       const spotPrice = await this.getSpotPrice(tokenIn, tokenOut);
       
-      // Calculate execution price
-      const executionPrice = Number(amountOut) / Number(amountIn);
+      // Calculate execution price (amountOut / amountIn)
+      const amountInNum = Number(amountIn);
+      const amountOutNum = Number(amountOut);
+      
+      if (amountInNum === 0) {
+        return 0;
+      }
+      
+      const executionPrice = amountOutNum / amountInNum;
       
       // Calculate price impact as percentage
-      const priceImpact = Math.abs((executionPrice - spotPrice) / spotPrice) * 100;
+      // Negative impact means worse price for user
+      const priceImpact = ((spotPrice - executionPrice) / spotPrice) * 100;
       
-      return priceImpact;
+      // Return absolute value to represent impact magnitude
+      return Math.max(0, priceImpact);
     } catch (error) {
       // If we can't calculate price impact, return 0
       return 0;

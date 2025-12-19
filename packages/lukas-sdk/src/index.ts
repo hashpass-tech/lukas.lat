@@ -21,11 +21,13 @@ export type { EventSchema, ValidationResult } from './core/EventValidator';
 // Service exports
 export type { TokenService } from './services/TokenService';
 export type { SwapService } from './services/SwapService';
+export type { PoolService, PoolState, PoolLiquidity, Transaction } from './services/PoolService';
 export type { VaultService } from './services/VaultService';
 export type { OracleService } from './services/OracleService';
 export type { LiquidityService } from './services/LiquidityService';
 export { TokenServiceImpl } from './services/TokenServiceImpl';
 export { SwapServiceImpl } from './services/SwapServiceImpl';
+export { PoolServiceImpl } from './services/PoolServiceImpl';
 
 // Type exports
 export type * from './types';

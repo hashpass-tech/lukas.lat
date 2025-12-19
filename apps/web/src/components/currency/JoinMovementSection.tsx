@@ -5,13 +5,22 @@ import { DitheringShader } from "@/components/DitheringShader";
 import { WalletHeader } from "@/components/WalletHeader";
 import { useState, useEffect, useRef } from "react";
 import { useWallet } from "@/app/providers/wallet-provider";
-import { SwapSection } from "@/components/currency/SwapSection";
+import { useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
+import { SwapWidget } from "@/components/SwapWidget";
 
 export function JoinMovementSection() {
   const [isClient, setIsClient] = useState(false);
   const cardRef = useRef<HTMLDivElement>(null);
   const wallet = useWallet();
   const { isConnected } = wallet;
+  const router = useRouter();
+  const params = useParams();
+  const lang = params?.lang || 'en';
+
+  const handleViewMetrics = () => {
+    router.push(`/${lang}/pool`);
+  };
 
   useEffect(() => {
     setIsClient(true);
@@ -57,7 +66,7 @@ export function JoinMovementSection() {
   if (!isClient) {
     // Return a static version during SSR
     return (
-      <div data-no-orbit className="bg-card/90 backdrop-blur-xl rounded-3xl p-10 border border-border shadow-2xl hover:shadow-3xl transition-all duration-300 hover:-translate-y-1 flex flex-col justify-center min-h-[420px]">
+      <div data-no-orbit className="w-full h-full bg-card/90 backdrop-blur-xl rounded-3xl p-6 sm:p-10 border border-border shadow-2xl hover:shadow-3xl transition-all duration-300 hover:-translate-y-1 flex flex-col justify-center">
         <h2 className="text-3xl font-bold mb-8 text-foreground flex items-center gap-3">
           <span className="text-4xl">🚀</span> 
           <Trans i18nKey="Join the Movement" fallback="Join the Movement" />
@@ -83,13 +92,17 @@ export function JoinMovementSection() {
   }
 
   if (isConnected) {
-    return <SwapSection />;
+    return (
+      <div data-no-orbit className="w-full h-full flex items-center justify-center">
+        <SwapWidget onViewMetrics={handleViewMetrics} />
+      </div>
+    );
   }
 
   return (
     <div 
       ref={cardRef}
-      className="relative bg-card/95 backdrop-blur-xl border border-border shadow-2xl hover:shadow-3xl rounded-3xl p-10 flex flex-col justify-center cursor-pointer overflow-hidden transition-all duration-300 hover:-translate-y-1 min-h-[420px]"
+      className="relative w-full h-full bg-card/95 backdrop-blur-xl border border-border shadow-2xl hover:shadow-3xl rounded-3xl p-6 sm:p-10 flex flex-col justify-center cursor-pointer overflow-hidden transition-all duration-300 hover:-translate-y-1"
       style={{
         transformStyle: 'preserve-3d',
         transition: 'transform 0.15s ease-out'

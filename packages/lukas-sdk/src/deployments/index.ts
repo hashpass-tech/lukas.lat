@@ -72,6 +72,7 @@ export function getContractAddresses(chainId: number): ContractAddresses {
     latAmBasketIndex: normalizeAddress(network.contracts.LatAmBasketIndex?.address),
     lukasHook: normalizeAddress(network.contracts.LukasHook?.address),
     usdc: normalizeAddress(network.contracts.USDC?.address),
+    poolManager: normalizeAddress(network.contracts.LukasUSDCPool?.address),
   };
 }
 
@@ -85,6 +86,7 @@ export function getZeroAddresses(): ContractAddresses {
     latAmBasketIndex: '0x0000000000000000000000000000000000000000',
     lukasHook: '0x0000000000000000000000000000000000000000',
     usdc: '0x0000000000000000000000000000000000000000',
+    poolManager: '0x0000000000000000000000000000000000000000',
   };
 }
 

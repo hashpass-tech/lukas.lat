@@ -18,6 +18,7 @@ const SUPPORTED_NETWORKS: Record<number, NetworkConfig & { contracts: ContractAd
       latAmBasketIndex: '0x0000000000000000000000000000000000000000', // Placeholder
       lukasHook: '0x0000000000000000000000000000000000000000', // Placeholder
       usdc: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48', // USDC on mainnet
+      poolManager: '0x0000000000000000000000000000000000000000', // Placeholder
     },
   },
   // Sepolia Testnet
@@ -32,6 +33,7 @@ const SUPPORTED_NETWORKS: Record<number, NetworkConfig & { contracts: ContractAd
       latAmBasketIndex: '0x0000000000000000000000000000000000000000', // Placeholder
       lukasHook: '0x0000000000000000000000000000000000000000', // Placeholder
       usdc: '0x0000000000000000000000000000000000000000', // Test USDC
+      poolManager: '0x0000000000000000000000000000000000000000', // Placeholder
     },
   },
   // Base Mainnet
@@ -46,6 +48,7 @@ const SUPPORTED_NETWORKS: Record<number, NetworkConfig & { contracts: ContractAd
       latAmBasketIndex: '0x0000000000000000000000000000000000000000', // Placeholder
       lukasHook: '0x0000000000000000000000000000000000000000', // Placeholder
       usdc: '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913', // USDC on Base
+      poolManager: '0x0000000000000000000000000000000000000000', // Placeholder
     },
   },
   // Base Sepolia Testnet
@@ -60,6 +63,7 @@ const SUPPORTED_NETWORKS: Record<number, NetworkConfig & { contracts: ContractAd
       latAmBasketIndex: '0x0000000000000000000000000000000000000000', // Placeholder
       lukasHook: '0x0000000000000000000000000000000000000000', // Placeholder
       usdc: '0x0000000000000000000000000000000000000000', // Test USDC
+      poolManager: '0x0000000000000000000000000000000000000000', // Placeholder
     },
   },
   // Polygon Mainnet
@@ -74,6 +78,7 @@ const SUPPORTED_NETWORKS: Record<number, NetworkConfig & { contracts: ContractAd
       latAmBasketIndex: '0x0000000000000000000000000000000000000000', // Placeholder
       lukasHook: '0x0000000000000000000000000000000000000000', // Placeholder
       usdc: '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174', // USDC on Polygon
+      poolManager: '0x0000000000000000000000000000000000000000', // Placeholder
     },
   },
   // Polygon Mumbai Testnet
@@ -88,6 +93,7 @@ const SUPPORTED_NETWORKS: Record<number, NetworkConfig & { contracts: ContractAd
       latAmBasketIndex: '0x0000000000000000000000000000000000000000', // Placeholder
       lukasHook: '0x0000000000000000000000000000000000000000', // Placeholder
       usdc: '0x0000000000000000000000000000000000000000', // Test USDC
+      poolManager: '0x0000000000000000000000000000000000000000', // Placeholder
     },
   },
   // Arbitrum One
@@ -102,6 +108,7 @@ const SUPPORTED_NETWORKS: Record<number, NetworkConfig & { contracts: ContractAd
       latAmBasketIndex: '0x0000000000000000000000000000000000000000', // Placeholder
       lukasHook: '0x0000000000000000000000000000000000000000', // Placeholder
       usdc: '0xaf88d065e77c8cC2239327C5EDb3A432268e5831', // USDC on Arbitrum
+      poolManager: '0x0000000000000000000000000000000000000000', // Placeholder
     },
   },
   // Arbitrum Sepolia Testnet
@@ -116,6 +123,22 @@ const SUPPORTED_NETWORKS: Record<number, NetworkConfig & { contracts: ContractAd
       latAmBasketIndex: '0x0000000000000000000000000000000000000000', // Placeholder
       lukasHook: '0x0000000000000000000000000000000000000000', // Placeholder
       usdc: '0x0000000000000000000000000000000000000000', // Test USDC
+      poolManager: '0x0000000000000000000000000000000000000000', // Placeholder
+    },
+  },
+  // Polygon Amoy Testnet
+  80002: {
+    chainId: 80002,
+    name: 'Polygon Amoy Testnet',
+    rpcUrl: 'https://rpc-amoy.polygon.technology',
+    blockExplorer: 'https://amoy.polygonscan.com',
+    contracts: {
+      lukasToken: '0x63524b53983960231b7b86CDEdDf050Ceb9263Cb',
+      stabilizerVault: '0x5c5bc89db3f3e3e3e3e3e3e3e3e3e3e3e3e3e3e3',
+      latAmBasketIndex: '0x1Dccf1fB82946a293E03036e85edc2139cba1541',
+      lukasHook: '0x5b73C5498c1E3b4dbA84de0F1833c4a029d90519',
+      usdc: '0x41e94eb019c0762f9bfcf9fb1e58725bfb0e7582',
+      poolManager: '0x48411eFDE2D053B2Fa9456d91dad8a9BE7a1574E',
     },
   },
 };

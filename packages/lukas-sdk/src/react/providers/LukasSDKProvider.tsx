@@ -1,105 +1,87 @@
-import React, { useState, useEffect, useMemo, ReactNode } from 'react';
+import { useState, useEffect, useMemo, useRef, ReactNode, useContext, createContext } from 'react';
 import { LukasSDK } from '../../core/LukasSDK';
-import { LukasSDKContext } from '../context/LukasSDKContext';
-import type { LukasSDKConfig } from '../../core/types';
+import type { LukasSDKConfig, NetworkInfo } from '../../core/types';
+
+interface LukasSDKContextType {
+  sdk: LukasSDK | null;
+  isInitializing: boolean;
+  isInitialized: boolean;
+  error: Error | null;
+  networkInfo: NetworkInfo | null;
+}
+
+const LukasSDKContext = createContext<LukasSDKContextType | undefined>(undefined);
 
 export interface LukasSDKProviderProps {
-  /** SDK configuration */
   config: LukasSDKConfig;
-  /** Child components */
   children: ReactNode;
-  /** Callback when SDK initialization completes */
-  onInitialized?: (sdk: LukasSDK) => void;
-  /** Callback when SDK initialization fails */
-  onError?: (error: Error) => void;
 }
 
 /**
- * Provider component for LukasSDK React context
- * 
- * This component initializes the LukasSDK and provides it to child components
- * through React context.
+ * Simple, stable SDK provider for React
+ * Initializes SDK once and provides it via context
  */
-export function LukasSDKProvider({
-  config,
-  children,
-  onInitialized,
-  onError,
-}: LukasSDKProviderProps) {
+export function LukasSDKProvider({ config, children }: LukasSDKProviderProps) {
   const [sdk, setSdk] = useState<LukasSDK | null>(null);
   const [isInitializing, setIsInitializing] = useState(true);
+  const [isInitialized, setIsInitialized] = useState(false);
   const [error, setError] = useState<Error | null>(null);
+  const [networkInfo, setNetworkInfo] = useState<NetworkInfo | null>(null);
+  
+  const initializedRef = useRef(false);
 
-  // Initialize SDK when config changes
+  // Initialize SDK once on mount
   useEffect(() => {
+    if (initializedRef.current) return;
+    initializedRef.current = true;
+    
     let mounted = true;
 
-    const initializeSDK = async () => {
+    (async () => {
       try {
-        setIsInitializing(true);
-        setError(null);
-
-        // Create new SDK instance
         const newSDK = new LukasSDK(config);
-
         if (mounted) {
           setSdk(newSDK);
+          setNetworkInfo(newSDK.getNetworkInfo());
+          setIsInitialized(true);
           setIsInitializing(false);
-          onInitialized?.(newSDK);
         }
       } catch (err) {
-        const error = err instanceof Error ? err : new Error('Failed to initialize SDK');
-        
         if (mounted) {
-          setError(error);
-          setSdk(null);
+          setError(err instanceof Error ? err : new Error('SDK init failed'));
+          setIsInitialized(false);
           setIsInitializing(false);
-          onError?.(error);
         }
       }
-    };
-
-    initializeSDK();
+    })();
 
     return () => {
       mounted = false;
-      // Cleanup SDK if needed
-      if (sdk) {
-        sdk.disconnect();
-      }
     };
-  }, [config, onInitialized, onError]);
+  }, [config]);
 
-  // Memoize context value to prevent unnecessary re-renders
-  const contextValue = useMemo(() => ({
+  const value = useMemo(() => ({
     sdk,
     isInitializing,
+    isInitialized,
     error,
-  }), [sdk, isInitializing, error]);
+    networkInfo,
+  }), [sdk, isInitializing, isInitialized, error, networkInfo]);
 
   return (
-    <LukasSDKContext.Provider value={contextValue}>
+    <LukasSDKContext.Provider value={value}>
       {children}
     </LukasSDKContext.Provider>
   );
 }
 
 /**
- * Higher-order component for providing LukasSDK context
- * 
- * @param config - SDK configuration
- * @returns HOC function
+ * Hook to use SDK from context
  */
-export function withLukasSDK(config: LukasSDKConfig) {
-  return function <P extends object>(Component: React.ComponentType<P>) {
-    const WrappedComponent = (props: P) => (
-      <LukasSDKProvider config={config}>
-        <Component {...props} />
-      </LukasSDKProvider>
-    );
-
-    WrappedComponent.displayName = `withLukasSDK(${Component.displayName || Component.name})`;
-    
-    return WrappedComponent;
-  };
+export function useLukasSDK() {
+  const context = useContext(LukasSDKContext);
+  if (!context) {
+    throw new Error('useLukasSDK must be used within LukasSDKProvider');
+  }
+  return context;
 }

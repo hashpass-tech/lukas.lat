@@ -4,9 +4,10 @@ import { NetworkManager } from './NetworkManager';
 import { ProviderManager } from './ProviderManager';
 import { ContractManager } from './ContractManager';
 import { LukasSDKError, LukasSDKErrorCode } from '../errors/LukasSDKError';
-import { TokenServiceImpl } from '../services/TokenServiceImpl';
 import { CachedTokenService } from '../services/CachedTokenService';
 import { CachedOracleService } from '../services/CachedOracleService';
+import { SwapServiceImpl } from '../services/SwapServiceImpl';
+import { PoolServiceImpl } from '../services/PoolServiceImpl';
 import { CacheManager, BatchManager, BackgroundSyncManager } from '../utils';
 
 /**
@@ -453,6 +454,38 @@ export class LukasSDK {
       this.networkConfig.contracts.latAmBasketIndex,
       this.cacheManager,
       this.batchManager
+    );
+  }
+
+  /**
+   * Get Swap Service for token swapping operations
+   */
+  getSwapService(): SwapServiceImpl {
+    const contractManager = this.getContractManager();
+    const poolManager = contractManager.getPoolManagerContract();
+    const swapRouter = contractManager.getPoolManagerContract(); // Use pool manager as swap router for now
+    
+    return new SwapServiceImpl(
+      poolManager,
+      swapRouter,
+      this.networkConfig.contracts.lukasToken,
+      this.networkConfig.contracts.usdc
+    );
+  }
+
+  /**
+   * Get Pool Service for pool operations
+   */
+  getPoolService(): PoolServiceImpl {
+    const contractManager = this.getContractManager();
+    const poolManager = contractManager.getPoolManagerContract();
+    const oracleContract = contractManager.getLatAmBasketIndexContract();
+    
+    return new PoolServiceImpl(
+      poolManager,
+      oracleContract,
+      this.networkConfig.contracts.lukasToken,
+      this.networkConfig.contracts.usdc
     );
   }
 }

@@ -42,6 +42,8 @@ export interface ContractAddresses {
   lukasHook: string;
   /** USDC token contract address */
   usdc: string;
+  /** Uniswap V4 PoolManager contract address */
+  poolManager: string;
 }
 
 /**

@@ -6,7 +6,7 @@
  */
 
 import { useLukasSDK } from '@/app/providers/lukas-sdk-provider';
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 // Re-export for convenience
 export { useLukasSDK };
@@ -27,17 +27,29 @@ export interface TokenBalance {
 export function useLukasProtocol() {
   const { sdk, isInitialized, networkInfo, error: sdkError } = useLukasSDK();
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<Error | null>(null);
 
   // Combine SDK error with local error
   const combinedError = sdkError || error;
 
+  // Use refs to store SDK and networkInfo for stable callbacks
+  const sdkRef = useRef(sdk);
+  const isInitializedRef = useRef(isInitialized);
+  const networkInfoRef = useRef(networkInfo);
+
+  // Update refs when values change
+  useEffect(() => {
+    sdkRef.current = sdk;
+    isInitializedRef.current = isInitialized;
+    networkInfoRef.current = networkInfo;
+  }, [sdk, isInitialized, networkInfo]);
+
   /**
-   * Get token information
+   * Get token information - stable callback
    */
-  const getTokenInfo = useCallback(async (): Promise<TokenInfo | null> => {
-    if (!sdk || !isInitialized) {
-      setError('SDK not initialized');
+  const getTokenInfo = useRef(async (): Promise<TokenInfo | null> => {
+    if (!sdkRef.current || !isInitializedRef.current) {
+      setError(new Error('SDK not initialized'));
       return null;
     }
 
@@ -52,30 +64,30 @@ export function useLukasProtocol() {
         symbol: 'LUKAS',
         decimals: 18,
         totalSupply: '0',
-        address: networkInfo?.contracts?.lukasToken || '0x0',
+        address: networkInfoRef.current?.contracts?.lukasToken || '0x0',
       };
 
       return mockInfo;
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Failed to get token info';
-      setError(errorMessage);
+      const error = err instanceof Error ? err : new Error('Failed to get token info');
+      setError(error);
       return null;
     } finally {
       setIsLoading(false);
     }
-  }, [sdk, isInitialized, networkInfo]);
+  }).current;
 
   /**
-   * Get token balance for an address
+   * Get token balance for an address - stable callback
    */
-  const getTokenBalance = useCallback(async (address: string): Promise<TokenBalance | null> => {
-    if (!sdk || !isInitialized) {
-      setError('SDK not initialized');
+  const getTokenBalance = useRef(async (address: string): Promise<TokenBalance | null> => {
+    if (!sdkRef.current || !isInitializedRef.current) {
+      setError(new Error('SDK not initialized'));
       return null;
     }
 
     if (!address) {
-      setError('Address is required');
+      setError(new Error('Address is required'));
       return null;
     }
 
@@ -92,34 +104,32 @@ export function useLukasProtocol() {
 
       return mockBalance;
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Failed to get token balance';
-      setError(errorMessage);
+      const error = err instanceof Error ? err : new Error('Failed to get token balance');
+      setError(error);
       return null;
     } finally {
       setIsLoading(false);
     }
-  }, [sdk, isInitialized]);
+  }).current;
 
   /**
    * Check if SDK is ready for use
    */
-  const isReady = useCallback(() => {
-    return sdk !== null && isInitialized && !combinedError;
-  }, [sdk, isInitialized, combinedError]);
+  const isReady = isInitialized && !combinedError;
 
   /**
-   * Get current network information
+   * Get current network information - stable callback
    */
-  const getNetworkInfo = useCallback(() => {
-    return networkInfo;
-  }, [networkInfo]);
+  const getNetworkInfo = useRef(() => {
+    return networkInfoRef.current;
+  }).current;
 
   /**
-   * Check if SDK is in read-only mode
+   * Check if SDK is in read-only mode - stable callback
    */
-  const isReadOnly = useCallback(() => {
-    return sdk?.isReadOnly() ?? true;
-  }, [sdk]);
+  const isReadOnly = useRef(() => {
+    return sdkRef.current?.isReadOnly() ?? true;
+  }).current;
 
   return {
     // SDK instance
@@ -130,11 +140,11 @@ export function useLukasProtocol() {
     isLoading,
     error: combinedError,
     networkInfo,
+    isReady,
     
     // Methods
     getTokenInfo,
     getTokenBalance,
-    isReady,
     getNetworkInfo,
     isReadOnly,
   };

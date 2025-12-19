@@ -1,5 +1,6 @@
 import { createContext, useContext } from 'react';
 import type { LukasSDK } from '../../core/LukasSDK';
+import type { NetworkInfo } from '../../core/types';
 
 /**
  * Context for providing LukasSDK instance to React components
@@ -9,8 +10,12 @@ export interface LukasSDKContextValue {
   sdk: LukasSDK | null;
   /** Whether SDK is initializing */
   isInitializing: boolean;
+  /** Whether SDK is fully initialized and ready */
+  isInitialized: boolean;
   /** Initialization error */
   error: Error | null;
+  /** Current network information */
+  networkInfo: NetworkInfo | null;
 }
 
 /**
@@ -43,4 +48,24 @@ export function useLukasSDK(): LukasSDKContextValue {
 export function useLukasSDKInstance(): LukasSDK | null {
   const { sdk } = useLukasSDK();
   return sdk;
+}
+
+/**
+ * Hook to get network information
+ * 
+ * @returns Network info or null
+ */
+export function useNetworkInfo(): NetworkInfo | null {
+  const { networkInfo } = useLukasSDK();
+  return networkInfo;
+}
+
+/**
+ * Hook to check if SDK is ready for use
+ * 
+ * @returns boolean indicating if SDK is ready
+ */
+export function useIsSDKReady(): boolean {
+  const { isInitialized, error } = useLukasSDK();
+  return isInitialized && !error;
 }

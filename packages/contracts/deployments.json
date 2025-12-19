@@ -8,12 +8,13 @@
       "contracts": {
         "stable": {
           "LukasToken": {
-            "address": "0xaee0f26589a21ba4547765f630075262f330f1cb",
+            "address": "0x63524b53983960231b7b86CDEdDf050Ceb9263Cb",
             "deployedAt": "2025-12-17T20:10:24.158Z",
             "deployer": "0x4f36dc378d1c78181b3f544a81e8951fb4838ad9",
             "version": "1.0.0",
             "verified": false,
-            "status": "stable"
+            "status": "stable",
+            "note": "CORRECT address - has ERC20 interface and 1M initial supply"
           },
           "StabilizerVault": {
             "address": "0x5c5bc89db3f3e3e3e3e3e3e3e3e3e3e3e3e3e3e3",
@@ -24,20 +25,22 @@
             "status": "stable"
           },
           "LatAmBasketIndex": {
-            "address": null,
-            "deployedAt": null,
-            "deployer": null,
-            "version": "1.0.0",
-            "verified": false,
-            "status": "not-deployed"
+            "address": "0x1Dccf1fB82946a293E03036e85edc2139cba1541",
+            "deployedAt": "2025-12-18T16:45:00.000Z",
+            "deployer": "0x4f36dc378d1c78181b3f544a81e8951fb4838ad9",
+            "version": "1.1.0",
+            "verified": true,
+            "status": "stable",
+            "note": "Complete interface with getLukasFairPriceInUSDC and getBasketComposition"
           },
           "LukasHook": {
-            "address": null,
-            "deployedAt": null,
-            "deployer": null,
-            "version": "1.0.0",
+            "address": "0x5b73C5498c1E3b4dbA84de0F1833c4a029d90519",
+            "deployedAt": "2025-12-18T18:30:00.000Z",
+            "deployer": "0x4f36dc378d1c78181b3f544a81e8951fb4838ad9",
+            "version": "1.0.0-simplified",
             "verified": false,
-            "status": "not-deployed"
+            "status": "stable",
+            "note": "Simplified version for testing peg stabilization without full Uniswap V4"
           },
           "USDC": {
             "address": "0x41e94eb019c0762f9bfcf9fb1e58725bfb0e7582",
@@ -47,6 +50,31 @@
             "verified": true,
             "status": "stable",
             "note": "Official USDC on Polygon Amoy"
+          },
+          "LukasUSDCPool": {
+            "address": "0x48411eFDE2D053B2Fa9456d91dad8a9BE7a1574E",
+            "poolId": "0x0000000000000000000000000000000000000000000000000000000000000000",
+            "deployedAt": "2025-12-18T19:42:50.954Z",
+            "deployer": "0x1804c8ab1f12e6bbf3894d4083f33e07309d1f38",
+            "version": "1.0.0",
+            "verified": false,
+            "status": "stable",
+            "note": "LUKAS/USDC pool with correct token addresses, liquidity provided",
+            "configuration": {
+              "token0": "0x63524b53983960231b7b86CDEdDf050Ceb9263Cb",
+              "token1": "0x41e94eb019c0762f9bfcf9fb1e58725bfb0e7582",
+              "fee": 3000,
+              "tickSpacing": 60,
+              "hook": "0x0000000000000000000000000000000000000000",
+              "initialPrice": "0.0976 USDC per LUKAS",
+              "sqrtPriceX96": "62135896541"
+            },
+            "liquidity": {
+              "lukas": "10",
+              "usdc": "0.976",
+              "tickLower": -887220,
+              "tickUpper": 887220
+            }
           }
         },
         "testing": {

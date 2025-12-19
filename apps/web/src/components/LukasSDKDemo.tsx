@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useEffect, useState } from 'react';
-import { useLukasSDK } from '@/app/providers/lukas-sdk-provider';
 import { useLukasProtocol } from '@/hooks/useLukasProtocol';
 import { useWallet } from '@/app/providers/wallet-provider';
 
@@ -11,8 +10,7 @@ import { useWallet } from '@/app/providers/wallet-provider';
  */
 export function LukasSDKDemo() {
   const { address, isConnected } = useWallet();
-  const { sdk, isInitialized, networkInfo, error: sdkError } = useLukasSDK();
-  const { getTokenInfo, getTokenBalance, isReady, isReadOnly } = useLukasProtocol();
+  const { isInitialized, error: sdkError, getTokenInfo, getTokenBalance, isReady, isReadOnly, networkInfo } = useLukasProtocol();
   
   const [tokenInfo, setTokenInfo] = useState<any>(null);
   const [balance, setBalance] = useState<any>(null);
@@ -20,7 +18,7 @@ export function LukasSDKDemo() {
 
   useEffect(() => {
     const loadData = async () => {
-      if (!isReady()) return;
+      if (!isReady) return;
 
       setLoading(true);
       try {
@@ -41,7 +39,7 @@ export function LukasSDKDemo() {
     };
 
     loadData();
-  }, [isReady, address, getTokenInfo, getTokenBalance]);
+  }, [isReady, address]);
 
   if (!isInitialized) {
     return (
@@ -52,9 +50,10 @@ export function LukasSDKDemo() {
   }
 
   if (sdkError) {
+    const errorMessage = typeof sdkError === 'string' ? sdkError : sdkError?.message || 'Unknown error';
     return (
       <div className="p-4 border border-red-500 rounded-lg">
-        <p className="text-sm text-red-500">SDK Error: {sdkError}</p>
+        <p className="text-sm text-red-500">SDK Error: {errorMessage}</p>
       </div>
     );
   }

@@ -1,6 +1,6 @@
 {
   "name": "@lukas-protocol/sdk",
-  "version": "0.2.19",
+  "version": "0.2.20",
   "description": "TypeScript SDK for interacting with the Lukas Protocol smart contracts",
   "keywords": [
     "lukas",

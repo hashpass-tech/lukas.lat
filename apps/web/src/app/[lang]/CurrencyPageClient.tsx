@@ -8,6 +8,8 @@ import Footer from "@/components/Footer";
 import { PWAInstallPrompt } from "@/components/PWAInstallPrompt";
 import { useEffect, useState } from "react";
 import { DonutChartSection, CurrencyModal, JoinMovementSection } from "@/components/currency";
+import Link from "next/link";
+import { useParams } from "next/navigation";
 
 type Currency = {
   country: string;
@@ -26,6 +28,8 @@ const currencies: Currency[] = [
 ];
 
 function CurrencyPageContent() {
+  const params = useParams();
+  const lang = params?.lang || 'en';
   const [activeCurrency, setActiveCurrency] = useState<Currency | null>(null);
   const [selectedCurrency, setSelectedCurrency] = useState<string | null>(null);
   const [hoveredSegment, setHoveredSegment] = useState<string | null>(null);
@@ -65,19 +69,25 @@ function CurrencyPageContent() {
           <CyberneticGridShader />
           <div className="absolute inset-0 pointer-events-none bg-gradient-to-br from-slate-950/70 via-slate-900/60 to-slate-950/80 z-0" />
           <main className="flex min-h-screen flex-col items-center justify-center p-4 sm:p-24 pb-20 sm:pb-24 relative overflow-x-hidden z-10">
-          <div className="z-10 max-w-4xl w-full items-center justify-center font-mono text-sm">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-10 w-full max-w-5xl mx-auto">
-              <DonutChartSection
-                currencies={currencies}
-                selectedCurrency={selectedCurrency}
-                hoveredSegment={hoveredSegment}
-                animationKey={animationKey}
-                onSegmentHover={(segment) => setHoveredSegment(segment?.label || null)}
-                onCurrencySelect={setSelectedCurrency}
-                onActiveCurrency={setActiveCurrency}
-              />
+          <div className="z-10 max-w-6xl w-full items-center justify-center font-mono text-sm">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 w-full max-w-5xl mx-auto">
+              {/* Left Column - Donut Chart */}
+              <div className="lg:col-span-1 flex items-stretch justify-center">
+                <DonutChartSection
+                  currencies={currencies}
+                  selectedCurrency={selectedCurrency}
+                  hoveredSegment={hoveredSegment}
+                  animationKey={animationKey}
+                  onSegmentHover={(segment) => setHoveredSegment(segment?.label || null)}
+                  onCurrencySelect={setSelectedCurrency}
+                  onActiveCurrency={setActiveCurrency}
+                />
+              </div>
               
-              <JoinMovementSection />
+              {/* Right Column - Join Movement Section (includes Swap when connected) */}
+              <div className="lg:col-span-1 flex items-stretch justify-center">
+                <JoinMovementSection />
+              </div>
             </div>
           </div>
           </main>

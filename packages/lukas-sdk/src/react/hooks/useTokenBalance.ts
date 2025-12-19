@@ -1,70 +1,83 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import type { LukasSDK } from '../../core/LukasSDK';
 import type { BigNumber } from '../../types';
 
+export interface UseTokenBalanceOptions {
+  /** Refresh interval in milliseconds */
+  refreshInterval?: number;
+  /** Auto-start polling */
+  autoStart?: boolean;
+  /** Token type: 'lukas' or 'usdc' */
+  tokenType?: 'lukas' | 'usdc';
+}
+
+export interface UseTokenBalanceResult {
+  /** Token balance */
+  balance: BigNumber | null;
+  /** Loading state */
+  loading: boolean;
+  /** Error state */
+  error: Error | null;
+  /** Refresh balance */
+  refresh: () => Promise<void>;
+}
+
 /**
- * Hook to get token balance for an address
+ * Hook for user token balance
  */
 export function useTokenBalance(
   sdk: LukasSDK | null,
   address: string | null | undefined,
   tokenType: 'lukas' | 'usdc' = 'lukas',
-  refreshInterval?: number
-) {
+  options: UseTokenBalanceOptions = {}
+): UseTokenBalanceResult {
+  const { refreshInterval = 5000, autoStart = true } = options;
+
   const [balance, setBalance] = useState<BigNumber | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
 
-  useEffect(() => {
+  const refresh = useCallback(async () => {
     if (!sdk || !address) {
-      setBalance(null);
+      setError(new Error('SDK or address not initialized'));
       return;
     }
 
-    let cancelled = false;
-    let intervalId: NodeJS.Timeout | null = null;
+    try {
+      setLoading(true);
+      setError(null);
 
-    const fetchBalance = async () => {
-      if (cancelled) return;
+      const tokenService = tokenType === 'lukas' 
+        ? sdk.getTokenService()
+        : sdk.getUSDCService();
       
-      try {
-        setLoading(true);
-        setError(null);
-        
-        const tokenService = tokenType === 'lukas' 
-          ? sdk.getTokenService() 
-          : sdk.getUSDCService();
-        
-        const bal = await tokenService.getBalance(address);
-        
-        if (!cancelled) {
-          setBalance(bal);
-        }
-      } catch (err) {
-        if (!cancelled) {
-          setError(err instanceof Error ? err : new Error('Failed to fetch balance'));
-        }
-      } finally {
-        if (!cancelled) {
-          setLoading(false);
-        }
-      }
-    };
-
-    fetchBalance();
-
-    // Set up refresh interval if specified
-    if (refreshInterval && refreshInterval > 0) {
-      intervalId = setInterval(fetchBalance, refreshInterval);
+      const tokenBalance = await tokenService.getBalance(address);
+      setBalance(tokenBalance);
+    } catch (err) {
+      const error = err instanceof Error ? err : new Error('Failed to fetch token balance');
+      setError(error);
+    } finally {
+      setLoading(false);
     }
+  }, [sdk, address, tokenType]);
 
-    return () => {
-      cancelled = true;
-      if (intervalId) {
-        clearInterval(intervalId);
-      }
-    };
-  }, [sdk, address, tokenType, refreshInterval]);
+  // Set up polling
+  useEffect(() => {
+    if (!autoStart || !sdk || !address) return;
 
-  return { balance, loading, error, refetch: () => {} };
+    // Initial fetch
+    refresh();
+
+    // Set up interval
+    const interval = setInterval(refresh, refreshInterval);
+
+    return () => clearInterval(interval);
+  }, [sdk, address, autoStart, refreshInterval, refresh]);
+
+  return {
+    balance,
+    loading,
+    error,
+    refresh,
+  };
 }

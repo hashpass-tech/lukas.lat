@@ -60,6 +60,18 @@ const LUKAS_HOOK_ABI = [
 ];
 
 /**
+ * Basic Uniswap V4 PoolManager ABI (placeholder - will be replaced with actual ABI)
+ */
+const POOL_MANAGER_ABI = [
+  'function getSlot0(tuple(address currency0, address currency1, uint24 fee, int24 tickSpacing, address hooks) key) view returns (tuple(uint160 sqrtPriceX96, int24 tick, uint16 protocolFee, uint8 unlocked))',
+  'function getLiquidity(tuple(address currency0, address currency1, uint24 fee, int24 tickSpacing, address hooks) key) view returns (uint128)',
+  'function getPoolId(tuple(address currency0, address currency1, uint24 fee, int24 tickSpacing, address hooks) key) view returns (bytes32)',
+  'event Swap(bytes32 indexed poolId, int128 amount0, int128 amount1, uint160 sqrtPriceX96, uint128 liquidity, int24 tick)',
+  'event Mint(bytes32 indexed poolId, address indexed sender, int24 tickLower, int24 tickUpper, uint128 amount, bytes hookData)',
+  'event Burn(bytes32 indexed poolId, address indexed sender, int24 tickLower, int24 tickUpper, uint128 amount)',
+];
+
+/**
  * Contract manager for managing contract instances and ABI handling
  */
 export class ContractManager {
@@ -174,6 +186,20 @@ export class ContractManager {
   }
 
   /**
+   * Get PoolManager contract
+   */
+  getPoolManagerContract(): Contract {
+    const contract = this.contracts.get('poolManager');
+    if (!contract) {
+      throw new LukasSDKError(
+        LukasSDKErrorCode.CONTRACT_NOT_DEPLOYED,
+        'PoolManager contract not initialized'
+      );
+    }
+    return contract;
+  }
+
+  /**
    * Get contract by name
    */
   getContract(name: keyof ContractAddresses): Contract {
@@ -274,6 +300,16 @@ export class ContractManager {
         new Contract(
           this.addresses.lukasHook,
           LUKAS_HOOK_ABI,
+          this.signer || this.provider
+        )
+      );
+
+      // Initialize PoolManager contract
+      this.contracts.set(
+        'poolManager',
+        new Contract(
+          this.addresses.poolManager,
+          POOL_MANAGER_ABI,
           this.signer || this.provider
         )
       );

@@ -11,13 +11,7 @@
 // Since React is a peer dependency, we assume it's available when this module is imported
 // If React is not available, the consuming application should not import from this module
 
-// Hooks
-export * from './hooks';
-
-// Context
-export * from './context/LukasSDKContext';
-
-// Providers  
+// Providers (includes useLukasSDK hook)
 export * from './providers';
 
 // Adapters
