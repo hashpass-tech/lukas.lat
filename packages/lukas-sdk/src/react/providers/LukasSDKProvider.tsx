@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, useRef, ReactNode, useContext, createContext } from 'react';
+import { useState, useEffect, useMemo, useRef, ReactNode, useContext, createContext, Context } from 'react';
 import { LukasSDK } from '../../core/LukasSDK';
 import type { LukasSDKConfig, NetworkInfo } from '../../core/types';
 
@@ -10,7 +10,15 @@ interface LukasSDKContextType {
   networkInfo: NetworkInfo | null;
 }
 
-const LukasSDKContext = createContext<LukasSDKContextType | undefined>(undefined);
+// Lazy context creation - only created when provider is first rendered
+let LukasSDKContext: Context<LukasSDKContextType | undefined> | null = null;
+
+function getLukasSDKContext(): Context<LukasSDKContextType | undefined> {
+  if (!LukasSDKContext) {
+    LukasSDKContext = createContext<LukasSDKContextType | undefined>(undefined);
+  }
+  return LukasSDKContext;
+}
 
 export interface LukasSDKProviderProps {
   config: LukasSDKConfig;
@@ -68,10 +76,11 @@ export function LukasSDKProvider({ config, children }: LukasSDKProviderProps) {
     networkInfo,
   }), [sdk, isInitializing, isInitialized, error, networkInfo]);
 
+  const Context = getLukasSDKContext();
   return (
-    <LukasSDKContext.Provider value={value}>
+    <Context.Provider value={value}>
       {children}
-    </LukasSDKContext.Provider>
+    </Context.Provider>
   );
 }
 
@@ -79,7 +88,8 @@ export function LukasSDKProvider({ config, children }: LukasSDKProviderProps) {
  * Hook to use SDK from context
  */
 export function useLukasSDK() {
-  const context = useContext(LukasSDKContext);
+  const Context = getLukasSDKContext();
+  const context = useContext(Context);
   if (!context) {
     throw new Error('useLukasSDK must be used within LukasSDKProvider');
   }
