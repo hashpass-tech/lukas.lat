@@ -25,6 +25,8 @@ export default defineConfig({
         'wagmi',
         'react',
         'react-dom',
+        'react/jsx-runtime',
+        'react/jsx-dev-runtime',
       ],
       output: {
         globals: {
