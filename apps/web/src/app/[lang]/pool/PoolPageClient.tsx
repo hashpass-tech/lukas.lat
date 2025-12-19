@@ -3,7 +3,6 @@
 import { useState } from 'react';
 import { MonitoringDashboard } from '@/components/MonitoringDashboard';
 import { SwapWidget } from '@/components/SwapWidget';
-import { TransactionHistory } from '@/components/TransactionHistory';
 import Footer from '@/components/Footer';
 import Link from 'next/link';
 
@@ -115,9 +114,6 @@ export default function PoolPageClient() {
 
             {/* Quick Stats - Below swap on mobile */}
             <div className="lg:col-span-2 space-y-4 sm:space-y-6 order-2">
-              {/* Transaction History */}
-              <TransactionHistory />
-              
               <div className="bg-card/50 backdrop-blur border border-border rounded-lg p-4 sm:p-6 transition-colors duration-200">
                 <div className="flex items-center justify-between mb-4">
                   <h2 className="text-lg sm:text-xl font-bold text-foreground">Quick Stats</h2>
@@ -191,41 +187,7 @@ export default function PoolPageClient() {
         {/* Metrics View */}
         {activeView === 'metrics' && (
           <div className="space-y-4 sm:space-y-6">
-            {/* Transaction History */}
-            <TransactionHistory />
-            
-            <div className="bg-card/50 backdrop-blur border border-border rounded-lg p-4 sm:p-6 transition-colors duration-200">
-              <div className="flex items-center justify-between mb-4">
-                <h2 className="text-lg sm:text-xl font-bold text-foreground">Pool Overview</h2>
-                <span className="px-2 py-0.5 text-[10px] font-medium bg-yellow-500/20 text-yellow-500 rounded-full">
-                  DEMO DATA
-                </span>
-              </div>
-              <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-                <div className="bg-card/80 rounded-lg p-3 sm:p-4 border border-border/50">
-                  <p className="text-muted-foreground text-xs sm:text-sm mb-1 sm:mb-2">Current Price</p>
-                  <p className="text-2xl sm:text-3xl font-bold text-foreground">~1.00</p>
-                  <p className="text-xs text-muted-foreground mt-1 sm:mt-2">LUKAS per USDC</p>
-                </div>
-                <div className="bg-card/80 rounded-lg p-3 sm:p-4 border border-border/50">
-                  <p className="text-muted-foreground text-xs sm:text-sm mb-1 sm:mb-2">24h High</p>
-                  <p className="text-2xl sm:text-3xl font-bold text-muted-foreground">--</p>
-                  <p className="text-xs text-muted-foreground mt-1 sm:mt-2">Coming soon</p>
-                </div>
-                <div className="bg-card/80 rounded-lg p-3 sm:p-4 border border-border/50">
-                  <p className="text-muted-foreground text-xs sm:text-sm mb-1 sm:mb-2">24h Low</p>
-                  <p className="text-2xl sm:text-3xl font-bold text-muted-foreground">--</p>
-                  <p className="text-xs text-muted-foreground mt-1 sm:mt-2">Coming soon</p>
-                </div>
-                <div className="bg-card/80 rounded-lg p-3 sm:p-4 border border-border/50">
-                  <p className="text-muted-foreground text-xs sm:text-sm mb-1 sm:mb-2">24h Change</p>
-                  <p className="text-2xl sm:text-3xl font-bold text-muted-foreground">--</p>
-                  <p className="text-xs text-muted-foreground mt-1 sm:mt-2">Coming soon</p>
-                </div>
-              </div>
-            </div>
-
-            {/* Monitoring Dashboard */}
+            {/* Unified Monitoring Dashboard with metrics, chart, and transactions */}
             <MonitoringDashboard />
           </div>
         )}
