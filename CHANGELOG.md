@@ -9,15 +9,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - Network-specific color coding for UI components
-- Independent Live indicator for contract deployment status
-- Network icons in UI components
 
 ### Changed
 - Enhanced SwapWidget with network awareness
-- Improved contract detection logic
 
 ### Fixed
 - Fixed hydration mismatch in Footer component
+
+## [0.2.34] - 2025-12-19
+
+### Added
+
+
+
+### Changed
+
+
+
+### Fixed
+
+
+
+
 
 ## [0.2.34] - 2025-12-19
 
