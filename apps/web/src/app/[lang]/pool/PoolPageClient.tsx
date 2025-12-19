@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { MonitoringDashboard } from '@/components/MonitoringDashboard';
 import { SwapWidget } from '@/components/SwapWidget';
 import { TransactionHistory } from '@/components/TransactionHistory';
+import Footer from '@/components/Footer';
 import Link from 'next/link';
 
 /**
@@ -18,9 +19,9 @@ export default function PoolPageClient() {
   const [activeView, setActiveView] = useState<'swap' | 'metrics' | 'detailed'>('swap');
 
   return (
-    <div className="min-h-screen bg-background text-foreground pt-20 sm:pt-24 pb-12 transition-colors duration-300">
-      {/* Navigation Header - Fixed on mobile */}
-      <div className="sticky top-16 sm:top-20 z-40 bg-card/95 backdrop-blur-md border-b border-border transition-colors duration-200">
+    <div className="min-h-screen bg-background text-foreground pt-16 sm:pt-20 pb-20 sm:pb-16 transition-colors duration-300">
+      {/* Navigation Header - Sticky below main header */}
+      <div className="sticky top-14 sm:top-16 z-40 bg-card/95 backdrop-blur-md border-b border-border transition-colors duration-200">
         <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-14 sm:h-16">
             <div className="flex items-center gap-2 sm:gap-4 min-w-0">
@@ -118,22 +119,27 @@ export default function PoolPageClient() {
               <TransactionHistory />
               
               <div className="bg-card/50 backdrop-blur border border-border rounded-lg p-4 sm:p-6 transition-colors duration-200">
-                <h2 className="text-lg sm:text-xl font-bold text-foreground mb-4">Quick Stats</h2>
+                <div className="flex items-center justify-between mb-4">
+                  <h2 className="text-lg sm:text-xl font-bold text-foreground">Quick Stats</h2>
+                  <span className="px-2 py-0.5 text-[10px] font-medium bg-yellow-500/20 text-yellow-500 rounded-full">
+                    DEMO DATA
+                  </span>
+                </div>
                 <div className="grid grid-cols-2 gap-3 sm:gap-4">
                   <div className="bg-card/80 rounded-lg p-3 sm:p-4 border border-border/50 hover:border-border transition-all duration-200">
                     <p className="text-muted-foreground text-xs sm:text-sm mb-1">Current Price</p>
-                    <p className="text-xl sm:text-2xl font-bold text-foreground">1.024</p>
+                    <p className="text-xl sm:text-2xl font-bold text-foreground">~1.00</p>
                     <p className="text-xs text-muted-foreground mt-1">LUKAS/USDC</p>
                   </div>
                   <div className="bg-card/80 rounded-lg p-3 sm:p-4 border border-border/50 hover:border-border transition-all duration-200">
                     <p className="text-muted-foreground text-xs sm:text-sm mb-1">24h Volume</p>
-                    <p className="text-xl sm:text-2xl font-bold text-foreground">$12.5K</p>
-                    <p className="text-xs text-green-400 mt-1">↑ 5.2%</p>
+                    <p className="text-xl sm:text-2xl font-bold text-foreground">--</p>
+                    <p className="text-xs text-muted-foreground mt-1">Coming soon</p>
                   </div>
                   <div className="bg-card/80 rounded-lg p-3 sm:p-4 border border-border/50 hover:border-border transition-all duration-200">
                     <p className="text-muted-foreground text-xs sm:text-sm mb-1">Liquidity</p>
-                    <p className="text-xl sm:text-2xl font-bold text-foreground">$10.2K</p>
-                    <p className="text-xs text-muted-foreground mt-1">10 LUKAS</p>
+                    <p className="text-xl sm:text-2xl font-bold text-foreground">--</p>
+                    <p className="text-xs text-muted-foreground mt-1">Coming soon</p>
                   </div>
                   <div className="bg-card/80 rounded-lg p-3 sm:p-4 border border-border/50 hover:border-border transition-all duration-200">
                     <p className="text-muted-foreground text-xs sm:text-sm mb-1">Fee Tier</p>
@@ -189,27 +195,32 @@ export default function PoolPageClient() {
             <TransactionHistory />
             
             <div className="bg-card/50 backdrop-blur border border-border rounded-lg p-4 sm:p-6 transition-colors duration-200">
-              <h2 className="text-lg sm:text-xl font-bold text-foreground mb-4">Pool Overview</h2>
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="text-lg sm:text-xl font-bold text-foreground">Pool Overview</h2>
+                <span className="px-2 py-0.5 text-[10px] font-medium bg-yellow-500/20 text-yellow-500 rounded-full">
+                  DEMO DATA
+                </span>
+              </div>
               <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
                 <div className="bg-card/80 rounded-lg p-3 sm:p-4 border border-border/50">
                   <p className="text-muted-foreground text-xs sm:text-sm mb-1 sm:mb-2">Current Price</p>
-                  <p className="text-2xl sm:text-3xl font-bold text-foreground">1.024</p>
+                  <p className="text-2xl sm:text-3xl font-bold text-foreground">~1.00</p>
                   <p className="text-xs text-muted-foreground mt-1 sm:mt-2">LUKAS per USDC</p>
                 </div>
                 <div className="bg-card/80 rounded-lg p-3 sm:p-4 border border-border/50">
                   <p className="text-muted-foreground text-xs sm:text-sm mb-1 sm:mb-2">24h High</p>
-                  <p className="text-2xl sm:text-3xl font-bold text-green-400">1.032</p>
-                  <p className="text-xs text-muted-foreground mt-1 sm:mt-2">Peak price</p>
+                  <p className="text-2xl sm:text-3xl font-bold text-muted-foreground">--</p>
+                  <p className="text-xs text-muted-foreground mt-1 sm:mt-2">Coming soon</p>
                 </div>
                 <div className="bg-card/80 rounded-lg p-3 sm:p-4 border border-border/50">
                   <p className="text-muted-foreground text-xs sm:text-sm mb-1 sm:mb-2">24h Low</p>
-                  <p className="text-2xl sm:text-3xl font-bold text-red-400">1.018</p>
-                  <p className="text-xs text-muted-foreground mt-1 sm:mt-2">Low price</p>
+                  <p className="text-2xl sm:text-3xl font-bold text-muted-foreground">--</p>
+                  <p className="text-xs text-muted-foreground mt-1 sm:mt-2">Coming soon</p>
                 </div>
                 <div className="bg-card/80 rounded-lg p-3 sm:p-4 border border-border/50">
                   <p className="text-muted-foreground text-xs sm:text-sm mb-1 sm:mb-2">24h Change</p>
-                  <p className="text-2xl sm:text-3xl font-bold text-blue-400">+0.39%</p>
-                  <p className="text-xs text-muted-foreground mt-1 sm:mt-2">Price change</p>
+                  <p className="text-2xl sm:text-3xl font-bold text-muted-foreground">--</p>
+                  <p className="text-xs text-muted-foreground mt-1 sm:mt-2">Coming soon</p>
                 </div>
               </div>
             </div>
@@ -373,6 +384,9 @@ export default function PoolPageClient() {
           </div>
         )}
       </div>
+
+      {/* Footer */}
+      <Footer />
     </div>
   );
 }

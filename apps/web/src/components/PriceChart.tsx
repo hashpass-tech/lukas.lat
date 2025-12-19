@@ -221,23 +221,8 @@ export function PriceChart({
     }
   }, [chartData, metrics]);
 
-  if (error) {
-    return (
-      <div className="w-full p-6 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg">
-        <div className="flex items-start gap-3">
-          <span className="text-2xl">⚠️</span>
-          <div>
-            <h3 className="font-semibold text-yellow-800 dark:text-yellow-200 mb-1">
-              Price Chart Unavailable
-            </h3>
-            <p className="text-sm text-yellow-700 dark:text-yellow-300">
-              {error.message || 'Pool service not available.'}
-            </p>
-          </div>
-        </div>
-      </div>
-    );
-  }
+  // Note: We always generate mock data if no real data is available
+  // So we don't need to show error state - chart will always have data to display
 
   return (
     <div className="w-full bg-slate-900 rounded-lg border border-slate-700 overflow-hidden">
@@ -245,7 +230,12 @@ export function PriceChart({
       <div className="flex items-center justify-between p-4 border-b border-slate-700">
         <div className="flex items-center gap-4">
           <div>
-            <h2 className="text-lg font-bold text-white">LUKAS/USDC</h2>
+            <div className="flex items-center gap-2">
+              <h2 className="text-lg font-bold text-white">LUKAS/USDC</h2>
+              <span className="px-2 py-0.5 text-[10px] font-medium bg-yellow-500/20 text-yellow-400 rounded-full">
+                DEMO
+              </span>
+            </div>
             {metrics && (
               <div className="flex items-center gap-2 mt-1">
                 <span className="text-2xl font-bold text-white">

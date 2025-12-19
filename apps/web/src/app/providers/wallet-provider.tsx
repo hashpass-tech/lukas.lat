@@ -121,9 +121,6 @@ export function WalletProvider({ children }: { children: ReactNode }) {
 
     const projectId = process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID;
 
-    // Debug: log the project ID being used (remove after debugging)
-    console.log('[WalletConnect] Using projectId:', projectId, 'length:', projectId?.length);
-
     if (!projectId) {
       throw new Error('WalletConnect project ID is not configured');
     }
@@ -135,23 +132,35 @@ export function WalletProvider({ children }: { children: ReactNode }) {
     if (amoyRpc) rpcMap[80002] = amoyRpc;
     if (mainnetRpc) rpcMap[1] = mainnetRpc;
 
-    const provider = await EthereumProvider.init({
-      projectId,
-      // Use Amoy as the primary test chain, but keep mainnet available
-      chains: [80002, 1],
-      showQrModal: true,
-      ...(Object.keys(rpcMap).length > 0 ? { rpcMap } : {}),
-    });
+    try {
+      const provider = await EthereumProvider.init({
+        projectId,
+        // Use Amoy as the primary test chain, but keep mainnet available
+        chains: [80002, 1],
+        showQrModal: true,
+        ...(Object.keys(rpcMap).length > 0 ? { rpcMap } : {}),
+      });
 
-    providerRef.current = provider;
+      providerRef.current = provider;
 
-    const accounts = await provider.enable();
+      const accounts = await provider.enable();
 
-    if (!accounts || accounts.length === 0) {
-      throw new Error('No accounts returned from WalletConnect');
+      if (!accounts || accounts.length === 0) {
+        throw new Error('No accounts returned from WalletConnect');
+      }
+
+      return accounts[0] as string;
+    } catch (error: any) {
+      // Handle user rejection or connection cancellation
+      if (error?.message?.includes('User rejected') || 
+          error?.message?.includes('User closed') ||
+          error?.message?.includes('Connection request reset') ||
+          error?.code === 4001) {
+        throw new Error('Connection cancelled');
+      }
+      // Re-throw other errors
+      throw error;
     }
-
-    return accounts[0] as string;
   };
 
   const readChainId = async () => {

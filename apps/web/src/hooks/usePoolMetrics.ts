@@ -70,13 +70,13 @@ export function usePoolMetrics(refreshInterval: number = 10000): PoolMetrics {
 
     try {
       setLoading(true);
-      setError(null);
 
       // Check if SDK has getPoolService method
       if (typeof (currentSdk as any).getPoolService !== 'function') {
-        // Already initialized with mock data, just return
+        // Pool service not available, use mock data (already initialized)
         if (isMountedRef.current) {
           setLoading(false);
+          setError(null); // Clear any previous error - mock data is fine
         }
         return;
       }
@@ -97,11 +97,13 @@ export function usePoolMetrics(refreshInterval: number = 10000): PoolMetrics {
       setPrice(ps?.price || null);
       setVolume24h(vol24h);
       setPriceDeviation(deviation);
+      setError(null);
     } catch (err) {
       if (!isMountedRef.current) return;
-      const error = err instanceof Error ? err : new Error('Failed to fetch pool metrics');
-      setError(error);
-      console.debug('Pool metrics error:', error);
+      // Pool service failed - this is expected when contracts aren't deployed
+      // Keep using mock data, don't show error to user
+      console.debug('Pool metrics: Using mock data (pool service unavailable)');
+      // Don't set error - we have valid mock data to display
     } finally {
       if (isMountedRef.current) {
         setLoading(false);

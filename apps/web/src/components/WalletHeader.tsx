@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { useWallet } from '@/app/providers/wallet-provider';
 import { Button } from '@/components/ui/button';
 import { 
@@ -55,6 +55,12 @@ export function WalletHeader({ connectText = "Connect Wallet", connectTextKey }:
   const [selectedWallet, setSelectedWallet] = useState<string | null>(null);
   const [copiedAddress, setCopiedAddress] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
+
+  // Prevent hydration mismatch - Radix Dialog generates different IDs on server vs client
+  React.useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   const formatAddress = (addr: string) => {
     return `${addr.slice(0, 6)}...${addr.slice(-4)}`;
@@ -111,6 +117,18 @@ export function WalletHeader({ connectText = "Connect Wallet", connectTextKey }:
     ...wallet,
     disabled: wallet.id === 'metamask' && (!window.ethereum || typeof window.ethereum === 'undefined')
   }));
+
+  // Show placeholder during SSR to prevent hydration mismatch
+  if (!isMounted) {
+    return (
+      <div className="relative w-full max-w-[280px]">
+        <div className="px-3 py-2 flex items-center justify-start sm:justify-center gap-1.5 bg-slate-800/50 rounded-2xl">
+          <Wallet className="w-4 h-4 text-slate-400" />
+          <span className="text-sm text-slate-400">{displayText}</span>
+        </div>
+      </div>
+    );
+  }
 
   if (isConnected && address) {
     return (

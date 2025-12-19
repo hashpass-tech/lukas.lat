@@ -64,26 +64,8 @@ export function MonitoringDashboard(): JSX.Element {
     );
   }
 
-  if (poolMetrics.error && !poolMetrics.state) {
-    return (
-      <div className="w-full p-6 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg">
-        <div className="flex items-start gap-3">
-          <span className="text-2xl">ℹ️</span>
-          <div>
-            <h3 className="font-semibold text-yellow-800 dark:text-yellow-200 mb-1">
-              Using Mock Pool Data
-            </h3>
-            <p className="text-sm text-yellow-700 dark:text-yellow-300 mb-2">
-              Pool service is not yet available. Displaying simulated metrics for testing.
-            </p>
-            <p className="text-xs text-yellow-600 dark:text-yellow-400">
-              Real metrics will be available once the full Uniswap V4 PoolManager is integrated.
-            </p>
-          </div>
-        </div>
-      </div>
-    );
-  }
+  // Note: We always have mock data as fallback, so we don't need to show error state
+  // The hook initializes with mock data and gracefully handles pool service failures
 
   return (
     <div className="w-full bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden">

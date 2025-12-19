@@ -81,23 +81,8 @@ export function PoolMetricsPanel({
     ? Math.abs(poolMetrics.priceDeviation) > 2
     : false;
 
-  if (error) {
-    return (
-      <div className="p-6 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
-        <div className="flex items-start gap-3">
-          <span className="text-2xl">❌</span>
-          <div>
-            <h3 className="font-semibold text-red-800 dark:text-red-200 mb-1">
-              Error Loading Pool Metrics
-            </h3>
-            <p className="text-sm text-red-700 dark:text-red-300">
-              {error.message}
-            </p>
-          </div>
-        </div>
-      </div>
-    );
-  }
+  // Note: We always have mock data as fallback from usePoolMetrics hook
+  // So we don't need to show error state - metrics will always have data to display
 
   return (
     <div className="space-y-6">

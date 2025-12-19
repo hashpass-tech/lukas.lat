@@ -6,15 +6,19 @@ import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { LightPullThemeSwitcher } from "@/components/LightPullThemeSwitcher";
 import { WalletHeader } from "@/components/WalletHeader";
 import { MobileThemeSwitcher } from "@/components/MobileThemeSwitcher";
-import { Menu, X } from "lucide-react";
+import { Menu, X, BarChart3 } from "lucide-react";
 import { Trans } from "@/components/Trans";
 import { DownloadButton } from "@/components/DownloadButton";
 import Footer from "@/components/Footer";
 import { useSidebar } from "@/contexts/SidebarContext";
+import { useWallet } from "@/app/providers/wallet-provider";
+import { useTranslation } from "@/lib/translator";
 
 export function HeaderClient() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const { setMobileSidebarOpen } = useSidebar();
+  const { isConnected } = useWallet();
+  const { locale } = useTranslation();
 
   return (
     <div className="pointer-events-auto w-full px-3 sm:px-4 py-2">
@@ -35,6 +39,16 @@ export function HeaderClient() {
           </div>
 
           <div className="flex items-center gap-2 sm:gap-3 min-w-0 justify-end">
+            {/* Pool Link - shown when wallet connected */}
+            {isConnected && (
+              <Link
+                href={`/${locale}/pool`}
+                className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-foreground hover:text-primary border border-border/50 hover:border-primary/50 rounded-lg transition-all duration-200 hover:bg-primary/5"
+              >
+                <BarChart3 className="w-4 h-4" />
+                <span>Pool</span>
+              </Link>
+            )}
             <div className="hidden sm:flex">
               <LightPullThemeSwitcher />
             </div>
@@ -89,6 +103,20 @@ export function HeaderClient() {
               <div>
                 <MobileThemeSwitcher />
               </div>
+              {/* Pool Link - shown when wallet connected, between theme and wallet */}
+              {isConnected && (
+                <Link
+                  href={`/${locale}/pool`}
+                  onClick={() => {
+                    setMobileOpen(false);
+                    setMobileSidebarOpen(false);
+                  }}
+                  className="flex items-center gap-2 px-3 py-2.5 text-sm font-medium text-foreground bg-primary/10 hover:bg-primary/20 border border-primary/30 rounded-lg transition-all duration-200"
+                >
+                  <BarChart3 className="w-4 h-4 text-primary" />
+                  <span>Pool Dashboard</span>
+                </Link>
+              )}
             </div>
             <div className="pt-2 border-t border-border/60">
               <WalletHeader connectTextKey="connect.wallet" />
