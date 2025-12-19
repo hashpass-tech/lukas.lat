@@ -1,18 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import {
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  Legend,
-  ResponsiveContainer,
-  ComposedChart,
-  Bar,
-} from 'recharts';
+import { useState, useEffect, useMemo, useRef, useCallback } from 'react';
 
 /**
  * Price data point for the chart
@@ -28,98 +16,210 @@ interface PriceDataPoint {
 }
 
 export interface PriceChartProps {
-  /**
-   * Array of price data points (1-hour candles)
-   */
   data?: PriceDataPoint[];
-  /**
-   * Loading state
-   */
   loading?: boolean;
-  /**
-   * Error state
-   */
   error?: Error | null;
-  /**
-   * Chart height in pixels
-   */
   height?: number;
-  /**
-   * Optional callback when data is requested
-   */
   onDataRequested?: () => void;
 }
 
+type TimeFrame = '1H' | '4H' | '1D' | '1W';
+
 /**
- * Price Chart Component
- * 
- * Displays 24h price history with 1-hour candles using a line chart.
- * Shows opening, closing, high, and low prices for each hour.
- * 
- * Requirements: 4.5
+ * Trading View Style Candlestick Chart
+ * Japanese candlestick chart with volume bars
  */
 export function PriceChart({
   data = [],
   loading = false,
   error = null,
-  height = 400,
+  height = 500,
   onDataRequested,
 }: PriceChartProps) {
   const [chartData, setChartData] = useState<PriceDataPoint[]>([]);
+  const [timeFrame, setTimeFrame] = useState<TimeFrame>('1H');
+  const [hoveredCandle, setHoveredCandle] = useState<PriceDataPoint | null>(null);
+  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const volumeCanvasRef = useRef<HTMLCanvasElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const initializedRef = useRef(false);
 
-  // Initialize chart data
+  // Initialize chart data once
   useEffect(() => {
+    if (initializedRef.current) return;
+    initializedRef.current = true;
+
     if (data && data.length > 0) {
       setChartData(data);
     } else {
-      // Generate mock data for 24 hours if no data provided
-      const mockData = generateMockPriceData();
+      const mockData = generateMockPriceData(48);
       setChartData(mockData);
     }
-    onDataRequested?.();
-  }, [data, onDataRequested]);
+  }, [data]);
 
-  // Format time for display
-  const formatTime = (timestamp: number): string => {
-    const date = new Date(timestamp * 1000);
-    return date.toLocaleTimeString('en-US', {
-      hour: '2-digit',
-      minute: '2-digit',
-      hour12: true,
-    });
-  };
+  // Calculate chart metrics
+  const metrics = useMemo(() => {
+    if (chartData.length === 0) return null;
+    
+    const prices = chartData.flatMap(d => [d.high, d.low]);
+    const volumes = chartData.map(d => d.volume || 0);
+    
+    const minPrice = Math.min(...prices);
+    const maxPrice = Math.max(...prices);
+    const maxVolume = Math.max(...volumes);
+    const priceRange = maxPrice - minPrice;
+    const padding = priceRange * 0.1;
+    
+    const current = chartData[chartData.length - 1];
+    const previous = chartData[chartData.length - 2];
+    const change = current && previous ? current.close - previous.close : 0;
+    const changePercent = previous ? (change / previous.close) * 100 : 0;
+    
+    return {
+      minPrice: minPrice - padding,
+      maxPrice: maxPrice + padding,
+      maxVolume,
+      priceRange: priceRange + padding * 2,
+      current,
+      change,
+      changePercent,
+      high24h: Math.max(...chartData.map(d => d.high)),
+      low24h: Math.min(...chartData.map(d => d.low)),
+    };
+  }, [chartData]);
 
-  // Custom tooltip
-  const CustomTooltip = ({ active, payload }: any) => {
-    if (active && payload && payload.length) {
-      const data = payload[0].payload;
-      return (
-        <div className="bg-white dark:bg-gray-800 p-3 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700">
-          <p className="text-sm font-semibold text-gray-900 dark:text-white">
-            {data.time}
-          </p>
-          <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">
-            Open: ${data.open.toFixed(6)}
-          </p>
-          <p className="text-xs text-gray-600 dark:text-gray-400">
-            High: ${data.high.toFixed(6)}
-          </p>
-          <p className="text-xs text-gray-600 dark:text-gray-400">
-            Low: ${data.low.toFixed(6)}
-          </p>
-          <p className="text-xs text-gray-600 dark:text-gray-400">
-            Close: ${data.close.toFixed(6)}
-          </p>
-          {data.volume && (
-            <p className="text-xs text-gray-600 dark:text-gray-400">
-              Volume: ${data.volume.toFixed(2)}
-            </p>
-          )}
-        </div>
-      );
+  // Draw candlestick chart
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    const volumeCanvas = volumeCanvasRef.current;
+    const container = containerRef.current;
+    if (!canvas || !volumeCanvas || !container || !metrics || chartData.length === 0) return;
+
+    const ctx = canvas.getContext('2d');
+    const volumeCtx = volumeCanvas.getContext('2d');
+    if (!ctx || !volumeCtx) return;
+
+    const rect = container.getBoundingClientRect();
+    const dpr = window.devicePixelRatio || 1;
+    const width = rect.width;
+    const mainHeight = height * 0.75;
+    const volumeHeight = height * 0.2;
+
+    // Set canvas dimensions
+    canvas.width = width * dpr;
+    canvas.height = mainHeight * dpr;
+    canvas.style.width = `${width}px`;
+    canvas.style.height = `${mainHeight}px`;
+    ctx.scale(dpr, dpr);
+
+    volumeCanvas.width = width * dpr;
+    volumeCanvas.height = volumeHeight * dpr;
+    volumeCanvas.style.width = `${width}px`;
+    volumeCanvas.style.height = `${volumeHeight}px`;
+    volumeCtx.scale(dpr, dpr);
+
+    // Clear canvases
+    ctx.fillStyle = '#0f172a';
+    ctx.fillRect(0, 0, width, mainHeight);
+    volumeCtx.fillStyle = '#0f172a';
+    volumeCtx.fillRect(0, 0, width, volumeHeight);
+
+    const padding = { left: 60, right: 20, top: 20, bottom: 30 };
+    const chartWidth = width - padding.left - padding.right;
+    const chartHeight = mainHeight - padding.top - padding.bottom;
+    const candleWidth = Math.max(4, (chartWidth / chartData.length) * 0.7);
+    const candleGap = chartWidth / chartData.length;
+
+    // Draw grid lines
+    ctx.strokeStyle = '#1e293b';
+    ctx.lineWidth = 1;
+    
+    // Horizontal grid lines
+    for (let i = 0; i <= 5; i++) {
+      const y = padding.top + (chartHeight / 5) * i;
+      ctx.beginPath();
+      ctx.moveTo(padding.left, y);
+      ctx.lineTo(width - padding.right, y);
+      ctx.stroke();
+      
+      // Price labels
+      const price = metrics.maxPrice - (metrics.priceRange / 5) * i;
+      ctx.fillStyle = '#64748b';
+      ctx.font = '11px monospace';
+      ctx.textAlign = 'right';
+      ctx.fillText(`$${price.toFixed(4)}`, padding.left - 5, y + 4);
     }
-    return null;
-  };
+
+    // Draw candlesticks
+    chartData.forEach((candle, i) => {
+      const x = padding.left + i * candleGap + candleGap / 2;
+      const isGreen = candle.close >= candle.open;
+      
+      // Calculate Y positions
+      const highY = padding.top + ((metrics.maxPrice - candle.high) / metrics.priceRange) * chartHeight;
+      const lowY = padding.top + ((metrics.maxPrice - candle.low) / metrics.priceRange) * chartHeight;
+      const openY = padding.top + ((metrics.maxPrice - candle.open) / metrics.priceRange) * chartHeight;
+      const closeY = padding.top + ((metrics.maxPrice - candle.close) / metrics.priceRange) * chartHeight;
+      
+      // Wick
+      ctx.strokeStyle = isGreen ? '#22c55e' : '#ef4444';
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(x, highY);
+      ctx.lineTo(x, lowY);
+      ctx.stroke();
+      
+      // Body
+      ctx.fillStyle = isGreen ? '#22c55e' : '#ef4444';
+      const bodyTop = Math.min(openY, closeY);
+      const bodyHeight = Math.max(1, Math.abs(closeY - openY));
+      ctx.fillRect(x - candleWidth / 2, bodyTop, candleWidth, bodyHeight);
+      
+      // Volume bar
+      const volumeBarHeight = ((candle.volume || 0) / metrics.maxVolume) * (volumeHeight - 10);
+      volumeCtx.fillStyle = isGreen ? 'rgba(34, 197, 94, 0.5)' : 'rgba(239, 68, 68, 0.5)';
+      volumeCtx.fillRect(
+        x - candleWidth / 2,
+        volumeHeight - volumeBarHeight - 5,
+        candleWidth,
+        volumeBarHeight
+      );
+    });
+
+    // Time labels
+    ctx.fillStyle = '#64748b';
+    ctx.font = '10px monospace';
+    ctx.textAlign = 'center';
+    const labelInterval = Math.ceil(chartData.length / 8);
+    chartData.forEach((candle, i) => {
+      if (i % labelInterval === 0) {
+        const x = padding.left + i * candleGap + candleGap / 2;
+        ctx.fillText(candle.time, x, mainHeight - 10);
+      }
+    });
+
+  }, [chartData, metrics, height]);
+
+  // Handle mouse move for tooltip
+  const handleMouseMove = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
+    const container = containerRef.current;
+    if (!container || !metrics || chartData.length === 0) return;
+
+    const rect = container.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const padding = { left: 60, right: 20 };
+    const chartWidth = rect.width - padding.left - padding.right;
+    const candleGap = chartWidth / chartData.length;
+    
+    const index = Math.floor((x - padding.left) / candleGap);
+    if (index >= 0 && index < chartData.length) {
+      setHoveredCandle(chartData[index]);
+      setMousePos({ x: e.clientX - rect.left, y: e.clientY - rect.top });
+    } else {
+      setHoveredCandle(null);
+    }
+  }, [chartData, metrics]);
 
   if (error) {
     return (
@@ -131,7 +231,7 @@ export function PriceChart({
               Price Chart Unavailable
             </h3>
             <p className="text-sm text-yellow-700 dark:text-yellow-300">
-              {error.message || 'Pool service not available. Using mock data.'}
+              {error.message || 'Pool service not available.'}
             </p>
           </div>
         </div>
@@ -140,164 +240,143 @@ export function PriceChart({
   }
 
   return (
-    <div className="w-full bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6">
+    <div className="w-full bg-slate-900 rounded-lg border border-slate-700 overflow-hidden">
       {/* Header */}
-      <div className="mb-6">
-        <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
-          LUKAS/USDC Price History
-        </h2>
-        <p className="text-sm text-gray-600 dark:text-gray-400">
-          24-hour price chart with 1-hour candles
-        </p>
-      </div>
-
-      {/* Chart */}
-      {loading ? (
-        <div className="flex items-center justify-center" style={{ height }}>
-          <div className="text-center">
-            <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500 mb-2"></div>
-            <p className="text-gray-600 dark:text-gray-400">Loading price data...</p>
+      <div className="flex items-center justify-between p-4 border-b border-slate-700">
+        <div className="flex items-center gap-4">
+          <div>
+            <h2 className="text-lg font-bold text-white">LUKAS/USDC</h2>
+            {metrics && (
+              <div className="flex items-center gap-2 mt-1">
+                <span className="text-2xl font-bold text-white">
+                  ${metrics.current?.close.toFixed(4)}
+                </span>
+                <span className={`text-sm font-medium ${metrics.change >= 0 ? 'text-green-400' : 'text-red-400'}`}>
+                  {metrics.change >= 0 ? '+' : ''}{metrics.change.toFixed(4)} ({metrics.changePercent.toFixed(2)}%)
+                </span>
+              </div>
+            )}
           </div>
         </div>
-      ) : chartData.length > 0 ? (
-        <ResponsiveContainer width="100%" height={height}>
-          <ComposedChart
-            data={chartData}
-            margin={{ top: 5, right: 30, left: 0, bottom: 5 }}
-          >
-            <CartesianGrid
-              strokeDasharray="3 3"
-              stroke="#e5e7eb"
-              className="dark:stroke-gray-700"
-            />
-            <XAxis
-              dataKey="time"
-              stroke="#6b7280"
-              className="dark:stroke-gray-500"
-              tick={{ fontSize: 12 }}
-            />
-            <YAxis
-              stroke="#6b7280"
-              className="dark:stroke-gray-500"
-              tick={{ fontSize: 12 }}
-              label={{
-                value: 'Price (USDC)',
-                angle: -90,
-                position: 'insideLeft',
-              }}
-            />
-            <Tooltip content={<CustomTooltip />} />
-            <Legend
-              wrapperStyle={{
-                paddingTop: '20px',
-              }}
-            />
+        
+        {/* Timeframe selector */}
+        <div className="flex gap-1 bg-slate-800 rounded-lg p-1">
+          {(['1H', '4H', '1D', '1W'] as TimeFrame[]).map((tf) => (
+            <button
+              key={tf}
+              onClick={() => setTimeFrame(tf)}
+              className={`px-3 py-1 text-xs font-medium rounded transition-colors ${
+                timeFrame === tf
+                  ? 'bg-blue-600 text-white'
+                  : 'text-slate-400 hover:text-white hover:bg-slate-700'
+              }`}
+            >
+              {tf}
+            </button>
+          ))}
+        </div>
+      </div>
 
-            {/* Close price line */}
-            <Line
-              type="monotone"
-              dataKey="close"
-              stroke="#3b82f6"
-              strokeWidth={2}
-              dot={false}
-              name="Close Price"
-              isAnimationActive={false}
-            />
-
-            {/* High price line */}
-            <Line
-              type="monotone"
-              dataKey="high"
-              stroke="#10b981"
-              strokeWidth={1}
-              strokeDasharray="5 5"
-              dot={false}
-              name="High"
-              isAnimationActive={false}
-            />
-
-            {/* Low price line */}
-            <Line
-              type="monotone"
-              dataKey="low"
-              stroke="#ef4444"
-              strokeWidth={1}
-              strokeDasharray="5 5"
-              dot={false}
-              name="Low"
-              isAnimationActive={false}
-            />
-          </ComposedChart>
-        </ResponsiveContainer>
-      ) : (
-        <div className="flex items-center justify-center" style={{ height }}>
-          <div className="text-center">
-            <p className="text-gray-600 dark:text-gray-400">
-              No price data available
-            </p>
+      {/* Stats bar */}
+      {metrics && (
+        <div className="flex items-center gap-6 px-4 py-2 bg-slate-800/50 text-xs">
+          <div>
+            <span className="text-slate-400">24h High: </span>
+            <span className="text-green-400 font-medium">${metrics.high24h.toFixed(4)}</span>
+          </div>
+          <div>
+            <span className="text-slate-400">24h Low: </span>
+            <span className="text-red-400 font-medium">${metrics.low24h.toFixed(4)}</span>
+          </div>
+          <div>
+            <span className="text-slate-400">Open: </span>
+            <span className="text-white font-medium">${chartData[0]?.open.toFixed(4)}</span>
           </div>
         </div>
       )}
 
-      {/* Footer Info */}
-      <div className="mt-6 pt-6 border-t border-gray-200 dark:border-gray-700">
-        <div className="grid grid-cols-3 gap-4 text-sm">
-          <div>
-            <p className="text-gray-600 dark:text-gray-400 mb-1">24h High</p>
-            <p className="text-lg font-semibold text-gray-900 dark:text-white">
-              ${chartData.length > 0
-                ? Math.max(...chartData.map((d) => d.high)).toFixed(6)
-                : 'N/A'}
-            </p>
+      {/* Chart area */}
+      <div 
+        ref={containerRef}
+        className="relative"
+        onMouseMove={handleMouseMove}
+        onMouseLeave={() => setHoveredCandle(null)}
+      >
+        {loading ? (
+          <div className="flex items-center justify-center" style={{ height }}>
+            <div className="text-center">
+              <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500 mb-2"></div>
+              <p className="text-slate-400">Loading price data...</p>
+            </div>
           </div>
-          <div>
-            <p className="text-gray-600 dark:text-gray-400 mb-1">24h Low</p>
-            <p className="text-lg font-semibold text-gray-900 dark:text-white">
-              ${chartData.length > 0
-                ? Math.min(...chartData.map((d) => d.low)).toFixed(6)
-                : 'N/A'}
-            </p>
-          </div>
-          <div>
-            <p className="text-gray-600 dark:text-gray-400 mb-1">Current</p>
-            <p className="text-lg font-semibold text-gray-900 dark:text-white">
-              ${chartData.length > 0
-                ? chartData[chartData.length - 1].close.toFixed(6)
-                : 'N/A'}
-            </p>
-          </div>
-        </div>
+        ) : (
+          <>
+            <canvas ref={canvasRef} className="w-full" />
+            <canvas ref={volumeCanvasRef} className="w-full" />
+            
+            {/* Tooltip */}
+            {hoveredCandle && (
+              <div 
+                className="absolute z-10 bg-slate-800 border border-slate-600 rounded-lg p-3 shadow-xl pointer-events-none"
+                style={{ 
+                  left: Math.min(mousePos.x + 10, (containerRef.current?.clientWidth || 0) - 180),
+                  top: mousePos.y + 10 
+                }}
+              >
+                <p className="text-xs text-slate-400 mb-2">{hoveredCandle.time}</p>
+                <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-xs">
+                  <span className="text-slate-400">Open:</span>
+                  <span className="text-white font-mono">${hoveredCandle.open.toFixed(4)}</span>
+                  <span className="text-slate-400">High:</span>
+                  <span className="text-green-400 font-mono">${hoveredCandle.high.toFixed(4)}</span>
+                  <span className="text-slate-400">Low:</span>
+                  <span className="text-red-400 font-mono">${hoveredCandle.low.toFixed(4)}</span>
+                  <span className="text-slate-400">Close:</span>
+                  <span className={`font-mono ${hoveredCandle.close >= hoveredCandle.open ? 'text-green-400' : 'text-red-400'}`}>
+                    ${hoveredCandle.close.toFixed(4)}
+                  </span>
+                  {hoveredCandle.volume && (
+                    <>
+                      <span className="text-slate-400">Volume:</span>
+                      <span className="text-white font-mono">${hoveredCandle.volume.toFixed(0)}</span>
+                    </>
+                  )}
+                </div>
+              </div>
+            )}
+          </>
+        )}
       </div>
     </div>
   );
 }
 
 /**
- * Generate mock price data for 24 hours with 1-hour candles
- * This is used when no real data is provided
+ * Generate mock price data
  */
-function generateMockPriceData(): PriceDataPoint[] {
+function generateMockPriceData(hours: number = 48): PriceDataPoint[] {
   const data: PriceDataPoint[] = [];
   const now = Math.floor(Date.now() / 1000);
-  let basePrice = 1.024; // Starting price
+  let basePrice = 1.0 + Math.random() * 0.05;
 
-  for (let i = 23; i >= 0; i--) {
-    const timestamp = now - i * 3600; // 1 hour intervals
+  for (let i = hours - 1; i >= 0; i--) {
+    const timestamp = now - i * 3600;
     const date = new Date(timestamp * 1000);
     const timeStr = date.toLocaleTimeString('en-US', {
       hour: '2-digit',
       minute: '2-digit',
-      hour12: true,
+      hour12: false,
     });
 
-    // Generate realistic price movements
-    const volatility = 0.002; // 0.2% volatility
-    const randomChange = (Math.random() - 0.5) * volatility;
+    const volatility = 0.003;
+    const trend = Math.sin(i / 10) * 0.001;
+    const randomChange = (Math.random() - 0.5) * volatility + trend;
+    
     const open = basePrice;
     const close = basePrice + randomChange;
-    const high = Math.max(open, close) + Math.random() * 0.001;
-    const low = Math.min(open, close) - Math.random() * 0.001;
-    const volume = Math.random() * 10000 + 1000;
+    const high = Math.max(open, close) + Math.random() * 0.002;
+    const low = Math.min(open, close) - Math.random() * 0.002;
+    const volume = Math.random() * 50000 + 10000;
 
     data.push({
       timestamp,
