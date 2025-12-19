@@ -8,6 +8,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+
+### Changed
+
+### Fixed
+
+## [0.2.29] - 2025-12-19
+
+### Added
 - Unified Pool Monitoring Dashboard with consolidated metrics, price chart, and transactions
 - Responsive transaction history integrated into dashboard tabs
 
@@ -22,6 +30,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed responsive design issues on mobile and tablet screens
 - Resolved duplicate metric displays across different views
 - Improved spacing and padding consistency across all screen sizes
+
+
+
+
 
 ## [0.2.29] - 2025-12-19
 
