@@ -13,6 +13,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+## [0.2.32] - 2025-12-19
+
+### Added
+
+### Changed
+- Reduced video modal size on mobile devices for better fit
+- Improved mobile video modal max-height constraints
+
+### Fixed
+- Fixed video modal overflow on mobile by reducing viewport width usage
+- Improved scroll behavior prevention with overscroll-behavior
+- Better responsive sizing across all breakpoints
+
 ## [0.2.31] - 2025-12-19
 
 ### Added

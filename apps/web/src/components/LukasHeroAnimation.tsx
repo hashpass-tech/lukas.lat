@@ -420,7 +420,7 @@ export const LukasHeroAnimation = () => {
 
             {/* Video Modal */}
             <Dialog open={videoModalOpen} onOpenChange={setVideoModalOpen}>
-                <DialogContent className="!max-w-none !w-[calc(100vw-2rem)] sm:!w-[90vw] md:!w-[80vw] lg:!w-[70vw] !max-h-[calc(100vh-2rem)] sm:!max-h-[85vh] bg-background border-border rounded-lg sm:rounded-2xl !p-0 !overflow-hidden !gap-0">
+                <DialogContent className="!max-w-none !w-[calc(100vw-1rem)] sm:!w-[85vw] md:!w-[75vw] lg:!w-[65vw] !max-h-[calc(100vh-4rem)] sm:!max-h-[80vh] md:!max-h-[85vh] bg-background border-border rounded-lg sm:rounded-2xl !p-0 !overflow-hidden !gap-0">
                     <div className="relative w-full aspect-video bg-black">
                         <iframe
                             src={`${getVideoUrl()}?autoplay=1&rel=0&modestbranding=1`}
@@ -438,39 +438,45 @@ export const LukasHeroAnimation = () => {
                 /* Video Modal Overflow Prevention */
                 [data-dialog-overlay] {
                     overflow: hidden !important;
+                    overscroll-behavior: none !important;
                 }
 
                 [data-dialog-content] {
-                    max-width: calc(100vw - 2rem) !important;
-                    max-height: calc(100vh - 2rem) !important;
+                    max-width: calc(100vw - 1rem) !important;
+                    max-height: calc(100vh - 4rem) !important;
                     overflow: hidden !important;
-                    width: calc(100vw - 2rem) !important;
+                    width: calc(100vw - 1rem) !important;
                     height: auto !important;
                     padding: 0 !important;
                     gap: 0 !important;
+                    margin: 0 !important;
+                    border-radius: 0.5rem !important;
                 }
 
                 @media (min-width: 640px) {
                     [data-dialog-content] {
-                        max-width: 90vw !important;
-                        max-height: 85vh !important;
-                        width: 90vw !important;
+                        max-width: 85vw !important;
+                        max-height: 80vh !important;
+                        width: 85vw !important;
+                        border-radius: 0.75rem !important;
                     }
                 }
 
                 @media (min-width: 768px) {
                     [data-dialog-content] {
-                        max-width: 80vw !important;
+                        max-width: 75vw !important;
                         max-height: 85vh !important;
-                        width: 80vw !important;
+                        width: 75vw !important;
+                        border-radius: 1rem !important;
                     }
                 }
 
                 @media (min-width: 1024px) {
                     [data-dialog-content] {
-                        max-width: 70vw !important;
-                        max-height: 90vh !important;
-                        width: 70vw !important;
+                        max-width: 65vw !important;
+                        max-height: 85vh !important;
+                        width: 65vw !important;
+                        border-radius: 1rem !important;
                     }
                 }
 
