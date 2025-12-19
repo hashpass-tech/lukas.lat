@@ -195,9 +195,8 @@ forge verify-contract \
 
 Stay informed about contract deployments and updates:
 
-- **Twitter:** [@lukaslatam](https://twitter.com/lukaslatam)
-- **Discord:** [Join our community](https://discord.gg/lukas)
-- **GitHub:** [lukas-protocol/lukas](https://github.com/lukas-protocol/lukas)
+- **Twitter:** [@lukas_lat](https://twitter.com/lukas_lat)
+- **GitHub:** [hashpass-tech/lukas-protocol](https://github.com/hashpass-tech/lukas-protocol)
 
 ## Deployment Configuration
 
@@ -209,14 +208,28 @@ The canonical source of deployment addresses is maintained in:
 ## Emergency Contacts
 
 In case of security issues or concerns:
-- **Email:** security@lukas.money
-- **GitHub Security:** [Report a vulnerability](https://github.com/lukas-protocol/lukas/security/advisories/new)
+- **Email:** security@lukas.lat
+- **GitHub Security:** [Report a vulnerability](https://github.com/hashpass-tech/lukas-protocol/security/advisories/new)
 
 ## Changelog
 
+### 2025-12-19
+- SDK v0.2.22: Fixed ReactCurrentDispatcher error in Next.js/SSR
+- SDK v0.2.22: Fixed hydration mismatch with lazy context initialization
+- Web App v0.2.26: Fixed mobile sidebar theming issues
+- Web App v0.2.26: Improved pool page responsive design
+- Web App v0.2.26: Fixed OrbitingSkills hydration error
+- Documentation updated with latest version references
+
+### 2025-12-18
+- SDK v0.2.20-v0.2.21: React provider improvements
+- Web App: PriceChart rewritten with canvas-based Japanese candlestick chart
+- Web App: Fixed infinite loop in MonitoringDashboard
+
 ### 2025-12-17
-- Initial testnet deployment of LukasToken
-- Initial testnet deployment of StabilizerVault
+- Initial testnet deployment of LukasToken to Polygon Amoy
+- Initial testnet deployment of StabilizerVault to Polygon Amoy
+- SDK v0.2.18: Initial stable release with React integration
 - Created deployment tracking system
 
 ---
