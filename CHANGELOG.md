@@ -13,6 +13,31 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+## [0.2.34] - 2025-12-19
+
+### Added
+- Network-specific color coding for UI components (green for Ethereum, purple for Polygon Amoy, blue for Sepolia)
+- Independent Live indicator that shows green when contracts are deployed, grey when not
+- Network icons (Ξ for Ethereum, ◆ for Polygon) in wallet connect button and swap widget
+- Comprehensive network color system with tailwind class support
+
+### Changed
+- Updated SwapWidget to display network-aware UI with proper Live/Not Live status
+- Improved contract detection logic with better logging for debugging
+- Enhanced WalletConnectButton with network-specific background colors
+- Updated Web3SettingsDialog to show network icons in selection buttons
+- Refined LukasHeroAnimation coin colors to match selected network
+- Updated WalletHeader DitheringShader with network-specific colors
+
+### Fixed
+- Fixed hydration mismatch in Footer component with mounted state
+- Corrected network color application across all components
+- Improved contract address validation in SDK provider
+
+
+
+
+
 ## [0.2.33] - 2025-12-19
 
 ### Added
