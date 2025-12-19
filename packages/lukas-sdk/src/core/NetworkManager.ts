@@ -25,15 +25,15 @@ const SUPPORTED_NETWORKS: Record<number, NetworkConfig & { contracts: ContractAd
   11155111: {
     chainId: 11155111,
     name: 'Sepolia Testnet',
-    rpcUrl: 'https://sepolia.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161',
+    rpcUrl: 'https://rpc.sepolia.org',
     blockExplorer: 'https://sepolia.etherscan.io',
     contracts: {
-      lukasToken: '0x0000000000000000000000000000000000000000', // Placeholder
-      stabilizerVault: '0x0000000000000000000000000000000000000000', // Placeholder
-      latAmBasketIndex: '0x0000000000000000000000000000000000000000', // Placeholder
-      lukasHook: '0x0000000000000000000000000000000000000000', // Placeholder
-      usdc: '0x0000000000000000000000000000000000000000', // Test USDC
-      poolManager: '0x0000000000000000000000000000000000000000', // Placeholder
+      lukasToken: '0x63524b53983960231b7b86CDEdDf050Ceb9263Cb',
+      stabilizerVault: '0x64540D50CD37BC94C2ED77766Cc86C4D6C3ec9cE',
+      latAmBasketIndex: '0x46D240633d70AB16654e0053D05B24Dfb3284A71',
+      lukasHook: '0xB6EAA80E5446895a6d7136e90c97821550e51805',
+      usdc: '0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238', // Circle's official Sepolia USDC
+      poolManager: '0x8C4BcBE6b9eF47855f97E675296FA3F6fafa5F1A', // Uniswap V4 PoolManager
     },
   },
   // Base Mainnet
@@ -564,7 +564,7 @@ export class NetworkManager {
    * Check if a network is a testnet
    */
   static isTestnet(chainId: number): boolean {
-    const testnetChainIds = [11155111, 84532, 80001, 421614]; // Sepolia, Base Sepolia, Mumbai, Arbitrum Sepolia
+    const testnetChainIds = [11155111, 84532, 80001, 421614, 80002]; // Sepolia, Base Sepolia, Mumbai, Arbitrum Sepolia, Polygon Amoy
     return testnetChainIds.includes(chainId);
   }
 

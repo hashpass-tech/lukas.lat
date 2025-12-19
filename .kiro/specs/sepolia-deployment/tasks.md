@@ -1,48 +1,48 @@
 # Implementation Plan
 
 - [ ] 1. Fix StabilizerVault test failures
-  - [ ] 1.1 Update test setUp to warp time forward after deployment
+  - [x] 1.1 Update test setUp to warp time forward after deployment
     - Add `vm.warp(block.timestamp + 6 minutes)` after vault deployment in setUp()
     - This ensures cooldown is elapsed for first stabilization call
     - _Requirements: 1.1, 1.2_
-  - [ ] 1.2 Fix test_CooldownEnforced test logic
+  - [x] 1.2 Fix test_CooldownEnforced test logic
     - Ensure first mint happens after time warp
     - Test second mint fails immediately after first
     - Test third mint succeeds after cooldown
     - _Requirements: 1.4_
-  - [ ] 1.3 Fix test_MaxMintEnforced to handle cooldown
+  - [x] 1.3 Fix test_MaxMintEnforced to handle cooldown
     - Ensure cooldown is elapsed before testing max mint limit
     - _Requirements: 1.3_
-  - [ ] 1.4 Fix test_ShouldStabilize to account for cooldown in return value
+  - [x] 1.4 Fix test_ShouldStabilize to account for cooldown in return value
     - The shouldStabilize function checks cooldown, ensure test accounts for this
     - _Requirements: 1.3_
-  - [ ]* 1.5 Write property test for cooldown enforcement
+  - [x] 1.5 Write property test for cooldown enforcement
     - **Property 1: Cooldown Enforcement After Action**
     - **Validates: Requirements 1.4**
-  - [ ] 1.6 Run all tests and verify 35/35 pass
+  - [x] 1.6 Run all tests and verify 35/35 pass
     - Execute `forge test --root packages/contracts -v`
     - _Requirements: 1.3_
 
-- [ ] 2. Checkpoint - Ensure all tests pass
+- [x] 2. Checkpoint - Ensure all tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 3. Configure Sepolia network
-  - [ ] 3.1 Update foundry.toml with Sepolia configuration
+- [x] 3. Configure Sepolia network
+  - [x] 3.1 Update foundry.toml with Sepolia configuration
     - Add Sepolia RPC endpoint under [rpc_endpoints]
     - Add Sepolia Etherscan API key under [etherscan]
     - _Requirements: 2.1_
-  - [ ] 3.2 Update .env with Sepolia variables
+  - [x] 3.2 Update .env with Sepolia variables
     - Add SEPOLIA_RPC_URL variable
     - Add USDC_SEPOLIA address (0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238)
     - Add UNISWAP_V4_POOL_MANAGER_SEPOLIA address
     - _Requirements: 2.2, 2.4_
-  - [ ] 3.3 Update deployments.json with Sepolia network entry
+  - [x] 3.3 Update deployments.json with Sepolia network entry
     - Add chainId 11155111 configuration
     - Include external contract addresses (USDC, PoolManager)
     - _Requirements: 2.3_
 
-- [ ] 4. Create Sepolia deployment scripts
-  - [ ] 4.1 Create DeploySepoliaAll.s.sol deployment script
+- [x] 4. Create Sepolia deployment scripts
+  - [x] 4.1 Create DeploySepoliaAll.s.sol deployment script
     - Deploy LukasToken with 1M initial supply
     - Deploy mock price feed adapters
     - Deploy LatAmBasketIndex with mock feeds
@@ -50,83 +50,83 @@
     - Deploy LukasHookSimplified
     - Configure permissions (set minter, authorize hook)
     - _Requirements: 3.1, 3.2, 3.3, 3.4_
-  - [ ] 4.2 Create VerifySepoliaContracts.s.sol script
+  - [x] 4.2 Create VerifySepoliaContracts.s.sol script
     - Script to verify all contracts on Etherscan
     - _Requirements: 4.1, 4.2, 4.3, 4.4_
-  - [ ]* 4.3 Write property test for hook permissions
+  - [x] 4.3 Write property test for hook permissions
     - **Property 3: Hook Permission Consistency**
     - **Validates: Requirements 6.1**
 
-- [ ] 5. Deploy contracts to Sepolia
-  - [ ] 5.1 Deploy LukasToken to Sepolia
+- [x] 5. Deploy contracts to Sepolia
+  - [x] 5.1 Deploy LukasToken to Sepolia
     - Run deployment script with --broadcast
     - Record deployed address
     - _Requirements: 3.1_
-  - [ ] 5.2 Deploy LatAmBasketIndex with mock feeds
+  - [x] 5.2 Deploy LatAmBasketIndex with mock feeds
     - Deploy price feed adapters first
     - Configure and finalize basket index
     - _Requirements: 3.2_
-  - [ ] 5.3 Deploy StabilizerVault
+  - [x] 5.3 Deploy StabilizerVault
     - Link to LukasToken and LatAmBasketIndex
     - Set LukasToken minter to vault
     - _Requirements: 3.3_
-  - [ ] 5.4 Deploy LukasHookSimplified
+  - [x] 5.4 Deploy LukasHookSimplified
     - Configure with basket index and vault addresses
     - _Requirements: 3.4_
-  - [ ] 5.5 Update deployments.json with all Sepolia addresses
+  - [x] 5.5 Update deployments.json with all Sepolia addresses
     - Record all deployed contract addresses
     - Update timestamps and deployer info
     - _Requirements: 3.5_
 
-- [ ] 6. Verify contracts on Etherscan
-  - [ ] 6.1 Verify LukasToken on Sepolia Etherscan
+- [x] 6. Verify contracts on Etherscan
+  - [x] 6.1 Verify LukasToken on Sepolia Etherscan
     - Use forge verify-contract with constructor args
     - _Requirements: 4.1_
-  - [ ] 6.2 Verify LatAmBasketIndex on Sepolia Etherscan
+  - [x] 6.2 Verify LatAmBasketIndex on Sepolia Etherscan
     - _Requirements: 4.2_
-  - [ ] 6.3 Verify StabilizerVault on Sepolia Etherscan
+  - [x] 6.3 Verify StabilizerVault on Sepolia Etherscan
     - _Requirements: 4.3_
-  - [ ] 6.4 Verify LukasHookSimplified on Sepolia Etherscan
+  - [x] 6.4 Verify LukasHookSimplified on Sepolia Etherscan
     - _Requirements: 4.4_
-  - [ ] 6.5 Update deployments.json verified status
+  - [x] 6.5 Update deployments.json verified status
     - Set verified: true for each verified contract
     - _Requirements: 4.5_
 
-- [ ] 7. Checkpoint - Verify deployment success
+- [x] 7. Checkpoint - Verify deployment success
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 8. Create LUKAS/USDC pool on Uniswap V4
-  - [ ] 8.1 Create pool initialization script
+- [x] 8. Create LUKAS/USDC pool on Uniswap V4
+  - [x] 8.1 Create pool initialization script
     - Calculate sqrtPriceX96 for initial price (~$0.10)
     - Configure fee tier (3000) and tick spacing (60)
     - _Requirements: 5.1, 5.2_
-  - [ ] 8.2 Initialize pool on Uniswap V4 PoolManager
+  - [x] 8.2 Initialize pool on Uniswap V4 PoolManager
     - Call initialize with PoolKey and sqrtPriceX96
     - _Requirements: 5.1_
-  - [ ] 8.3 Provide initial liquidity
+  - [x] 8.3 Provide initial liquidity
     - Add at least 1000 LUKAS and equivalent USDC
     - Use full range liquidity position
     - _Requirements: 5.3_
-  - [ ] 8.4 Update deployments.json with pool configuration
+  - [x] 8.4 Update deployments.json with pool configuration
     - Record pool address, poolId, and configuration
     - _Requirements: 5.4_
-  - [ ]* 8.5 Write property test for pool token validation
+  - [x] 8.5 Write property test for pool token validation
     - **Property 4: Pool Token Validation**
     - **Validates: Requirements 6.2**
 
-- [ ] 9. Test hook integration
-  - [ ] 9.1 Test peg deviation detection
+- [x] 9. Test hook integration
+  - [x] 9.1 Test peg deviation detection
     - Simulate swap and verify PegDeviation event
     - _Requirements: 6.3, 6.4_
-  - [ ] 9.2 Test stabilization trigger
+  - [x] 9.2 Test stabilization trigger
     - Enable autoStabilize and verify vault actions
     - _Requirements: 6.5_
-  - [ ]* 9.3 Write property test for price deviation calculation
+  - [x] 9.3 Write property test for price deviation calculation
     - **Property 5: Price Deviation Calculation**
     - **Validates: Requirements 6.3, 6.4**
-  - [ ]* 9.4 Write property test for stabilization threshold
+  - [x] 9.4 Write property test for stabilization threshold
     - **Property 6: Stabilization Trigger Threshold**
     - **Validates: Requirements 6.5**
 
-- [ ] 10. Final Checkpoint - Complete deployment verification
+- [x] 10. Final Checkpoint - Complete deployment verification
   - Ensure all tests pass, ask the user if questions arise.

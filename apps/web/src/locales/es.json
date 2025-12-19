@@ -50,5 +50,8 @@
   "download.manifesto": "Manifiesto",
   "download.or_share": "o compartir",
   "brand.name": "$LUKAS",
-  "brand.name.full": "$(LKS) LUKAS"
+  "brand.name.full": "$(LKS) LUKAS",
+  "footer.docs": "Docs",
+  "footer.privacy": "Privacidad",
+  "footer.terms": "Términos"
 }

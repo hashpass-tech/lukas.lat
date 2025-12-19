@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { Trans } from '@/components/Trans';
-import { Dialog, DialogContent } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
 import { Play } from 'lucide-react';
 import { useTranslation } from '@/lib/translator';
 import { useSidebar } from '@/contexts/SidebarContext';
@@ -351,9 +351,18 @@ export const LukasHeroAnimation = () => {
                                             <Play className="w-8 h-8 md:w-10 md:h-10 text-white relative z-20 transition-transform duration-300 group-hover:scale-110 drop-shadow-lg" />
                                         </button>
                                     ) : (
-                                        <span className="text-white font-black text-lg md:text-2xl tracking-tight">
-                                            $LKS
-                                        </span>
+                                        <div className="relative w-full h-full flex items-center justify-center group cursor-pointer">
+                                            <span className="text-white font-black text-lg md:text-2xl tracking-tight">
+                                                $LKS
+                                            </span>
+                                            {/* Subtle play layer indicator */}
+                                            <div className="absolute inset-0 rounded-full bg-gradient-to-br from-emerald-500/0 via-transparent to-emerald-500/0 group-hover:from-emerald-500/10 group-hover:to-emerald-500/5 transition-all duration-300" />
+                                            <div className="absolute inset-0 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                                                <div className="w-6 h-6 md:w-7 md:h-7 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center">
+                                                    <Play className="w-3 h-3 md:w-4 md:h-4 text-white/60" />
+                                                </div>
+                                            </div>
+                                        </div>
                                     )}
                                 </div>
 
@@ -420,8 +429,9 @@ export const LukasHeroAnimation = () => {
 
             {/* Video Modal */}
             <Dialog open={videoModalOpen} onOpenChange={setVideoModalOpen}>
-                <DialogContent className="!max-w-none !w-[calc(100vw-1rem)] sm:!w-[85vw] md:!w-[75vw] lg:!w-[65vw] !max-h-[calc(100vh-4rem)] sm:!max-h-[80vh] md:!max-h-[85vh] bg-background border-border rounded-lg sm:rounded-2xl !p-0 !overflow-hidden !gap-0">
-                    <div className="relative w-full aspect-video bg-black">
+                <DialogContent className="!max-w-none !w-[calc(100vw-1rem)] sm:!w-[90vw] md:!w-[80vw] lg:!w-[70vw] xl:!w-[60vw] !max-h-[calc(100vh-2rem)] sm:!max-h-[calc(100vh-4rem)] md:!max-h-[85vh] bg-background border-border rounded-lg sm:rounded-2xl !p-0 !overflow-hidden !gap-0 fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
+                    <DialogTitle className="sr-only">LUKAS Protocol Video</DialogTitle>
+                    <div className="relative w-full aspect-video bg-black overflow-hidden">
                         <iframe
                             src={`${getVideoUrl()}?autoplay=1&rel=0&modestbranding=1`}
                             title="LUKAS Video"
@@ -435,15 +445,27 @@ export const LukasHeroAnimation = () => {
 
             {/* Global styles for animations (ideally in a global CSS file) */}
             <style jsx global>{`
+                /* Root overflow prevention */
+                html, body {
+                    overflow-x: hidden !important;
+                    overscroll-behavior: none !important;
+                }
+
                 /* Video Modal Overflow Prevention */
                 [data-dialog-overlay] {
                     overflow: hidden !important;
                     overscroll-behavior: none !important;
+                    position: fixed !important;
+                    inset: 0 !important;
                 }
 
                 [data-dialog-content] {
+                    position: fixed !important;
+                    left: 50% !important;
+                    top: 50% !important;
+                    transform: translate(-50%, -50%) !important;
                     max-width: calc(100vw - 1rem) !important;
-                    max-height: calc(100vh - 4rem) !important;
+                    max-height: calc(100vh - 2rem) !important;
                     overflow: hidden !important;
                     width: calc(100vw - 1rem) !important;
                     height: auto !important;
@@ -451,24 +473,42 @@ export const LukasHeroAnimation = () => {
                     gap: 0 !important;
                     margin: 0 !important;
                     border-radius: 0.5rem !important;
+                    z-index: 50 !important;
                 }
 
                 @media (min-width: 640px) {
                     [data-dialog-content] {
-                        max-width: 85vw !important;
-                        max-height: 80vh !important;
-                        width: 85vw !important;
+                        max-width: 90vw !important;
+                        max-height: calc(100vh - 4rem) !important;
+                        width: 90vw !important;
                         border-radius: 0.75rem !important;
                     }
                 }
 
                 @media (min-width: 768px) {
                     [data-dialog-content] {
-                        max-width: 75vw !important;
+                        max-width: 80vw !important;
                         max-height: 85vh !important;
-                        width: 75vw !important;
+                        width: 80vw !important;
                         border-radius: 1rem !important;
                     }
+                }
+
+                @media (min-width: 1024px) {
+                    [data-dialog-content] {
+                        max-width: 70vw !important;
+                        max-height: 85vh !important;
+                        width: 70vw !important;
+                    }
+                }
+
+                @media (min-width: 1280px) {
+                    [data-dialog-content] {
+                        max-width: 60vw !important;
+                        max-height: 85vh !important;
+                        width: 60vw !important;
+                    }
+                }
                 }
 
                 @media (min-width: 1024px) {

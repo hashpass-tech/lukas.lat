@@ -6,7 +6,7 @@ sidebar_position: 1
 
 Welcome to **$LUKAS** - The Gravity Center of LatAm Pesos.
 
-**Current Version:** v0.2.26 | **SDK Version:** v0.2.22
+**Current Version:** v0.2.32 | **SDK Version:** v0.2.22
 
 ## What is $LUKAS?
 
@@ -30,9 +30,20 @@ $LUKAS provides a stable, regional alternative for Latin American users, combini
 - 📦 **SDK:** [@lukas-protocol/sdk](https://www.npmjs.com/package/@lukas-protocol/sdk)
 - 💻 **GitHub:** [hashpass-tech/lukas-protocol](https://github.com/hashpass-tech/lukas-protocol)
 
-## Get Started
+## Documentation
 
+### Protocol
+- [Protocol Overview](./protocol/overview) - System architecture and design
+- [Tokenomics](./protocol/tokenomics) - Token economics and basket composition
+- [Architecture](./protocol/architecture) - Technical deep-dive with diagrams
+- [Roadmap](./protocol/roadmap) - Development timeline
+- [Integrations](./protocol/integrations) - Fhenix, EigenLayer, and more
+
+### Getting Started
 - [What is $LUKAS?](./getting-started/what-is-lukas)
 - [How It Works](./getting-started/how-it-works)
+
+### Technical
 - [Smart Contracts](./contracts/overview)
+- [Contract Deployments](./contracts/deployments)
 - [SDK Installation](./sdk/installation)

@@ -7,7 +7,7 @@ import {ILatAmBasketIndex} from "../src/interfaces/ILatAmBasketIndex.sol";
 
 contract TestLukasHookSimplified is Script {
     // Deployed addresses
-    address constant LUKAS_HOOK = 0x0; // Will be set after deployment
+    address constant LUKAS_HOOK = address(0); // Will be set after deployment
     address constant BASKET_INDEX = 0x1Dccf1fB82946a293E03036e85edc2139cba1541;
 
     function run() public {

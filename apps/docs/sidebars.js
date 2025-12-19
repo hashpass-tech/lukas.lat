@@ -17,8 +17,14 @@ const sidebars = {
     'intro',
     {
       type: 'category',
-      label: 'Legal',
-      items: ['legal/terms', 'legal/privacy'],
+      label: 'Protocol',
+      items: [
+        'protocol/overview',
+        'protocol/tokenomics',
+        'protocol/architecture',
+        'protocol/roadmap',
+        'protocol/integrations',
+      ],
     },
     {
       type: 'category',
@@ -42,6 +48,11 @@ const sidebars = {
         'sdk/migration-guide',
         'sdk/troubleshooting',
       ],
+    },
+    {
+      type: 'category',
+      label: 'Legal',
+      items: ['legal/terms', 'legal/privacy'],
     },
   ],
 };

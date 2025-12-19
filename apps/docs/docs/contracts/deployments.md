@@ -2,16 +2,105 @@
 
 This page tracks all deployed Lukas Protocol smart contracts across different networks.
 
-## Polygon Amoy Testnet (Chain ID: 80002)
+## Sepolia Testnet (Chain ID: 11155111)
+
+### Status
+✅ **Deployed** - December 19, 2025
 
 ### Core Contracts
 
 #### LukasToken
-- **Address:** `0xaee0f26589a21ba4547765f630075262f330f1cb`
-- **Deployed:** December 17, 2025
+- **Address:** `0x63524b53983960231b7b86CDEdDf050Ceb9263Cb`
+- **Deployed:** December 19, 2025
+- **Version:** 1.0.0
+- **Initial Supply:** 1,000,000 LUKAS
+- **Verified:** ❌ Pending
+- **Explorer:** [View on Sepolia Etherscan](https://sepolia.etherscan.io/address/0x63524b53983960231b7b86CDEdDf050Ceb9263Cb)
+
+#### LatAmBasketIndex
+- **Address:** `0x46D240633d70AB16654e0053D05B24Dfb3284A71`
+- **Deployed:** December 19, 2025
+- **Version:** 1.1.0
+- **Verified:** ❌ Pending
+- **Explorer:** [View on Sepolia Etherscan](https://sepolia.etherscan.io/address/0x46D240633d70AB16654e0053D05B24Dfb3284A71)
+- **Note:** Includes mock price feeds for testing
+
+#### StabilizerVault
+- **Address:** `0x64540D50CD37BC94C2ED77766Cc86C4D6C3ec9cE`
+- **Deployed:** December 19, 2025
 - **Version:** 1.0.0
 - **Verified:** ❌ Pending
-- **Explorer:** [View on Amoy PolygonScan](https://amoy.polygonscan.com/address/0xaee0f26589a21ba4547765f630075262f330f1cb)
+- **Explorer:** [View on Sepolia Etherscan](https://sepolia.etherscan.io/address/0x64540D50CD37BC94C2ED77766Cc86C4D6C3ec9cE)
+
+#### LukasHookSimplified
+- **Address:** `0xB6EAA80E5446895a6d7136e90c97821550e51805`
+- **Deployed:** December 19, 2025
+- **Version:** 1.0.0-simplified
+- **Verified:** ❌ Pending
+- **Explorer:** [View on Sepolia Etherscan](https://sepolia.etherscan.io/address/0xB6EAA80E5446895a6d7136e90c97821550e51805)
+- **Note:** Simplified version for testing without full Uniswap V4 hook validation
+
+### External Contracts
+
+#### USDC (Circle's Official Sepolia USDC)
+- **Address:** `0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238`
+- **Type:** External
+- **Verified:** ✅ Yes
+- **Explorer:** [View on Sepolia Etherscan](https://sepolia.etherscan.io/address/0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238)
+
+#### Uniswap V4 PoolManager
+- **Address:** `0x8C4BcBE6b9eF47855f97E675296FA3F6fafa5F1A`
+- **Type:** External
+- **Verified:** ✅ Yes
+- **Explorer:** [View on Sepolia Etherscan](https://sepolia.etherscan.io/address/0x8C4BcBE6b9eF47855f97E675296FA3F6fafa5F1A)
+
+### Network Information
+- **RPC URL:** `https://rpc.sepolia.org`
+- **Chain ID:** 11155111
+- **Block Explorer:** https://sepolia.etherscan.io
+- **Faucet:** https://sepoliafaucet.com
+
+### Using Sepolia Contracts
+
+```typescript
+import { LukasSDK } from '@lukas-protocol/sdk';
+
+const sdk = new LukasSDK({
+  network: {
+    chainId: 11155111,
+    name: 'sepolia',
+  },
+});
+
+// Contracts are automatically loaded from SDK
+const contracts = sdk.getContracts();
+console.log('LukasToken:', contracts.lukasToken);
+```
+
+---
+
+## Polygon Amoy Testnet (Chain ID: 80002)
+
+### Status
+✅ **Deployed** - December 18, 2025
+
+### Core Contracts
+
+#### LukasToken
+- **Address:** `0x63524b53983960231b7b86CDEdDf050Ceb9263Cb`
+- **Deployed:** December 17, 2025
+- **Version:** 1.0.0
+- **Initial Supply:** 1,000,000 LUKAS
+- **Verified:** ❌ Pending
+- **Explorer:** [View on Amoy PolygonScan](https://amoy.polygonscan.com/address/0x63524b53983960231b7b86CDEdDf050Ceb9263Cb)
+
+#### LatAmBasketIndex
+- **Address:** `0x1Dccf1fB82946a293E03036e85edc2139cba1541`
+- **Deployed:** December 18, 2025
+- **Version:** 1.1.0
+- **Verified:** ✅ Yes
+- **Explorer:** [View on Amoy PolygonScan](https://amoy.polygonscan.com/address/0x1Dccf1fB82946a293E03036e85edc2139cba1541)
+- **Note:** Complete interface with `getLukasFairPriceInUSDC()` and `getBasketComposition()`
 
 #### StabilizerVault
 - **Address:** `0x5c5bc89db3f3e3e3e3e3e3e3e3e3e3e3e3e3e3e3`
@@ -20,15 +109,24 @@ This page tracks all deployed Lukas Protocol smart contracts across different ne
 - **Verified:** ❌ Pending
 - **Explorer:** [View on Amoy PolygonScan](https://amoy.polygonscan.com/address/0x5c5bc89db3f3e3e3e3e3e3e3e3e3e3e3e3e3e3e3)
 
-#### LatAmBasketIndex
-- **Address:** TBD
-- **Status:** Not yet deployed
-- **Version:** 1.0.0
+#### LukasHook (Simplified)
+- **Address:** `0x5b73C5498c1E3b4dbA84de0F1833c4a029d90519`
+- **Deployed:** December 18, 2025
+- **Version:** 1.0.0-simplified
+- **Verified:** ❌ Pending
+- **Explorer:** [View on Amoy PolygonScan](https://amoy.polygonscan.com/address/0x5b73C5498c1E3b4dbA84de0F1833c4a029d90519)
+- **Note:** Simplified version for testing peg stabilization
 
-#### LukasHook
-- **Address:** TBD
-- **Status:** Not yet deployed
+#### LukasUSDCPool
+- **Address:** `0x48411eFDE2D053B2Fa9456d91dad8a9BE7a1574E`
+- **Deployed:** December 18, 2025
 - **Version:** 1.0.0
+- **Explorer:** [View on Amoy PolygonScan](https://amoy.polygonscan.com/address/0x48411eFDE2D053B2Fa9456d91dad8a9BE7a1574E)
+- **Configuration:**
+  - Token0: LUKAS (`0x63524b53983960231b7b86CDEdDf050Ceb9263Cb`)
+  - Token1: USDC (`0x41e94eb019c0762f9bfcf9fb1e58725bfb0e7582`)
+  - Fee: 0.3%
+  - Initial Price: 0.0976 USDC per LUKAS
 
 ### External Contracts
 
@@ -214,12 +312,20 @@ In case of security issues or concerns:
 ## Changelog
 
 ### 2025-12-19
+- **Sepolia Deployment Preparation:**
+  - Created DeploySepoliaAll.s.sol deployment script
+  - Created CreateSepoliaPool.s.sol for Uniswap V4 pool creation
+  - Created VerifySepoliaContracts.s.sol for Etherscan verification
+  - Added Sepolia network configuration to SDK
+  - Fixed 6 failing StabilizerVault tests (cooldown logic)
+  - Added 10 new property-based tests for hook integration
+  - All 46 tests passing
 - SDK v0.2.22: Fixed ReactCurrentDispatcher error in Next.js/SSR
 - SDK v0.2.22: Fixed hydration mismatch with lazy context initialization
 - Web App v0.2.26: Fixed mobile sidebar theming issues
 - Web App v0.2.26: Improved pool page responsive design
 - Web App v0.2.26: Fixed OrbitingSkills hydration error
-- Documentation updated with latest version references
+- Documentation updated with Sepolia testnet information
 
 ### 2025-12-18
 - SDK v0.2.20-v0.2.21: React provider improvements

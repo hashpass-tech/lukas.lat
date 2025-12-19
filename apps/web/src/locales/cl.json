@@ -50,5 +50,8 @@
   "download.manifesto": "Manifiesto",
   "download.or_share": "o compartir",
   "brand.name": "LA LUKA",
-  "brand.name.full": "$(LKS) LA LUKA"
+  "brand.name.full": "$(LKS) LA LUKA",
+  "footer.docs": "Docs",
+  "footer.privacy": "Privacidad",
+  "footer.terms": "Términos"
 }

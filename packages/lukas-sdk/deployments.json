@@ -1,5 +1,99 @@
 {
   "networks": {
+    "137": {
+      "name": "Polygon Mainnet",
+      "chainId": 137,
+      "rpcUrl": "https://polygon-rpc.com",
+      "blockExplorer": "https://polygonscan.com",
+      "contracts": {
+        "stable": {
+          "LukasToken": {
+            "address": null,
+            "deployedAt": null,
+            "deployer": null,
+            "version": "1.0.0",
+            "verified": false,
+            "status": "not-deployed"
+          },
+          "StabilizerVault": {
+            "address": null,
+            "deployedAt": null,
+            "deployer": null,
+            "version": "1.0.0",
+            "verified": false,
+            "status": "not-deployed"
+          },
+          "LatAmBasketIndex": {
+            "address": null,
+            "deployedAt": null,
+            "deployer": null,
+            "version": "1.0.0",
+            "verified": false,
+            "status": "not-deployed"
+          },
+          "LukasHook": {
+            "address": null,
+            "deployedAt": null,
+            "deployer": null,
+            "version": "1.0.0",
+            "verified": false,
+            "status": "not-deployed"
+          },
+          "USDC": {
+            "address": "0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359",
+            "deployedAt": null,
+            "deployer": null,
+            "version": "external",
+            "verified": true,
+            "status": "stable",
+            "note": "Official USDC on Polygon"
+          }
+        },
+        "testing": {
+          "LukasToken": {
+            "address": null,
+            "deployedAt": null,
+            "deployer": null,
+            "version": "1.0.0-test",
+            "verified": false,
+            "status": "not-deployed"
+          },
+          "StabilizerVault": {
+            "address": null,
+            "deployedAt": null,
+            "deployer": null,
+            "version": "1.0.0-test",
+            "verified": false,
+            "status": "not-deployed"
+          },
+          "LatAmBasketIndex": {
+            "address": null,
+            "deployedAt": null,
+            "deployer": null,
+            "version": "1.0.0-test",
+            "verified": false,
+            "status": "not-deployed"
+          },
+          "LukasHook": {
+            "address": null,
+            "deployedAt": null,
+            "deployer": null,
+            "version": "1.0.0-test",
+            "verified": false,
+            "status": "not-deployed"
+          },
+          "USDC": {
+            "address": "0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359",
+            "deployedAt": null,
+            "deployer": null,
+            "version": "external",
+            "verified": true,
+            "status": "stable",
+            "note": "Official USDC on Polygon"
+          }
+        }
+      }
+    },
     "80002": {
       "name": "Polygon Amoy Testnet",
       "chainId": 80002,
@@ -222,100 +316,6 @@
             "verified": true,
             "status": "stable",
             "note": "Circle's official Sepolia USDC"
-          }
-        }
-      }
-    },
-    "137": {
-      "name": "Polygon Mainnet",
-      "chainId": 137,
-      "rpcUrl": "https://polygon-rpc.com",
-      "blockExplorer": "https://polygonscan.com",
-      "contracts": {
-        "stable": {
-          "LukasToken": {
-            "address": null,
-            "deployedAt": null,
-            "deployer": null,
-            "version": "1.0.0",
-            "verified": false,
-            "status": "not-deployed"
-          },
-          "StabilizerVault": {
-            "address": null,
-            "deployedAt": null,
-            "deployer": null,
-            "version": "1.0.0",
-            "verified": false,
-            "status": "not-deployed"
-          },
-          "LatAmBasketIndex": {
-            "address": null,
-            "deployedAt": null,
-            "deployer": null,
-            "version": "1.0.0",
-            "verified": false,
-            "status": "not-deployed"
-          },
-          "LukasHook": {
-            "address": null,
-            "deployedAt": null,
-            "deployer": null,
-            "version": "1.0.0",
-            "verified": false,
-            "status": "not-deployed"
-          },
-          "USDC": {
-            "address": "0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359",
-            "deployedAt": null,
-            "deployer": null,
-            "version": "external",
-            "verified": true,
-            "status": "stable",
-            "note": "Official USDC on Polygon"
-          }
-        },
-        "testing": {
-          "LukasToken": {
-            "address": null,
-            "deployedAt": null,
-            "deployer": null,
-            "version": "1.0.0-test",
-            "verified": false,
-            "status": "not-deployed"
-          },
-          "StabilizerVault": {
-            "address": null,
-            "deployedAt": null,
-            "deployer": null,
-            "version": "1.0.0-test",
-            "verified": false,
-            "status": "not-deployed"
-          },
-          "LatAmBasketIndex": {
-            "address": null,
-            "deployedAt": null,
-            "deployer": null,
-            "version": "1.0.0-test",
-            "verified": false,
-            "status": "not-deployed"
-          },
-          "LukasHook": {
-            "address": null,
-            "deployedAt": null,
-            "deployer": null,
-            "version": "1.0.0-test",
-            "verified": false,
-            "status": "not-deployed"
-          },
-          "USDC": {
-            "address": "0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359",
-            "deployedAt": null,
-            "deployer": null,
-            "version": "external",
-            "verified": true,
-            "status": "stable",
-            "note": "Official USDC on Polygon"
           }
         }
       }

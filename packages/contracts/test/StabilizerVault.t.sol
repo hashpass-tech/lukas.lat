@@ -58,6 +58,10 @@ contract StabilizerVaultTest is Test {
         
         // Fund vault with some USDC
         usdc.mint(address(vault), 100_000e6);
+        
+        // Warp time forward to ensure cooldown is elapsed from deployment
+        // This allows the first stabilization call to succeed without cooldown restriction
+        vm.warp(block.timestamp + 6 minutes);
     }
 
     function _setupPriceFeeds() internal {
@@ -129,11 +133,11 @@ contract StabilizerVaultTest is Test {
     function test_CooldownEnforced() public {
         uint256 mintAmount = 1000e18;
         
-        // First mint succeeds
+        // First mint succeeds (cooldown already elapsed in setUp)
         vm.prank(keeper);
         vault.stabilizeMint(mintAmount, address(vault));
         
-        // Second mint should fail (cooldown not elapsed)
+        // Second mint should fail immediately (cooldown not elapsed)
         vm.prank(keeper);
         vm.expectRevert(StabilizerVault.CooldownNotElapsed.selector);
         vault.stabilizeMint(mintAmount, address(vault));
@@ -147,6 +151,7 @@ contract StabilizerVaultTest is Test {
     function test_MaxMintEnforced() public {
         uint256 excessiveAmount = 20_000e18; // Exceeds default 10,000 max
         
+        // Cooldown is already elapsed in setUp, so this should fail on max mint check
         vm.prank(keeper);
         vm.expectRevert(StabilizerVault.ExceedsMaxMint.selector);
         vault.stabilizeMint(excessiveAmount, address(vault));
@@ -184,13 +189,15 @@ contract StabilizerVaultTest is Test {
         assertApproxEqAbs(deviation, -500, 10); // ~-5% = -500 bps
     }
 
-    function test_ShouldStabilize() public view {
+    function test_ShouldStabilize() public {
         uint256 fairPrice = basketIndex.getLukasFairPriceInUSDC();
         
         // Price at 2% deviation (above 1% threshold)
         uint256 deviatedPrice = fairPrice * 102 / 100;
         (bool should, bool isOverPeg, uint256 deviationBps) = vault.shouldStabilize(deviatedPrice);
         
+        // shouldStabilize checks both deviation AND cooldown
+        // Since cooldown is elapsed in setUp, this should return true
         assertTrue(should, "Should trigger stabilization at 2% deviation");
         assertTrue(isOverPeg, "Should be over-peg");
         assertApproxEqAbs(deviationBps, 200, 10); // ~2% = 200 bps
@@ -221,5 +228,40 @@ contract StabilizerVaultTest is Test {
         
         assertEq(usdcBalance, 100_000e6);
         assertEq(lukasBalance, 0);
+    }
+
+    /// @notice **Feature: sepolia-deployment, Property 1: Cooldown Enforcement After Action**
+    /// **Validates: Requirements 1.4**
+    function testFuzz_CooldownEnforcedAfterAction(uint256 waitTime) public {
+        // Bound waitTime to reasonable range (0 to 10 minutes)
+        waitTime = bound(waitTime, 0, 10 minutes);
+        
+        uint256 mintAmount = 1000e18;
+        
+        // First stabilization succeeds (cooldown already elapsed in setUp)
+        vm.prank(keeper);
+        vault.stabilizeMint(mintAmount, address(vault));
+        
+        uint256 lastStabilizationTime = block.timestamp;
+        
+        // Immediately after, second call should fail
+        vm.prank(keeper);
+        vm.expectRevert(StabilizerVault.CooldownNotElapsed.selector);
+        vault.stabilizeMint(mintAmount, address(vault));
+        
+        // Warp by waitTime
+        vm.warp(block.timestamp + waitTime);
+        
+        // If waitTime < cooldownPeriod (5 minutes), should still fail
+        if (waitTime < vault.cooldownPeriod()) {
+            vm.prank(keeper);
+            vm.expectRevert(StabilizerVault.CooldownNotElapsed.selector);
+            vault.stabilizeMint(mintAmount, address(vault));
+        } else {
+            // If waitTime >= cooldownPeriod, should succeed
+            vm.prank(keeper);
+            vault.stabilizeMint(mintAmount, address(vault));
+            assertEq(vault.totalMinted(), mintAmount * 2);
+        }
     }
 }

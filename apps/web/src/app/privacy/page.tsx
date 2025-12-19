@@ -12,6 +12,13 @@ function stripLeadingH1(md: string) {
   return md.replace(/^#\s+.*\n+/, "");
 }
 
+const PRIVACY_TITLES: Record<Locale, string> = {
+  en: "Privacy Policy",
+  es: "Política de Privacidad",
+  pt: "Política de Privacidade",
+  cl: "Política de Privacidad",
+};
+
 export default function PrivacyPage() {
   const [html, setHtml] = useState<string>("");
   const [loading, setLoading] = useState(true);
@@ -42,9 +49,11 @@ export default function PrivacyPage() {
     load();
   }, [currentLocale]);
 
+  const title = PRIVACY_TITLES[currentLocale] || PRIVACY_TITLES.en;
+
   return (
     <main className="mx-auto w-full max-w-4xl px-6 pt-24 pb-28">
-      <h1 className="text-3xl font-semibold tracking-tight">Privacy Policy</h1>
+      <h1 className="text-3xl font-semibold tracking-tight">{title}</h1>
       {loading ? (
         <div className="text-sm text-muted-foreground">Loading…</div>
       ) : error ? (

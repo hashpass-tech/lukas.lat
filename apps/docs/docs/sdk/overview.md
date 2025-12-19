@@ -8,6 +8,14 @@ The Lukas SDK is a comprehensive TypeScript library that provides developers wit
 
 The Lukas SDK abstracts the complexity of direct blockchain interactions while maintaining full functionality and flexibility. It's designed to work seamlessly with modern web3 applications, supporting multiple wallet providers, networks, and both read-only and transactional operations.
 
+## Supported Networks
+
+| Network | Chain ID | Status |
+|---------|----------|--------|
+| Polygon Amoy Testnet | 80002 | ✅ Live |
+| Sepolia Testnet | 11155111 | ✅ Live |
+| Polygon Mainnet | 137 | 🚧 Coming Soon |
+
 ## Key Features
 
 ### 🔒 Type Safety

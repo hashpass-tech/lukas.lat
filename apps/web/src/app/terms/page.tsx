@@ -12,6 +12,13 @@ function stripLeadingH1(md: string) {
   return md.replace(/^#\s+.*\n+/, "");
 }
 
+const TERMS_TITLES: Record<Locale, string> = {
+  en: "Terms of Service",
+  es: "Términos de Servicio",
+  pt: "Termos de Serviço",
+  cl: "Términos de Servicio",
+};
+
 export default function TermsPage() {
   const [html, setHtml] = useState<string>("");
   const [loading, setLoading] = useState(true);
@@ -42,9 +49,11 @@ export default function TermsPage() {
     load();
   }, [currentLocale]);
 
+  const title = TERMS_TITLES[currentLocale] || TERMS_TITLES.en;
+
   return (
     <main className="mx-auto w-full max-w-4xl px-6 pt-24 pb-28">
-      <h1 className="text-3xl font-semibold tracking-tight">Terms of Service</h1>
+      <h1 className="text-3xl font-semibold tracking-tight">{title}</h1>
       {loading ? (
         <div className="text-sm text-muted-foreground">Loading…</div>
       ) : error ? (

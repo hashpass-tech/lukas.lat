@@ -83,6 +83,14 @@ const config = {
                 label: 'Getting Started',
                 to: 'docs/intro',
               },
+              {
+                label: 'Protocol',
+                to: 'docs/protocol/overview',
+              },
+              {
+                label: 'SDK',
+                to: 'docs/sdk/overview',
+              },
             ],
           },
           {
@@ -91,6 +99,31 @@ const config = {
               {
                 label: 'X',
                 href: 'https://x.com/Lukas_lat',
+              },
+              {
+                label: 'GitHub',
+                href: 'https://github.com/hashpass-tech/lukas-protocol',
+              },
+            ],
+          },
+          {
+            title: 'Integrations',
+            items: [
+              {
+                label: 'Fhenix',
+                href: 'https://fhenix.io',
+              },
+              {
+                label: 'EigenLayer',
+                href: 'https://eigenlayer.xyz',
+              },
+              {
+                label: 'Uniswap V4',
+                href: 'https://uniswap.org',
+              },
+              {
+                label: 'Chainlink',
+                href: 'https://chain.link',
               },
             ],
           },

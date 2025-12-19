@@ -181,16 +181,52 @@ export function WalletProvider({ children }: { children: ReactNode }) {
       throw new Error('No wallet provider available');
     }
 
-    await provider.request({
-      method: 'wallet_switchEthereumChain',
-      params: [{ chainId: formatChainIdHex(targetChainId) }],
-    });
+    try {
+      // First, try to switch the network
+      await provider.request({
+        method: 'wallet_switchEthereumChain',
+        params: [{ chainId: formatChainIdHex(targetChainId) }],
+      });
+    } catch (error: any) {
+      // Handle user rejection
+      if (error?.code === 4001 || error?.message?.includes('User rejected')) {
+        throw new Error('Network switch cancelled by user');
+      }
+      // Handle chain not added to wallet
+      if (error?.code === 4902) {
+        throw new Error('Network not configured in wallet. Please add it manually.');
+      }
+      throw error;
+    }
 
-    const updatedChainId = await readChainId();
-    updateWalletState(prev => ({
-      ...prev,
-      chainId: updatedChainId ?? prev.chainId,
-    }));
+    // Wait for the chain to actually switch
+    await new Promise(resolve => setTimeout(resolve, 1000));
+
+    // Verify the switch was successful by reading the chain ID multiple times
+    let verifiedChainId: number | null = null;
+    let attempts = 0;
+    const maxAttempts = 5;
+
+    while (attempts < maxAttempts) {
+      verifiedChainId = await readChainId();
+      if (verifiedChainId === targetChainId) {
+        break;
+      }
+      attempts++;
+      if (attempts < maxAttempts) {
+        await new Promise(resolve => setTimeout(resolve, 500));
+      }
+    }
+
+    // Update state with verified chain ID
+    if (verifiedChainId === targetChainId) {
+      updateWalletState(prev => ({
+        ...prev,
+        chainId: verifiedChainId,
+      }));
+    } else {
+      throw new Error(`Network switch failed. Expected chain ${targetChainId}, got ${verifiedChainId}`);
+    }
   };
 
   const connectAlchemy = async () => {

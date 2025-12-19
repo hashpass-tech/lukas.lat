@@ -4,15 +4,27 @@ import { useState, useEffect } from 'react';
 import { useLukasSDK } from '@/app/providers/lukas-sdk-provider';
 import { useWallet } from '@/app/providers/wallet-provider';
 import { TransactionConfirmation } from './TransactionConfirmation';
+import { Web3SettingsDialog } from './Web3SettingsDialog';
 import type { SwapQuote } from '@lukas-protocol/sdk';
 
 export interface SwapWidgetProps {
   onViewMetrics?: () => void;
 }
 
+// Token icons and metadata
+const TOKEN_METADATA: Record<string, { icon: string; name: string; symbol: string }> = {
+  lukas: { icon: '🪙', name: 'Lukas', symbol: 'LUKAS' },
+  usdc: { icon: '💵', name: 'USD Coin', symbol: 'USDC' },
+};
+
 export function SwapWidget({ onViewMetrics }: SwapWidgetProps = {}) {
-  const { sdk } = useLukasSDK();
-  const { address } = useWallet();
+  const { sdk, networkInfo, isInitialized } = useLukasSDK();
+  const { address, chainId } = useWallet();
+  const [mounted, setMounted] = useState(false);
+  
+  useEffect(() => {
+    setMounted(true);
+  }, []);
   
   const [amountIn, setAmountIn] = useState('');
   const [slippage, setSlippage] = useState(0.5);
@@ -27,23 +39,49 @@ export function SwapWidget({ onViewMetrics }: SwapWidgetProps = {}) {
   const [swapError, setSwapError] = useState<Error | null>(null);
   const [price, setPrice] = useState<bigint | null>(null);
   const [priceLoading, setPriceLoading] = useState(false);
-  const [priceError, setPriceError] = useState<Error | null>(null);
   const [lukasBalance, setLukasBalance] = useState<bigint | null>(null);
   const [usdcBalance, setUsdcBalance] = useState<bigint | null>(null);
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [txHash, setTxHash] = useState<string>();
   const [txStatus, setTxStatus] = useState<'pending' | 'confirmed' | 'failed'>('pending');
+  const [networkWarning, setNetworkWarning] = useState<string | null>(null);
+  const [showNetworkDialog, setShowNetworkDialog] = useState(false);
+  const [hasContracts, setHasContracts] = useState(false);
 
-  // Fetch pool price on mount and every 10 seconds
+  // Check if contracts are available on current network
   useEffect(() => {
-    if (!sdk) return;
+    if (!isInitialized || !networkInfo) {
+      setNetworkWarning('SDK initializing...');
+      setHasContracts(false);
+      setPrice(null);
+      return;
+    }
+
+    const { lukasToken, usdc } = networkInfo.contracts;
+    const zeroAddr = '0x0000000000000000000000000000000000000000';
+    
+    if (lukasToken === zeroAddr || usdc === zeroAddr) {
+      setNetworkWarning(`Contracts not deployed on this network (Chain ${chainId})`);
+      setHasContracts(false);
+      setPrice(null);
+    } else {
+      setNetworkWarning(null);
+      setHasContracts(true);
+    }
+  }, [isInitialized, networkInfo, chainId]);
+
+  // Fetch pool price ONLY if contracts are available
+  useEffect(() => {
+    if (!sdk || !isInitialized || !hasContracts) {
+      setPrice(null);
+      return;
+    }
 
     let isMounted = true;
 
     const fetchPrice = async () => {
       try {
         setPriceLoading(true);
-        setPriceError(null);
         
         // Try to get swap service
         const swapService = (sdk as any).getSwapService();
@@ -53,11 +91,9 @@ export function SwapWidget({ onViewMetrics }: SwapWidgetProps = {}) {
           setPrice(lukasPrice);
         }
       } catch (err) {
-        // If service not available, use mock price (0.0976 USDC = 97600 with 6 decimals)
-        if (isMounted) {
-          setPrice(BigInt(97600));
-          const error = err instanceof Error ? err : new Error('Failed to fetch price');
-          setPriceError(error);
+        // If service not available and we have contracts, use mock price
+        if (isMounted && hasContracts) {
+          setPrice(BigInt(97600)); // 0.0976 USDC with 6 decimals
         }
       } finally {
         if (isMounted) {
@@ -73,37 +109,7 @@ export function SwapWidget({ onViewMetrics }: SwapWidgetProps = {}) {
       isMounted = false;
       clearInterval(interval);
     };
-  }, [sdk]);
-
-  // Fetch user balances on mount and when address changes
-  // Temporarily disabled to prevent infinite loop - will re-enable after fixing SDK initialization
-  // useEffect(() => {
-  //   if (!sdk || !address) {
-  //     return;
-  //   }
-
-  //   const fetchBalances = async () => {
-  //     try {
-  //       // Try to get token services
-  //       const lukasService = (sdk as any).getTokenService();
-  //       const usdcService = (sdk as any).getUSDCService();
-  //       const [lukas, usdc] = await Promise.all([
-  //         lukasService.getBalance(address),
-  //         usdcService.getBalance(address),
-  //       ]);
-  //       setLukasBalance(BigInt(lukas.toString()));
-  //       setUsdcBalance(BigInt(usdc.toString()));
-  //     } catch (err) {
-  //       // If contract manager not initialized, skip balance fetch
-  //       // Balances will remain null and show as 0.0000
-  //       console.debug('Balance fetch skipped - SDK initializing');
-  //     }
-  //   };
-
-  //   fetchBalances();
-  //   const interval = setInterval(fetchBalances, 5000);
-  //   return () => clearInterval(interval);
-  // }, [sdk, address]);
+  }, [sdk, isInitialized, hasContracts]);
 
   // Get quote function using SDK or mock calculation
   const getQuote = async (tokenInAddr: string, tokenOutAddr: string, amountInStr: string, slippageVal: number) => {
@@ -289,14 +295,27 @@ export function SwapWidget({ onViewMetrics }: SwapWidgetProps = {}) {
     reset();
   };
 
-  // Get network name from SDK
+  // Get network name from wallet and SDK
   const getNetworkName = () => {
-    if (!sdk) return 'Testnet';
-    const networkInfo = sdk.getNetworkInfo();
-    if (networkInfo.chainId === 1) return 'Mainnet';
-    if (networkInfo.chainId === 80002) return 'Amoy Testnet';
-    return 'Testnet';
+    if (!chainId) return 'Not Connected';
+    if (chainId === 1) return 'Ethereum Mainnet';
+    if (chainId === 80002) return 'Polygon Amoy';
+    if (chainId === 11155111) return 'Sepolia';
+    return `Chain ${chainId}`;
   };
+
+  // Get network status indicator
+  const getNetworkStatus = () => {
+    if (!isInitialized) return { color: 'bg-yellow-500', text: 'Initializing' };
+    if (networkWarning) return { color: 'bg-red-500', text: 'No Contracts' };
+    return { color: 'bg-green-500', text: 'Ready' };
+  };
+
+  const networkStatus = getNetworkStatus();
+
+  if (!mounted) {
+    return null;
+  }
 
   return (
     <div className="w-full h-full flex flex-col p-3 sm:p-4 md:p-6 bg-card/90 backdrop-blur-xl border border-border rounded-3xl shadow-2xl hover:shadow-3xl transition-all duration-300 hover:-translate-y-1 min-w-[280px] mx-auto">
@@ -306,34 +325,65 @@ export function SwapWidget({ onViewMetrics }: SwapWidgetProps = {}) {
           <span className="text-xl sm:text-2xl md:text-3xl">💱</span>
           <h2 className="text-lg sm:text-xl md:text-2xl font-bold text-foreground">Swap</h2>
         </div>
-        <div className="flex items-center gap-1 px-2 py-0.5 sm:py-1 bg-green-500/20 text-green-400 rounded-full animate-in fade-in duration-500">
-          <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-green-400 rounded-full animate-pulse"></span>
+        <div className={`flex items-center gap-1 px-2 py-0.5 sm:py-1 ${networkStatus.color}/20 text-${networkStatus.color.split('-')[1]}-400 rounded-full animate-in fade-in duration-500`}>
+          <span className={`w-1.5 h-1.5 sm:w-2 sm:h-2 ${networkStatus.color} rounded-full animate-pulse`}></span>
           <span className="text-xs font-medium whitespace-nowrap">{getNetworkName()}</span>
         </div>
       </div>
 
-      {/* Current Price - Clickable to View Pool Metrics */}
-      <button
-        onClick={onViewMetrics}
-        disabled={!onViewMetrics}
-        className="w-full mb-3 sm:mb-4 md:mb-6 p-3 sm:p-4 bg-card/50 border border-border/50 rounded-lg transition-all duration-200 hover:border-border hover:bg-card/70 cursor-pointer group disabled:cursor-default disabled:hover:bg-card/50 disabled:hover:border-border/50 text-left"
-      >
-        {priceLoading ? (
-          <div className="text-sm text-muted-foreground">Loading price...</div>
-        ) : (
-          <div className="space-y-2">
-            <div className="flex items-center justify-between">
-              <div className="text-xs text-muted-foreground">Current Price</div>
-              {onViewMetrics && (
-                <span className="text-xs text-primary no-underline group-hover:underline transition-all duration-200">View Metrics →</span>
-              )}
-            </div>
-            <div className="text-base sm:text-lg font-semibold text-foreground group-hover:text-primary transition-colors">
-              1 LUKAS = {price ? (Number(price) / 1e6).toFixed(6) : '0.097600'} USDC
-            </div>
+      {/* Network Warning - Show dialog button */}
+      {networkWarning && (
+        <div className="mb-3 sm:mb-4 p-3 bg-red-500/10 border border-red-500/30 rounded-lg text-sm text-red-600 dark:text-red-400 flex items-start gap-2">
+          <span className="mt-0.5">⚠️</span>
+          <div className="flex-1">
+            <p>{networkWarning}</p>
+            <button
+              onClick={() => setShowNetworkDialog(true)}
+              className="mt-2 text-xs font-semibold px-3 py-1.5 bg-red-600 text-white rounded hover:bg-red-700 transition-colors"
+            >
+              Switch Network
+            </button>
           </div>
-        )}
-      </button>
+        </div>
+      )}
+
+      {/* Current Price - Only show if contracts are available */}
+      {networkWarning ? (
+        <div className="w-full mb-3 sm:mb-4 md:mb-6 p-3 sm:p-4 bg-blue-500/10 border border-blue-500/30 rounded-lg text-center">
+          <div className="text-sm text-blue-600 dark:text-blue-400 font-medium mb-2">
+            🔗 Unsupported Network
+          </div>
+          <p className="text-xs text-blue-600/80 dark:text-blue-400/80 mb-3">
+            Contracts are deployed on Ethereum Sepolia and Polygon Amoy testnet
+          </p>
+          <div className="flex gap-2 justify-center flex-wrap">
+            <span className="text-xs px-2 py-1 bg-blue-500/20 rounded text-blue-600 dark:text-blue-400">🔵 Sepolia</span>
+            <span className="text-xs px-2 py-1 bg-blue-500/20 rounded text-blue-600 dark:text-blue-400">🟣 Polygon Amoy</span>
+          </div>
+        </div>
+      ) : (
+        <button
+          onClick={onViewMetrics}
+          disabled={!onViewMetrics}
+          className="w-full mb-3 sm:mb-4 md:mb-6 p-3 sm:p-4 bg-card/50 border border-border/50 rounded-lg transition-all duration-200 hover:border-border hover:bg-card/70 cursor-pointer group disabled:cursor-default disabled:hover:bg-card/50 disabled:hover:border-border/50 text-left"
+        >
+          {priceLoading ? (
+            <div className="text-sm text-muted-foreground">Loading price...</div>
+          ) : (
+            <div className="space-y-2">
+              <div className="flex items-center justify-between">
+                <div className="text-xs text-muted-foreground">Current Price</div>
+                {onViewMetrics && (
+                  <span className="text-xs text-primary no-underline group-hover:underline transition-all duration-200">View Metrics →</span>
+                )}
+              </div>
+              <div className="text-base sm:text-lg font-semibold text-foreground group-hover:text-primary transition-colors">
+                1 LUKAS = {price ? (Number(price) / 1e6).toFixed(6) : '0.097600'} USDC
+              </div>
+            </div>
+          )}
+        </button>
+      )}
 
       {/* Token Input */}
       <div className="mb-3 sm:mb-4">
@@ -345,16 +395,16 @@ export function SwapWidget({ onViewMetrics }: SwapWidgetProps = {}) {
             onChange={(e) => setAmountIn(e.target.value)}
             placeholder="0.0"
             className="flex-1 min-w-0 bg-transparent text-foreground placeholder-muted-foreground outline-none text-base sm:text-lg font-semibold"
-            disabled={swapLoading || !sdk}
+            disabled={swapLoading || !isInitialized || !!networkWarning}
           />
           <select
             value={tokenIn}
             onChange={(e) => setTokenIn(e.target.value as 'lukas' | 'usdc')}
             className="flex-shrink-0 bg-background/50 text-foreground rounded-lg px-2 sm:px-3 py-1 sm:py-2 outline-none font-medium text-sm hover:bg-background/80 transition-colors"
-            disabled={swapLoading}
+            disabled={swapLoading || !!networkWarning}
           >
-            <option value="lukas">LUKAS</option>
-            <option value="usdc">USDC</option>
+            <option value="lukas">{TOKEN_METADATA.lukas.icon} LUKAS</option>
+            <option value="usdc">{TOKEN_METADATA.usdc.icon} USDC</option>
           </select>
         </div>
         {address && (
@@ -364,7 +414,7 @@ export function SwapWidget({ onViewMetrics }: SwapWidgetProps = {}) {
               {tokenIn === 'lukas' 
                 ? lukasBalance ? (BigInt(lukasBalance) / BigInt(1e18)).toString() : '0.0000'
                 : usdcBalance ? (BigInt(usdcBalance) / BigInt(1e6)).toString() : '0.0000'
-              } {tokenIn.toUpperCase()}
+              } {TOKEN_METADATA[tokenIn].symbol}
             </span>
           </div>
         )}
@@ -400,10 +450,10 @@ export function SwapWidget({ onViewMetrics }: SwapWidgetProps = {}) {
             value={tokenOut}
             onChange={(e) => setTokenOut(e.target.value as 'lukas' | 'usdc')}
             className="flex-shrink-0 bg-background/50 text-foreground rounded-lg px-2 sm:px-3 py-1 sm:py-2 outline-none font-medium text-sm hover:bg-background/80 transition-colors"
-            disabled={swapLoading}
+            disabled={swapLoading || !!networkWarning}
           >
-            <option value="lukas">LUKAS</option>
-            <option value="usdc">USDC</option>
+            <option value="lukas">{TOKEN_METADATA.lukas.icon} LUKAS</option>
+            <option value="usdc">{TOKEN_METADATA.usdc.icon} USDC</option>
           </select>
         </div>
         {address && (
@@ -413,7 +463,7 @@ export function SwapWidget({ onViewMetrics }: SwapWidgetProps = {}) {
               {tokenOut === 'lukas' 
                 ? lukasBalance ? (BigInt(lukasBalance) / BigInt(1e18)).toString() : '0.0000'
                 : usdcBalance ? (BigInt(usdcBalance) / BigInt(1e6)).toString() : '0.0000'
-              } {tokenOut.toUpperCase()}
+              } {TOKEN_METADATA[tokenOut].symbol}
             </span>
           </div>
         )}
@@ -481,7 +531,7 @@ export function SwapWidget({ onViewMetrics }: SwapWidgetProps = {}) {
       <div className="flex gap-2 mb-4">
         <button
           onClick={handleGetQuote}
-          disabled={!amountIn || quoteLoading || swapLoading || !sdk || tokenIn === tokenOut}
+          disabled={!amountIn || quoteLoading || swapLoading || !isInitialized || !!networkWarning || tokenIn === tokenOut}
           className="flex-1 px-4 py-3 bg-primary text-primary-foreground rounded-lg hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed font-semibold transition-all duration-200 hover:shadow-lg hover:shadow-primary/20"
         >
           {quoteLoading ? (
@@ -494,7 +544,7 @@ export function SwapWidget({ onViewMetrics }: SwapWidgetProps = {}) {
         </button>
         <button
           onClick={handleSwap}
-          disabled={!quote || swapLoading || !address}
+          disabled={!quote || swapLoading || !address || !!networkWarning}
           className="flex-1 px-4 py-3 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-lg hover:from-green-500 hover:to-emerald-500 disabled:opacity-50 disabled:cursor-not-allowed font-semibold transition-all duration-200 hover:shadow-lg hover:shadow-green-500/20"
         >
           {swapLoading ? (
@@ -520,6 +570,12 @@ export function SwapWidget({ onViewMetrics }: SwapWidgetProps = {}) {
         status={txStatus}
         error={swapError?.message}
         onClose={() => setShowConfirmation(false)}
+      />
+
+      {/* Network Selection Dialog */}
+      <Web3SettingsDialog
+        open={showNetworkDialog}
+        onOpenChange={setShowNetworkDialog}
       />
     </div>
   );

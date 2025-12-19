@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Badge } from "@/components/ui/badge";
+import { useTranslation } from "@/lib/translator";
 import { 
   FileText, 
   Calendar, 
@@ -122,6 +123,7 @@ export default function Footer({ version = versionInfo.version, className = "" }
   const [currentPage, setCurrentPage] = useState(0);
   const [changelogData, setChangelogData] = useState<ChangelogEntry[]>([]);
   const [loading, setLoading] = useState(false);
+  const { t } = useTranslation();
 
   const getDocumentationHref = () => {
     if (process.env.NODE_ENV === "development") return "http://localhost:3001";
@@ -340,19 +342,19 @@ export default function Footer({ version = versionInfo.version, className = "" }
                 rel={process.env.NODE_ENV === "development" ? "noopener noreferrer" : undefined}
                 className="text-sm text-muted-foreground hover:text-foreground transition-colors"
               >
-                Documentation
+                {t("footer.docs", "Docs")}
               </a>
               <Link
                 href="/privacy"
                 className="text-sm text-muted-foreground hover:text-foreground transition-colors"
               >
-                Privacy
+                {t("footer.privacy", "Privacy")}
               </Link>
               <Link
                 href="/terms"
                 className="text-sm text-muted-foreground hover:text-foreground transition-colors"
               >
-                Terms
+                {t("footer.terms", "Terms")}
               </Link>
               <a
                 href="https://x.com/Lukas_lat"

@@ -1,6 +1,6 @@
 'use client';
 
-import { ReactNode } from 'react';
+import React, { ReactNode } from 'react';
 import { LukasSDKProvider as SDKProvider, useLukasSDK as useSDK } from '@lukas-protocol/sdk/react';
 import { LukasSDKConfig } from '@lukas-protocol/sdk';
 import { useWallet } from './wallet-provider';
@@ -15,12 +15,31 @@ interface LukasSDKProviderProps {
  */
 export function LukasSDKProvider({ children }: LukasSDKProviderProps) {
   const { chainId, isConnected } = useWallet();
+  const [config, setConfig] = React.useState<LukasSDKConfig | null>(null);
   
-  // Create config based on wallet state
-  const config = createSDKConfig(chainId || 80002, isConnected);
+  // Load config dynamically when chainId changes
+  React.useEffect(() => {
+    const loadConfig = async () => {
+      const contracts = await loadContractsFromDeployments(chainId || 80002);
+      const newConfig = createSDKConfig(chainId || 80002, isConnected);
+      
+      // Merge dynamically loaded contracts
+      newConfig.contracts = {
+        ...newConfig.contracts,
+        ...contracts,
+      };
+      
+      setConfig(newConfig);
+    };
+
+    loadConfig();
+  }, [chainId, isConnected]);
+
+  // Initialize with default config immediately to avoid context errors
+  const activeConfig = config || createSDKConfig(chainId || 80002, isConnected);
 
   return (
-    <SDKProvider config={config}>
+    <SDKProvider config={activeConfig}>
       {children}
     </SDKProvider>
   );
@@ -62,6 +81,42 @@ function createSDKConfig(chainId: number, isConnected: boolean): LukasSDKConfig 
   }
 
   return config;
+}
+
+/**
+ * Load contracts dynamically from deployments.json
+ */
+async function loadContractsFromDeployments(chainId: number): Promise<Partial<ReturnType<typeof getContractAddresses>>> {
+  try {
+    const response = await fetch('/deployments.json');
+    if (!response.ok) throw new Error('Failed to fetch deployments');
+    
+    const deployments = await response.json();
+    const network = deployments?.networks?.[chainId.toString()];
+    
+    if (!network?.contracts?.stable) {
+      return getContractAddresses(chainId);
+    }
+
+    const normalizeAddress = (address: string | null | undefined): string => {
+      if (!address || address === '0x...' || address === 'null') {
+        return '0x0000000000000000000000000000000000000000';
+      }
+      return address;
+    };
+
+    const contracts = network.contracts.stable;
+    return {
+      lukasToken: normalizeAddress(contracts.LukasToken?.address),
+      stabilizerVault: normalizeAddress(contracts.StabilizerVault?.address),
+      latAmBasketIndex: normalizeAddress(contracts.LatAmBasketIndex?.address),
+      lukasHook: normalizeAddress(contracts.LukasHook?.address),
+      usdc: normalizeAddress(contracts.USDC?.address),
+    };
+  } catch (e) {
+    console.warn('Failed to load contracts from deployments.json, using defaults:', e);
+    return getContractAddresses(chainId);
+  }
 }
 
 function getContractAddresses(chainId: number) {
