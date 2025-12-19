@@ -127,16 +127,19 @@ export function WalletProvider({ children }: { children: ReactNode }) {
 
     const amoyRpc = process.env.NEXT_PUBLIC_AMOY_RPC_URL;
     const mainnetRpc = process.env.NEXT_PUBLIC_MAINNET_RPC_URL;
+    const sepoliaRpc = 'https://rpc.sepolia.org';
 
     const rpcMap: Record<number, string> = {};
     if (amoyRpc) rpcMap[80002] = amoyRpc;
     if (mainnetRpc) rpcMap[1] = mainnetRpc;
+    rpcMap[11155111] = sepoliaRpc;
 
     try {
       const provider = await EthereumProvider.init({
         projectId,
-        // Use Amoy as the primary test chain, but keep mainnet available
-        chains: [80002, 1],
+        // Use Amoy as the primary chain (default), with Sepolia and mainnet available
+        chains: [80002],
+        optionalChains: [11155111, 1],
         showQrModal: true,
         ...(Object.keys(rpcMap).length > 0 ? { rpcMap } : {}),
       });
@@ -271,6 +274,28 @@ export function WalletProvider({ children }: { children: ReactNode }) {
     });
   };
 
+  // Supported networks with contracts deployed
+  const SUPPORTED_NETWORKS = [80002, 11155111]; // Polygon Amoy, Sepolia
+  const DEFAULT_NETWORK = 80002; // Polygon Amoy as default
+
+  // Try to switch to default network (Amoy) if on unsupported network
+  const ensureSupportedNetwork = async (currentChainId: number | null) => {
+    if (!currentChainId || SUPPORTED_NETWORKS.includes(currentChainId)) {
+      return currentChainId;
+    }
+
+    // On unsupported network, try to switch to Amoy
+    try {
+      console.log(`Connected to unsupported network ${currentChainId}, switching to Polygon Amoy...`);
+      await switchNetwork(DEFAULT_NETWORK);
+      return DEFAULT_NETWORK;
+    } catch (error) {
+      console.warn('Failed to auto-switch to Polygon Amoy:', error);
+      // Return current chain even if switch failed - user can manually switch
+      return currentChainId;
+    }
+  };
+
   const connect = async (walletType?: string) => {
     const targetWallet = walletType || 'metamask';
     updateWalletState(prev => ({ 
@@ -311,7 +336,10 @@ export function WalletProvider({ children }: { children: ReactNode }) {
           break;
       }
 
-      const chainId = await readChainId();
+      let chainId = await readChainId();
+      
+      // Auto-switch to supported network if needed
+      chainId = await ensureSupportedNetwork(chainId);
 
       updateWalletState({
         address,

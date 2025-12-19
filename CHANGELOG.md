@@ -13,6 +13,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+## [0.2.35] - 2025-12-19
+
+### Added
+- Direct contract detection from deployments.json for reliable network switching
+- Auto-switch to Polygon Amoy (default testnet) on wallet connection
+
+### Changed
+- Improved contract detection to be reactive to network changes
+- Updated WalletConnect to use Polygon Amoy as primary chain with Sepolia as optional
+- Enhanced Web3SettingsDialog contract loading to respond to chainId changes
+
+### Fixed
+- Fixed contract detection not updating when switching networks
+- Fixed Live indicator showing incorrect status after network switch
+- Improved wallet provider network switching reliability
+
 ## [0.2.34] - 2025-12-19
 
 ### Added

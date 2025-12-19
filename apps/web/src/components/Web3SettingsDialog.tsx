@@ -185,43 +185,34 @@ export function Web3SettingsDialog({ open, onOpenChange }: Props) {
 
   const network = useMemo(() => getNetworkByChainId(chainId), [chainId]);
   
-  // Get contracts - try SDK first, then fallback to direct load
+  // Get contracts - load directly from deployments.json based on chainId
   const [contracts, setContracts] = useState<ContractInfo[]>([]);
   const [loadingContracts, setLoadingContracts] = useState(false);
 
+  // Reload contracts whenever chainId changes
   useEffect(() => {
     const loadContracts = async () => {
+      if (!chainId) {
+        setContracts([]);
+        return;
+      }
+      
       setLoadingContracts(true);
       try {
-        // First try SDK
-        if (isInitialized && networkInfo?.contracts) {
-          const { contracts: c } = networkInfo;
-          const zero = '0x0000000000000000000000000000000000000000';
-          const list: ContractInfo[] = [];
-          
-          if (c.lukasToken && c.lukasToken !== zero) list.push({ name: 'LUKAS Token', address: c.lukasToken, icon: '🪙' });
-          if (c.stabilizerVault && c.stabilizerVault !== zero) list.push({ name: 'Stabilizer Vault', address: c.stabilizerVault, icon: '🏦' });
-          if (c.latAmBasketIndex && c.latAmBasketIndex !== zero) list.push({ name: 'LatAm Index', address: c.latAmBasketIndex, icon: '📊' });
-          if (c.lukasHook && c.lukasHook !== zero) list.push({ name: 'Lukas Hook', address: c.lukasHook, icon: '🪝' });
-          if (c.usdc && c.usdc !== zero) list.push({ name: 'USDC', address: c.usdc, icon: '💵' });
-          
-          if (list.length > 0) {
-            setContracts(list);
-            setLoadingContracts(false);
-            return;
-          }
-        }
-        
-        // Fallback to direct load from deployments.json
+        // Load directly from deployments.json for accurate data
         const loaded = await getContractsForChain(chainId);
         setContracts(loaded);
+        console.log('Loaded contracts for chain', chainId, loaded);
+      } catch (error) {
+        console.error('Failed to load contracts:', error);
+        setContracts([]);
       } finally {
         setLoadingContracts(false);
       }
     };
 
     loadContracts();
-  }, [isInitialized, networkInfo, chainId]);
+  }, [chainId]); // Only depend on chainId for direct detection
 
   const onCopy = async (value: string) => {
     await navigator.clipboard.writeText(value);

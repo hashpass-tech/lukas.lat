@@ -50,40 +50,64 @@ export function SwapWidget({ onViewMetrics }: SwapWidgetProps = {}) {
   const [showNetworkDialog, setShowNetworkDialog] = useState(false);
   const [hasContracts, setHasContracts] = useState(false);
 
-  // Check if contracts are available on current network
-  // TODO: Fix contract detection logic - currently not reliably detecting when contracts are deployed
-  // Issue: SDK networkInfo.contracts may not be properly updated when switching networks
-  // Potential solutions:
-  // 1. Add explicit contract validation by calling eth_call to check if contracts exist on-chain
-  // 2. Implement a separate contract registry service that's independent of SDK
-  // 3. Add network-specific contract detection with fallback to on-chain verification
+  // Direct contract detection from deployments.json - more reliable than SDK
   useEffect(() => {
-    if (!isInitialized || !networkInfo) {
-      setNetworkWarning('SDK initializing...');
-      setHasContracts(false);
-      setPrice(null);
-      return;
-    }
+    const checkContracts = async () => {
+      if (!chainId) {
+        setNetworkWarning('No network connected');
+        setHasContracts(false);
+        setPrice(null);
+        return;
+      }
 
-    const { lukasToken, usdc } = networkInfo.contracts;
-    const zeroAddr = '0x0000000000000000000000000000000000000000';
-    
-    // Check if both required contracts are deployed (not zero addresses)
-    const hasLukas = lukasToken && lukasToken !== zeroAddr && lukasToken !== '0x';
-    const hasUsdc = usdc && usdc !== zeroAddr && usdc !== '0x';
-    const contractsDeployed = hasLukas && hasUsdc;
-    
-    if (!contractsDeployed) {
-      setNetworkWarning(`Contracts not deployed on this network (Chain ${chainId})`);
-      setHasContracts(false);
-      setPrice(null);
-      console.log('No contracts on chain', chainId, { lukasToken, usdc, hasLukas, hasUsdc });
-    } else {
-      setNetworkWarning(null);
-      setHasContracts(true);
-      console.log('Contracts available on chain', chainId, { lukasToken, usdc });
-    }
-  }, [isInitialized, networkInfo, chainId]);
+      try {
+        // Fetch deployments directly for accurate contract detection
+        const response = await fetch('/deployments.json');
+        if (!response.ok) throw new Error('Failed to fetch deployments');
+        
+        const deployments = await response.json();
+        const network = deployments?.networks?.[chainId.toString()];
+        
+        const zeroAddr = '0x0000000000000000000000000000000000000000';
+        
+        // Check if network exists and has valid contracts
+        if (!network?.contracts?.stable) {
+          setNetworkWarning(`Contracts not deployed on this network (Chain ${chainId})`);
+          setHasContracts(false);
+          setPrice(null);
+          console.log('No network config for chain', chainId);
+          return;
+        }
+
+        const contracts = network.contracts.stable;
+        const lukasToken = contracts.LukasToken?.address;
+        const usdc = contracts.USDC?.address;
+        
+        // Check if both required contracts are deployed (not zero/null addresses)
+        const hasLukas = lukasToken && lukasToken !== zeroAddr && lukasToken !== 'null' && lukasToken !== null;
+        const hasUsdc = usdc && usdc !== zeroAddr && usdc !== 'null' && usdc !== null;
+        const contractsDeployed = hasLukas && hasUsdc;
+        
+        if (!contractsDeployed) {
+          setNetworkWarning(`Contracts not deployed on this network (Chain ${chainId})`);
+          setHasContracts(false);
+          setPrice(null);
+          console.log('Missing contracts on chain', chainId, { lukasToken, usdc, hasLukas, hasUsdc });
+        } else {
+          setNetworkWarning(null);
+          setHasContracts(true);
+          console.log('Contracts available on chain', chainId, { lukasToken, usdc });
+        }
+      } catch (error) {
+        console.error('Failed to check contracts:', error);
+        setNetworkWarning(`Failed to verify contracts (Chain ${chainId})`);
+        setHasContracts(false);
+        setPrice(null);
+      }
+    };
+
+    checkContracts();
+  }, [chainId]); // Only depend on chainId for direct detection
 
   // Fetch pool price ONLY if contracts are available
   useEffect(() => {
