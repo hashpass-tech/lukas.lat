@@ -1,10 +1,10 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect, useRef } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { ExternalLink, Network, Shield, Copy, Check } from "lucide-react";
+import { ExternalLink, Network, Shield, Copy, Check, AlertCircle } from "lucide-react";
 import { useWallet } from "@/app/providers/wallet-provider";
 import { useLukasSDK } from "@/app/providers/lukas-sdk-provider";
 import { WEB3_NETWORKS, getNetworkByChainId } from "@/lib/web3-config";
@@ -18,6 +18,46 @@ export function Web3SettingsDialog({ open, onOpenChange }: Props) {
   const { address, chainId, switchNetwork } = useWallet();
   const { networkInfo, isInitialized } = useLukasSDK();
   const [copyOk, setCopyOk] = useState(false);
+  const [networkSyncError, setNetworkSyncError] = useState<string | null>(null);
+  const [isRefreshingNetwork, setIsRefreshingNetwork] = useState(false);
+  const prevChainIdRef = useRef<number | null>(null);
+
+  // Track network changes and detect stale state
+  useEffect(() => {
+    if (chainId !== prevChainIdRef.current) {
+      prevChainIdRef.current = chainId;
+      setNetworkSyncError(null);
+    }
+  }, [chainId]);
+
+  // Refresh network state when dialog opens
+  useEffect(() => {
+    if (open && chainId) {
+      setIsRefreshingNetwork(true);
+      // Verify network is in sync
+      const verifyNetwork = async () => {
+        try {
+          if (typeof window !== 'undefined' && window.ethereum?.request) {
+            const chainIdHex = await window.ethereum.request({ method: 'eth_chainId' });
+            const currentChainId = parseInt(chainIdHex, 16);
+            
+            if (currentChainId !== chainId) {
+              setNetworkSyncError(`Network mismatch: Expected ${chainId}, got ${currentChainId}`);
+            } else {
+              setNetworkSyncError(null);
+            }
+          }
+        } catch (error) {
+          console.error('Failed to verify network:', error);
+          setNetworkSyncError('Unable to verify network state');
+        } finally {
+          setIsRefreshingNetwork(false);
+        }
+      };
+      
+      verifyNetwork();
+    }
+  }, [open, chainId]);
 
   const network = useMemo(() => getNetworkByChainId(chainId), [chainId]);
   
@@ -68,6 +108,27 @@ export function Web3SettingsDialog({ open, onOpenChange }: Props) {
         </DialogHeader>
 
         <div className="space-y-6">
+          {/* Network Sync Status */}
+          {networkSyncError && (
+            <div className="rounded-2xl border border-yellow-500/30 bg-yellow-500/10 p-3 sm:p-4 flex items-start gap-3">
+              <AlertCircle className="w-4 h-4 text-yellow-600 dark:text-yellow-400 shrink-0 mt-0.5" />
+              <div className="flex-1 min-w-0">
+                <div className="text-xs font-medium text-yellow-600 dark:text-yellow-400">Network State Mismatch</div>
+                <div className="text-xs text-yellow-600/80 dark:text-yellow-400/80 mt-1">{networkSyncError}</div>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={() => window.location.reload()}
+                  className="mt-2 text-xs"
+                  disabled={isRefreshingNetwork}
+                >
+                  {isRefreshingNetwork ? 'Refreshing...' : 'Reload Page'}
+                </Button>
+              </div>
+            </div>
+          )}
+
           <div className="rounded-2xl border border-border/60 bg-background/30 p-3 sm:p-4">
             <div className="flex items-start justify-between gap-3">
               <div>
@@ -90,6 +151,9 @@ export function Web3SettingsDialog({ open, onOpenChange }: Props) {
             <div className="mt-4 flex flex-wrap items-center gap-2">
               <Badge variant="outline" className="text-xs">
                 Network: {network?.shortName ?? (chainId ? `Chain ${chainId}` : "Unknown")}
+              </Badge>
+              <Badge variant="outline" className={`text-xs ${isRefreshingNetwork ? 'opacity-50' : ''}`}>
+                {isRefreshingNetwork ? 'Verifying...' : 'Synced'}
               </Badge>
               {explorerAccountUrl && (
                 <a
@@ -116,8 +180,21 @@ export function Web3SettingsDialog({ open, onOpenChange }: Props) {
                   key={n.chainId}
                   type="button"
                   variant={n.chainId === chainId ? "default" : "outline"}
-                  onClick={() => switchNetwork(n.chainId)}
-                  disabled={!address}
+                  onClick={async () => {
+                    try {
+                      setNetworkSyncError(null);
+                      await switchNetwork(n.chainId);
+                      // Verify network switched successfully
+                      setTimeout(() => {
+                        if (chainId !== n.chainId) {
+                          setNetworkSyncError(`Failed to switch to ${n.shortName}`);
+                        }
+                      }, 1000);
+                    } catch (error) {
+                      setNetworkSyncError(`Failed to switch network: ${error instanceof Error ? error.message : 'Unknown error'}`);
+                    }
+                  }}
+                  disabled={!address || isRefreshingNetwork}
                   className="justify-between"
                 >
                   <span>{n.shortName}</span>

@@ -420,8 +420,8 @@ export const LukasHeroAnimation = () => {
 
             {/* Video Modal */}
             <Dialog open={videoModalOpen} onOpenChange={setVideoModalOpen}>
-                <DialogContent className="max-w-4xl w-full bg-background border-border rounded-3xl p-0 overflow-hidden">
-                    <div className="relative w-full aspect-video">
+                <DialogContent className="!max-w-none !w-[calc(100vw-2rem)] sm:!w-[90vw] md:!w-[80vw] lg:!w-[70vw] !max-h-[calc(100vh-2rem)] sm:!max-h-[85vh] bg-background border-border rounded-lg sm:rounded-2xl !p-0 !overflow-hidden !gap-0">
+                    <div className="relative w-full aspect-video bg-black">
                         <iframe
                             src={`${getVideoUrl()}?autoplay=1&rel=0&modestbranding=1`}
                             title="LUKAS Video"
@@ -435,6 +435,45 @@ export const LukasHeroAnimation = () => {
 
             {/* Global styles for animations (ideally in a global CSS file) */}
             <style jsx global>{`
+                /* Video Modal Overflow Prevention */
+                [data-dialog-overlay] {
+                    overflow: hidden !important;
+                }
+
+                [data-dialog-content] {
+                    max-width: calc(100vw - 2rem) !important;
+                    max-height: calc(100vh - 2rem) !important;
+                    overflow: hidden !important;
+                    width: calc(100vw - 2rem) !important;
+                    height: auto !important;
+                    padding: 0 !important;
+                    gap: 0 !important;
+                }
+
+                @media (min-width: 640px) {
+                    [data-dialog-content] {
+                        max-width: 90vw !important;
+                        max-height: 85vh !important;
+                        width: 90vw !important;
+                    }
+                }
+
+                @media (min-width: 768px) {
+                    [data-dialog-content] {
+                        max-width: 80vw !important;
+                        max-height: 85vh !important;
+                        width: 80vw !important;
+                    }
+                }
+
+                @media (min-width: 1024px) {
+                    [data-dialog-content] {
+                        max-width: 70vw !important;
+                        max-height: 90vh !important;
+                        width: 70vw !important;
+                    }
+                }
+
                 @keyframes fade-in {
                     from {
                         opacity: 0;

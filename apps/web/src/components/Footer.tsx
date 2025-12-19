@@ -184,14 +184,14 @@ export default function Footer({ version = versionInfo.version, className = "" }
                   </button>
                 </DialogTrigger>
 
-                <DialogContent className="max-w-2xl max-h-[85vh] sm:max-h-[80vh] bg-background border-border rounded-3xl flex flex-col">
+                <DialogContent className="max-w-2xl w-[95vw] sm:w-full max-h-[85vh] sm:max-h-[80vh] bg-background border-border rounded-lg sm:rounded-3xl flex flex-col p-3 sm:p-6">
                   <DialogHeader>
-                    <DialogTitle className="text-xl font-semibold text-foreground flex items-center">
-                      <FileText className="w-5 h-5 mr-2" />
+                    <DialogTitle className="text-lg sm:text-xl font-semibold text-foreground flex items-center">
+                      <FileText className="w-4 sm:w-5 h-4 sm:h-5 mr-2" />
                       Changelog
                     </DialogTitle>
-                    <div className="mt-2 flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
-                      <Badge variant="outline">
+                    <div className="mt-2 flex flex-wrap items-center gap-1 sm:gap-2 text-[10px] sm:text-xs text-muted-foreground">
+                      <Badge variant="outline" className="text-[10px] sm:text-xs">
                         Current version: v{version}
                       </Badge>
                       <a
@@ -200,7 +200,8 @@ export default function Footer({ version = versionInfo.version, className = "" }
                         rel="noopener noreferrer"
                         className="inline-flex items-center gap-1 hover:text-foreground transition-colors"
                       >
-                        <span>View on GitHub</span>
+                        <span className="hidden sm:inline">View on GitHub</span>
+                        <span className="sm:hidden">GitHub</span>
                         <ExternalLink className="w-3 h-3" />
                       </a>
                       <div className="flex items-center gap-1 text-muted-foreground">
@@ -210,7 +211,7 @@ export default function Footer({ version = versionInfo.version, className = "" }
                     </div>
                   </DialogHeader>
 
-                  <div className="flex-1 max-h-[50vh] sm:max-h-[60vh] pr-4 overflow-y-auto">
+                  <div className="flex-1 max-h-[50vh] sm:max-h-[60vh] pr-2 sm:pr-4 overflow-y-auto">
                     {loading ? (
                       <div className="flex items-center justify-center h-40">
                         <div className="text-muted-foreground">Loading changelog...</div>
@@ -225,37 +226,37 @@ export default function Footer({ version = versionInfo.version, className = "" }
                           currentItems.map((entry) => (
                             <div
                               key={entry.version}
-                              className="bg-card/50 rounded-xl p-4 border border-border/50 hover:border-border transition-colors"
+                              className="bg-card/50 rounded-lg sm:rounded-xl p-2 sm:p-4 border border-border/50 hover:border-border transition-colors overflow-hidden"
                             >
-                              <div className="flex items-center justify-between mb-3">
-                                <div className="flex items-center space-x-2">
+                              <div className="flex items-center justify-between mb-2 sm:mb-3 gap-2 min-w-0">
+                                <div className="flex items-center space-x-1 sm:space-x-2 min-w-0">
                                   <Badge
                                     variant="outline"
-                                    className="text-primary border-primary/30 text-xs"
+                                    className="text-primary border-primary/30 text-[10px] sm:text-xs shrink-0"
                                   >
                                     v{entry.version}
                                   </Badge>
-                                  <div className="flex items-center text-muted-foreground text-xs">
-                                    <Calendar className="w-3 h-3 mr-1" />
-                                    {entry.date}
+                                  <div className="flex items-center text-muted-foreground text-[10px] sm:text-xs min-w-0">
+                                    <Calendar className="w-3 h-3 mr-1 shrink-0" />
+                                    <span className="truncate">{entry.date}</span>
                                   </div>
                                 </div>
                               </div>
 
-                              <div className="space-y-2 max-h-40 overflow-y-auto">
+                              <div className="space-y-1 sm:space-y-2 max-h-40 overflow-y-auto">
                                 {entry.changes.added && entry.changes.added.length > 0 && (
                                   <div>
-                                    <h4 className="text-sm font-medium text-green-600 dark:text-green-400 mb-2">
+                                    <h4 className="text-xs sm:text-sm font-medium text-green-600 dark:text-green-400 mb-1">
                                       Added
                                     </h4>
-                                    <ul className="space-y-1">
+                                    <ul className="space-y-0.5">
                                       {entry.changes.added.map((change, idx) => (
                                         <li
                                           key={idx}
-                                          className="text-sm text-foreground flex items-start"
+                                          className="text-xs sm:text-sm text-foreground flex items-start gap-1 min-w-0"
                                         >
-                                          <span className="text-green-600 dark:text-green-400 mr-2">•</span>
-                                          {change}
+                                          <span className="text-green-600 dark:text-green-400 shrink-0">•</span>
+                                          <span className="break-words">{change}</span>
                                         </li>
                                       ))}
                                     </ul>
@@ -264,17 +265,17 @@ export default function Footer({ version = versionInfo.version, className = "" }
 
                                 {entry.changes.changed && entry.changes.changed.length > 0 && (
                                   <div>
-                                    <h4 className="text-sm font-medium text-yellow-600 dark:text-yellow-400 mb-2">
+                                    <h4 className="text-xs sm:text-sm font-medium text-yellow-600 dark:text-yellow-400 mb-1">
                                       Changed
                                     </h4>
-                                    <ul className="space-y-1">
+                                    <ul className="space-y-0.5">
                                       {entry.changes.changed.map((change, idx) => (
                                         <li
                                           key={idx}
-                                          className="text-sm text-foreground flex items-start"
+                                          className="text-xs sm:text-sm text-foreground flex items-start gap-1 min-w-0"
                                         >
-                                          <span className="text-yellow-600 dark:text-yellow-400 mr-2">•</span>
-                                          {change}
+                                          <span className="text-yellow-600 dark:text-yellow-400 shrink-0">•</span>
+                                          <span className="break-words">{change}</span>
                                         </li>
                                       ))}
                                     </ul>
@@ -283,17 +284,17 @@ export default function Footer({ version = versionInfo.version, className = "" }
 
                                 {entry.changes.fixed && entry.changes.fixed.length > 0 && (
                                   <div>
-                                    <h4 className="text-sm font-medium text-blue-600 dark:text-blue-400 mb-2">
+                                    <h4 className="text-xs sm:text-sm font-medium text-blue-600 dark:text-blue-400 mb-1">
                                       Fixed
                                     </h4>
-                                    <ul className="space-y-1">
+                                    <ul className="space-y-0.5">
                                       {entry.changes.fixed.map((change, idx) => (
                                         <li
                                           key={idx}
-                                          className="text-sm text-foreground flex items-start"
+                                          className="text-xs sm:text-sm text-foreground flex items-start gap-1 min-w-0"
                                         >
-                                          <span className="text-blue-600 dark:text-blue-400 mr-2">•</span>
-                                          {change}
+                                          <span className="text-blue-600 dark:text-blue-400 shrink-0">•</span>
+                                          <span className="break-words">{change}</span>
                                         </li>
                                       ))}
                                     </ul>
@@ -310,13 +311,13 @@ export default function Footer({ version = versionInfo.version, className = "" }
                 {/* Pagination in DialogFooter */}
                 {totalPages > 1 && (
                   <DialogFooter className="border-t border-border bg-background/95 backdrop-blur-sm">
-                    <div className="flex items-center justify-center gap-2 w-full p-4">
-                      <div className="flex gap-2">
+                    <div className="flex items-center justify-center gap-1 sm:gap-2 w-full p-2 sm:p-4">
+                      <div className="flex gap-1 sm:gap-2">
                         {Array.from({ length: totalPages }, (_, index) => (
                           <button
                             key={index}
                             onClick={() => handleDotClick(index)}
-                            className={`w-3 h-3 rounded-full transition-all duration-300 ${
+                            className={`w-2 h-2 sm:w-3 sm:h-3 rounded-full transition-all duration-300 ${
                               currentPage === index
                                 ? 'bg-primary scale-125'
                                 : 'bg-muted-foreground/30 hover:bg-muted-foreground/50 hover:scale-110'
