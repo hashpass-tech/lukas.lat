@@ -13,6 +13,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+## [0.2.26] - 2025-12-19
+
+### Added
+
+
+
+### Changed
+
+
+
+### Fixed
+
+- Replace PriceChart with trading view style candlestick chart (aada501)
+
+
+
 ## [0.2.25] - 2025-12-18
 ### Added
 - Improved version script changelog generation with better commit categorization
