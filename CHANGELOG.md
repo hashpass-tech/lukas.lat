@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 ### Fixed
+- Fixed useSearchParams Suspense boundary error in pool page for static export
 
 ## [0.2.37] - 2025-12-20
 ### Added

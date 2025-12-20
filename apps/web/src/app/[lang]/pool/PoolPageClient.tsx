@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { MonitoringDashboard } from '@/components/MonitoringDashboard';
 import { SwapWidget } from '@/components/SwapWidget';
@@ -8,14 +8,9 @@ import Footer from '@/components/Footer';
 import Link from 'next/link';
 
 /**
- * Pool Page Client Component
- * 
- * Displays a comprehensive pool view with:
- * - Swap widget for trading
- * - Detailed pool metrics and monitoring dashboard
- * - Navigation between different views
+ * Inner component that uses useSearchParams
  */
-export default function PoolPageClient() {
+function PoolPageContent() {
   const searchParams = useSearchParams();
   const initialTab = searchParams.get('tab') as 'swap' | 'metrics' | 'detailed' | null;
   const [activeView, setActiveView] = useState<'swap' | 'metrics' | 'detailed'>(initialTab || 'metrics');
@@ -350,5 +345,27 @@ export default function PoolPageClient() {
       {/* Footer */}
       <Footer />
     </div>
+  );
+}
+
+/**
+ * Pool Page Client Component
+ * 
+ * Displays a comprehensive pool view with:
+ * - Swap widget for trading
+ * - Detailed pool metrics and monitoring dashboard
+ * - Navigation between different views
+ * 
+ * Wrapped in Suspense for useSearchParams compatibility with static export
+ */
+export default function PoolPageClient() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-background text-foreground pt-16 sm:pt-20 pb-20 sm:pb-16 flex items-center justify-center">
+        <div className="text-muted-foreground">Loading...</div>
+      </div>
+    }>
+      <PoolPageContent />
+    </Suspense>
   );
 }
