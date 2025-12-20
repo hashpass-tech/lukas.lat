@@ -628,7 +628,101 @@ export function WalletProvider({ children }: { children: ReactNode }) {
         const savedState = loadWalletState();
         
         if (savedState && savedState.isConnected && savedState.address) {
-          // Verify the saved connection is still valid
+          // Check if it was a WalletConnect connection - try to restore session
+          if (savedState.connectedWalletId === 'walletconnect') {
+            try {
+              const projectId = process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID;
+              if (projectId) {
+                const amoyRpc = process.env.NEXT_PUBLIC_AMOY_RPC_URL || 'https://rpc-amoy.polygon.technology';
+                const sepoliaRpc = 'https://rpc.sepolia.org';
+                const mainnetRpc = process.env.NEXT_PUBLIC_MAINNET_RPC_URL || 'https://eth.llamarpc.com';
+
+                const rpcMap: Record<number, string> = {
+                  80002: amoyRpc,
+                  11155111: sepoliaRpc,
+                  1: mainnetRpc,
+                };
+
+                // Initialize provider to restore session
+                const provider = await EthereumProvider.init({
+                  projectId,
+                  chains: [80002],
+                  optionalChains: [11155111, 1],
+                  showQrModal: false, // Don't show QR on restore
+                  rpcMap,
+                  metadata: {
+                    name: 'Lukas Protocol',
+                    description: 'LatAm Basket Stablecoin',
+                    url: typeof window !== 'undefined' ? window.location.origin : 'https://lukas.lat',
+                    icons: ['https://lukas.lat/logo.png'],
+                  },
+                });
+
+                // Check if there's an existing session
+                if (provider.session) {
+                  console.log('Restoring WalletConnect session...');
+                  providerRef.current = provider;
+
+                  // Set up event listeners
+                  provider.on('chainChanged', (chainIdHex: string | number) => {
+                    const nextChainId = typeof chainIdHex === 'string' 
+                      ? parseInt(chainIdHex, 16) 
+                      : typeof chainIdHex === 'number' 
+                        ? chainIdHex 
+                        : null;
+                    console.log('WalletConnect chainChanged event:', chainIdHex, '->', nextChainId);
+                    updateWalletState(prev => ({
+                      ...prev,
+                      chainId: nextChainId,
+                    }));
+                  });
+
+                  provider.on('accountsChanged', (accounts: string[]) => {
+                    console.log('WalletConnect accountsChanged event:', accounts);
+                    if (accounts.length === 0) {
+                      disconnect();
+                    } else {
+                      updateWalletState(prev => ({
+                        ...prev,
+                        address: accounts[0],
+                        isConnected: true,
+                      }));
+                    }
+                  });
+
+                  provider.on('disconnect', () => {
+                    console.log('WalletConnect disconnect event');
+                    disconnect();
+                  });
+
+                  // Get current accounts and chain
+                  const accounts = await provider.request({ method: 'eth_accounts' }) as string[];
+                  const chainIdHex = await provider.request({ method: 'eth_chainId' }) as string;
+                  const chainId = parseInt(chainIdHex, 16);
+
+                  if (accounts.length > 0) {
+                    console.log('WalletConnect session restored:', accounts[0], 'chain:', chainId);
+                    updateWalletState({
+                      address: accounts[0],
+                      isConnected: true,
+                      isConnecting: false,
+                      connectingWalletId: null,
+                      error: null,
+                      walletType: 'traditional',
+                      connectedWalletId: 'walletconnect',
+                      chainId,
+                    });
+                    return;
+                  }
+                }
+              }
+            } catch (wcError) {
+              console.warn('Failed to restore WalletConnect session:', wcError);
+              // Fall through to check MetaMask
+            }
+          }
+
+          // Verify the saved connection is still valid (for MetaMask/injected wallets)
           if (window.ethereum) {
             const accounts = await window.ethereum?.request({
               method: 'eth_accounts',

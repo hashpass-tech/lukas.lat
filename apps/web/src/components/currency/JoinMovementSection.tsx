@@ -19,7 +19,7 @@ export function JoinMovementSection() {
   const lang = params?.lang || 'en';
 
   const handleViewMetrics = () => {
-    router.push(`/${lang}/pool`);
+    router.push(`/${lang}/pool?tab=metrics`);
   };
 
   useEffect(() => {

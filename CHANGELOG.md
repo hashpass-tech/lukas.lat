@@ -8,10 +8,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- WalletConnect session restoration on page refresh for mobile persistence
 
 ### Changed
+- Pool page now defaults to Metrics tab instead of Swap
+- View Metrics link now navigates directly to Metrics tab
 
 ### Fixed
+- Fixed WalletConnect mobile session not persisting after page refresh
+- Fixed pool page tab parameter support (?tab=metrics)
 
 ## [0.2.36] - 2025-12-20
 ### Added

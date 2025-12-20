@@ -1,6 +1,7 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { MonitoringDashboard } from '@/components/MonitoringDashboard';
 import { SwapWidget } from '@/components/SwapWidget';
 import Footer from '@/components/Footer';
@@ -15,7 +16,9 @@ import Link from 'next/link';
  * - Navigation between different views
  */
 export default function PoolPageClient() {
-  const [activeView, setActiveView] = useState<'swap' | 'metrics' | 'detailed'>('swap');
+  const searchParams = useSearchParams();
+  const initialTab = searchParams.get('tab') as 'swap' | 'metrics' | 'detailed' | null;
+  const [activeView, setActiveView] = useState<'swap' | 'metrics' | 'detailed'>(initialTab || 'metrics');
 
   return (
     <div className="min-h-screen bg-background text-foreground pt-16 sm:pt-20 pb-20 sm:pb-16 transition-colors duration-300">

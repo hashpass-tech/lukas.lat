@@ -13,6 +13,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+## [0.2.36] - 2025-12-20
+### Added
+- Auto-sync CHANGELOG.md to public folder on version bump
+
+### Changed
+- Improved changelog modal spacing and styling for better readability
+- Enhanced header/footer backgrounds with proper border radius on large screens
+- Updated Web3SettingsDialog to use CSS variables for full dark mode support
+
+### Fixed
+- Fixed changelog modal not showing latest versions (synced public CHANGELOG.md)
+- Fixed header/footer backgrounds not expanding properly on big screens
+- Fixed Web3SettingsDialog dark mode support using CSS variables (bg-background, text-foreground, bg-card, bg-muted, border-border)
+- Fixed network badge color not changing correctly with network (using inline styles)
+
 ## [0.2.35] - 2025-12-19
 
 ### Added
