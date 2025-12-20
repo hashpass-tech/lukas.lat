@@ -8,6 +8,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+
+### Changed
+
+### Fixed
+
+## [0.2.37] - 2025-12-20
+### Added
 - WalletConnect session restoration on page refresh for mobile persistence
 
 ### Changed
