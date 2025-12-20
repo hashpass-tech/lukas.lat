@@ -79,11 +79,18 @@ Governance decisions are made by token holders, ensuring the protocol evolves wi
 
 ## Network Support
 
-| Network | Status | Use Case |
-|---------|--------|----------|
-| Polygon Amoy | ✅ Live | Testnet development |
-| Sepolia | ✅ Live | Ethereum testnet |
-| Polygon Mainnet | 🚧 Coming | Production deployment |
+| Network | Status | Contracts | Use Case |
+|---------|--------|-----------|----------|
+| Polygon Amoy | ✅ Live | 5 deployed | Primary testnet |
+| Sepolia | ✅ Live | 5 deployed | Ethereum testnet |
+| Ethereum Mainnet | 🔴 Not Live | — | Future production |
+| Polygon Mainnet | 🚧 Coming | — | Production deployment |
+
+## Current Version
+
+- **Protocol**: v0.2.35
+- **SDK**: @lukas-protocol/sdk v0.2.35
+- **Last Updated**: December 19, 2024
 
 ## Quick Links
 

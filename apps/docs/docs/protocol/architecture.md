@@ -357,3 +357,32 @@ The protocol is designed for future upgradability:
 2. **Parameter Updates**: Governance can adjust thresholds
 3. **Oracle Migration**: New price feeds can be added
 4. **Hook Updates**: V4 hooks can be replaced
+
+## Current Deployments
+
+### Polygon Amoy Testnet (Chain ID: 80002)
+
+| Contract | Address | Version |
+|----------|---------|---------|
+| LukasToken | `0x63524b53983960231b7b86CDEdDf050Ceb9263Cb` | 1.0.0 |
+| LatAmBasketIndex | `0x1Dccf1fB82946a293E03036e85edc2139cba1541` | 1.1.0 |
+| StabilizerVault | `0x5c5bc89db3f3e3e3e3e3e3e3e3e3e3e3e3e3e3e3` | 1.0.0 |
+| LukasHook | `0x5b73C5498c1E3b4dbA84de0F1833c4a029d90519` | 1.0.0-simplified |
+| USDC | `0x41e94eb019c0762f9bfcf9fb1e58725bfb0e7582` | external |
+| LUKAS/USDC Pool | `0x48411eFDE2D053B2Fa9456d91dad8a9BE7a1574E` | 1.0.0 |
+
+### Sepolia Testnet (Chain ID: 11155111)
+
+| Contract | Address | Version |
+|----------|---------|---------|
+| LukasToken | `0x63524b53983960231b7b86CDEdDf050Ceb9263Cb` | 1.0.0 |
+| LatAmBasketIndex | `0x46D240633d70AB16654e0053D05B24Dfb3284A71` | 1.1.0 |
+| StabilizerVault | `0x64540D50CD37BC94C2ED77766Cc86C4D6C3ec9cE` | 1.0.0 |
+| LukasHook | `0xB6EAA80E5446895a6d7136e90c97821550e51805` | 1.0.0-simplified |
+| USDC | `0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238` | external |
+| UniswapV4 PoolManager | `0x8C4BcBE6b9eF47855f97E675296FA3F6fafa5F1A` | external |
+
+## Block Explorers
+
+- **Polygon Amoy**: [amoy.polygonscan.com](https://amoy.polygonscan.com)
+- **Sepolia**: [sepolia.etherscan.io](https://sepolia.etherscan.io)

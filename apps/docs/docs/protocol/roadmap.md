@@ -16,48 +16,51 @@ The LUKAS Protocol development timeline and milestones.
 ║  2024 Q4          2025 Q1          2025 Q2          2025 Q3          2025 Q4 ║
 ║  ────────         ────────         ────────         ────────         ──────── ║
 ║                                                                               ║
-║  PHASE 1 ✅       PHASE 2 🔄       PHASE 3 📋       PHASE 4 🚀                ║
+║  PHASE 1 ✅       PHASE 2 ✅       PHASE 3 🔄       PHASE 4 🚀                ║
 ║  ══════════       ══════════       ══════════       ══════════                ║
-║  ▓▓▓▓▓▓▓▓▓▓       ▓▓▓▓▓▓▓▓░░       ░░░░░░░░░░       ░░░░░░░░░░                ║
+║  ▓▓▓▓▓▓▓▓▓▓       ▓▓▓▓▓▓▓▓▓▓       ▓▓▓▓░░░░░░       ░░░░░░░░░░                ║
 ║                                                                               ║
 ║  • Core          • V4 Hooks       • Fhenix FHE     • Mainnet                  ║
 ║    Contracts     • Pool           • EigenLayer     • Governance               ║
 ║  • Testnet         Creation         AVS           • Cross-chain               ║
 ║  • SDK           • Sepolia        • Mainnet                                   ║
-║  • Web App                          Prep                                      ║
+║  • Web App       • Multi-net        Prep                                      ║
 ║                                                                               ║
 ╚═══════════════════════════════════════════════════════════════════════════════╝
 ```
 
 ## Phase 1: Foundation ✅
 
-**Status: Complete**
+**Status: Complete (Dec 2024)**
 
 ### Achievements
-- ✅ LukasToken ERC-20 contract
+- ✅ LukasToken ERC-20 contract deployed
 - ✅ LatAmBasketIndex oracle with Chainlink integration
 - ✅ StabilizerVault for peg management
 - ✅ Polygon Amoy testnet deployment
-- ✅ Lukas SDK v0.2.22 release
+- ✅ Lukas SDK v0.2.35 release
 - ✅ React integration with SSR support
+- ✅ Web app with swap widget
 
 ### Deliverables
 | Item | Status | Date |
 |------|--------|------|
-| Token Contract | ✅ Deployed | Dec 2024 |
-| Oracle Contract | ✅ Deployed | Dec 2024 |
-| Vault Contract | ✅ Deployed | Dec 2024 |
+| Token Contract | ✅ Deployed | Dec 17, 2024 |
+| Oracle Contract | ✅ Deployed | Dec 18, 2024 |
+| Vault Contract | ✅ Deployed | Dec 17, 2024 |
 | SDK npm Package | ✅ Published | Dec 2024 |
 
-## Phase 2: DEX Integration 🔄
+## Phase 2: DEX Integration ✅
 
-**Status: In Progress**
+**Status: Complete (Dec 2024)**
 
-### Goals
-- Uniswap V4 hook implementation
-- LUKAS/USDC liquidity pool
-- Automated stabilization via hooks
-- Sepolia testnet expansion
+### Achievements
+- ✅ LukasHook (Simplified) for peg stabilization
+- ✅ Sepolia testnet deployment (all contracts)
+- ✅ LUKAS/USDC liquidity pool on Polygon Amoy
+- ✅ Multi-network support (Amoy + Sepolia)
+- ✅ Network-aware UI with color coding
+- ✅ Swap widget with live contract detection
 
 ### Current Progress
 
@@ -66,24 +69,43 @@ The LUKAS Protocol development timeline and milestones.
 ║              PHASE 2 PROGRESS                         ║
 ╠═══════════════════════════════════════════════════════╣
 ║                                                       ║
-║  Completed    ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓  70%     ║
-║  In Progress  ▓▓▓▓▓▓▓▓░░░░░░░░░░░░░░░░░░░░  20%     ║
-║  Planned      ▓▓▓▓░░░░░░░░░░░░░░░░░░░░░░░░  10%     ║
+║  Completed    ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓  100%  ║
+║                                                       ║
+╚═══════════════════════════════════════════════════════╝
+```
+
+| Item | Status | Date |
+|------|--------|--------|
+| LukasHook (Simplified) | ✅ Complete | Dec 18, 2024 |
+| Sepolia Deployment | ✅ Complete | Dec 19, 2024 |
+| LUKAS/USDC Pool | ✅ Complete | Dec 18, 2024 |
+| Swap Widget | ✅ Complete | Dec 19, 2024 |
+| Multi-Network UI | ✅ Complete | Dec 19, 2024 |
+
+## Phase 3: Advanced Features 🔄
+
+**Status: In Progress (Q1 2025)**
+
+### Current Progress
+
+```
+╔═══════════════════════════════════════════════════════╗
+║              PHASE 3 PROGRESS                         ║
+╠═══════════════════════════════════════════════════════╣
+║                                                       ║
+║  Completed    ▓▓▓▓▓▓▓▓░░░░░░░░░░░░░░░░░░░░░░  25%    ║
+║  In Progress  ▓▓▓▓▓▓▓▓▓▓▓▓░░░░░░░░░░░░░░░░░░  35%    ║
+║  Planned      ▓▓▓▓▓▓▓▓▓▓▓▓░░░░░░░░░░░░░░░░░░  40%    ║
 ║                                                       ║
 ╚═══════════════════════════════════════════════════════╝
 ```
 
 | Item | Status | Target |
 |------|--------|--------|
-| LukasHook (Simplified) | ✅ Complete | Dec 2024 |
-| Sepolia Deployment | ✅ Complete | Dec 2024 |
-| V4 Pool Creation | 🔄 In Progress | Jan 2025 |
-| Hook Integration | 🔄 In Progress | Jan 2025 |
-| Swap Widget | ✅ Complete | Dec 2024 |
-
-## Phase 3: Advanced Features 📋
-
-**Status: Planned**
+| Full V4 Hook Integration | 🔄 In Progress | Jan 2025 |
+| Fhenix FHE Research | 📋 Planned | Q1 2025 |
+| EigenLayer AVS Design | 📋 Planned | Q1 2025 |
+| Mainnet Preparation | 📋 Planned | Q2 2025 |
 
 ### Fhenix FHE Integration
 
@@ -114,12 +136,6 @@ Fully Homomorphic Encryption for privacy-preserving stabilization:
 │                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
-
-**Benefits:**
-- Private reserve balances
-- Confidential stabilization amounts
-- MEV protection
-- Front-running prevention
 
 ### EigenLayer AVS Integration
 
@@ -166,12 +182,6 @@ Actively Validated Services for enhanced security:
 └───────────────────────────────────────────────────────────────┘
 ```
 
-**Benefits:**
-- Decentralized oracle validation
-- Economic security guarantees
-- Slashing for misbehavior
-- Shared security model
-
 ## Phase 4: Production Launch 🚀
 
 **Status: Planned (Q2 2025)**
@@ -206,35 +216,24 @@ Actively Validated Services for enhanced security:
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-**Governance Scope:**
-- Basket weight adjustments
-- Fee parameter changes
-- Treasury allocation
-- Protocol upgrades
+## Current Deployments
 
-## Long-term Vision
+### Polygon Amoy (Primary Testnet)
+| Contract | Address | Status |
+|----------|---------|--------|
+| LukasToken | `0x63524b53983960231b7b86CDEdDf050Ceb9263Cb` | ✅ Live |
+| LatAmBasketIndex | `0x1Dccf1fB82946a293E03036e85edc2139cba1541` | ✅ Live |
+| StabilizerVault | `0x5c5bc89db3f3e3e3e3e3e3e3e3e3e3e3e3e3e3e3` | ✅ Live |
+| LukasHook | `0x5b73C5498c1E3b4dbA84de0F1833c4a029d90519` | ✅ Live |
+| LUKAS/USDC Pool | `0x48411eFDE2D053B2Fa9456d91dad8a9BE7a1574E` | ✅ Live |
 
-### 2025 Goals
-- [ ] Mainnet launch on Polygon
-- [ ] 10,000+ unique holders
-- [ ] $1M+ TVL
-- [ ] Full DAO governance
-- [ ] Cross-chain bridges
-
-### 2026 Goals
-- [ ] Multi-chain presence (5+ networks)
-- [ ] Institutional partnerships
-- [ ] LatAm payment integrations
-- [ ] Mobile wallet app
-
-## Community Milestones
-
-| Milestone | Target | Reward |
-|-----------|--------|--------|
-| 1,000 Holders | Q1 2025 | Community NFT |
-| 10,000 Holders | Q2 2025 | Governance Rights |
-| $1M TVL | Q2 2025 | Fee Sharing |
-| 100,000 Holders | Q4 2025 | DAO Treasury |
+### Sepolia (Ethereum Testnet)
+| Contract | Address | Status |
+|----------|---------|--------|
+| LukasToken | `0x63524b53983960231b7b86CDEdDf050Ceb9263Cb` | ✅ Live |
+| LatAmBasketIndex | `0x46D240633d70AB16654e0053D05B24Dfb3284A71` | ✅ Live |
+| StabilizerVault | `0x64540D50CD37BC94C2ED77766Cc86C4D6C3ec9cE` | ✅ Live |
+| LukasHook | `0xB6EAA80E5446895a6d7136e90c97821550e51805` | ✅ Live |
 
 ## How to Contribute
 
