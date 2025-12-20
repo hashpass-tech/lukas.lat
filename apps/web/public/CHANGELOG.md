@@ -13,705 +13,124 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-## [0.2.12] - 2025-12-16
-### Added
-
-### Changed
-- Hidden scroll to explore button when video modal is open or playing
-
-### Fixed
-
-## [0.2.11] - 2025-12-16
-### Added
-
-### Changed
-- Improved mobile responsiveness of download modal
-- Optimized modal positioning for mobile devices (top-aligned instead of centered)
-- Enhanced mobile layout with compact spacing and sizing
-- Added scrollable content area for mobile to prevent overflow
-- Improved audio player mobile UI with smaller icons and hidden text labels
-
-### Fixed
-
-## [0.2.10] - 2025-12-16
-### Added
-
-### Changed
-- Enhanced download modal with audio and image format options
-- Added language-specific infographic downloads (EN, ES, PT)
-- Added audio content playback with play/pause controls
-- Implemented proper audio player with single track playback
-- Created reusable useAudioPlayer hook for audio state management
-- Created reusable AudioPlayer component for consistent UI
-- Added sound indicators and visual feedback for audio playback status
-
-### Fixed
-- Added opacity/mute effect to non-selected currency cards when one is selected
-- Made changelog modal dynamically show last 3 versions instead of hardcoded data
-- Fixed TypeScript error in changelog parsing function for better type safety
-- Cleaned up duplicate version entries and empty sections in CHANGELOG.md
-
-## [0.2.8] - 2025-12-16
-
-### Added
-
-### Changed
-- Enhanced download modal with audio and image format options
-- Added language-specific infographic downloads (EN, ES, PT)
-- Added audio content playback with play/pause controls
-- Implemented proper audio player with single track playback
-- Created reusable useAudioPlayer hook for audio state management
-- Created reusable AudioPlayer component for consistent UI
-- Added sound indicators and visual feedback for audio playback status
-
-### Fixed
-- Fixed currency modal dark mode background to use proper design system colors
-- Fixed modal text contrast issues by replacing standard Tailwind colors with custom CSS variables
-- Removed blur effects from currency cards and modals for cleaner appearance
-- Swapped positions of 100% and All text on LUKAS currency card to match other cards styling
-- Added opacity/mute effect to non-selected currency cards when one is selected
-- Made changelog modal dynamically show last 3 versions instead of hardcoded data
-
-## [0.2.7] - 2025-12-16
-
-### Added
-### Changed
-### Fixed
-
-## [0.2.6] - 2025-12-16
-
-### Added
-### Changed
-### Fixed
-
-## [0.2.5] - 2025-12-16
-
-### Added
-### Changed
-### Fixed
-
-## [0.2.4] - 2025-12-16
-
-### Added
-### Changed
-### Fixed
-
-## [0.2.3] - 2025-12-16
-
-### Added
-### Changed
-### Fixed
-
-## [0.2.2] - 2025-12-16
-
-### Added
-### Changed
-### Fixed
-
-## [0.2.1] - 2025-12-16
-
-### Added
-### Changed
-### Fixed
-
-## [0.2.0] - 2025-12-15
-
-### Added
-### Changed
-### Fixed
-
-
-## [0.1.64] - 2025-12-13
-### Added
-- Optimized mobile modal positioning and responsiveness
-
-### Changed
-- Improved download modal mobile layout with proper viewport constraints
-- Enhanced mobile modal spacing and button sizing for better UX
-
-### Fixed
-- Fixed mobile modal centering and overflow issues
-- Fixed scroll button z-index to stay behind mobile sidebar
-- Fixed mobile modal layout to prevent overlap with other elements
-
-## [0.1.63] - 2025-12-13
-### Added
-- Download modal with PDF/TXT format selection
-- Share buttons for Twitter/X, Telegram, and copy link
-- Enhanced download button with modal integration
-
-### Changed
-- Download button now opens modal instead of direct download
-- Updated button text from "Whitepaper" to "Download" with translations
-- Improved download UX with format selection and sharing options
-
-### Fixed
-
-## [0.1.62] - 2025-12-12
-
-### Added
-
-
-
-### Changed
-
-
-
-### Fixed
-
-
-
-
-
-## [0.1.61] - 2025-12-12
-
-### Added
-
-
-
-### Changed
-
-
-
-### Fixed
-
-
-
-
-
-## [0.1.60] - 2025-12-12
-
-### Added
-
-
-
-### Changed
-
-
-
-### Fixed
-
-
-
-
-
-## [0.1.59] - 2025-12-12
-
-### Added
-
-
-
-### Changed
-
-
-
-### Fixed
-
-
-
-
-
-## [0.1.58] - 2025-12-12
-
-### Added
-
-
-
-### Changed
-
-
-
-### Fixed
-
-
-
-
-
-## [0.1.57] - 2025-12-12
-
-### Added
-
-
-
-### Changed
-
-
-
-### Fixed
-
-
-
-
-
-## [0.1.56] - 2025-12-12
-
-### Added
-
-
-
-### Changed
-
-
-
-### Fixed
-
-
-
-
-
-## [0.1.55] - 2025-12-12
-
-### Added
-
-
-
-### Changed
-
-
-
-### Fixed
-
-- Use android-chrome-512x512.png for Twitter/OG image compatibility (a794501)
-
-
-
-## [0.1.54] - 2025-12-11
-
-### Added
-
-
-
-### Changed
-
-
-
-### Fixed
-
-
-
-
-
-## [0.1.53] - 2025-12-11
-### Added
-
-- Added `--check-build` flag to versioning script to run production build before bumping version
-
-### Changed
-
-### Fixed
-
-- Fixed WalletConnect project ID configuration to use correct AppKit-enabled project
-- Fixed TypeScript build error in wallet-provider by including connectingWalletId in all state updates
-
-## [0.1.52] - 2025-12-11
-
-### Added
-
-
-
-### Changed
-
-
-
-### Fixed
+## [0.2.35] - 2025-12-19
 
-
-
-
-
-## [0.1.52] - 2025-12-11
-### Added
-
-### Changed
-
-### Fixed
-
-## [0.1.51] - 2025-12-11
-### Added
-
-### Changed
-
-### Fixed
-
- - Unified wallet connection loading state across desktop and mobile connect buttons, showing consistent spinners and disabled states while any wallet is connecting
-
-## [0.1.50] - 2025-12-11
-
-### Added
-
- - Internal improvements to the versioning tooling to better support auto-generated changelog entries
-
-### Changed
-
- - Refined auto-changelog behavior when using `--auto-changelog` so that it can proceed with empty sections when appropriate
-
-### Fixed
-
- - Cleaned up duplicate 0.1.49 sections and removed noisy auto-commit entries from the changelog history
-
-## [0.1.49] - 2025-12-11
-
-### Added
-
-- Optional `--auto-changelog` flag for the versioning script to always populate changelog entries from git commits when desired
-
-### Changed
-
-- Improved versioning script behavior to skip empty releases by default and log clearer messages when no relevant changes are detected
-
-### Fixed
-
-- Prevented internal auto-commit helper commits from polluting the autogenerated changelog entries
-
-## [0.1.48] - 2025-12-11
-### Added
-
-### Changed
-
-### Fixed
-
-## [0.1.47] - 2025-12-11
-### Added
-
-### Changed
-
-### Fixed
-
-## [0.1.46] - 2025-12-11
-### Added
-
-### Changed
-
-### Fixed
-
-- Added CI check to validate NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID before building/deploying
- - Logged masked WalletConnect project ID in GitHub Actions to help verify configuration without exposing secrets
-
-## [0.1.45] - 2025-12-11
-### Added
-
-### Changed
-
-### Fixed
-
-- Aligned Join Movement and Swap cards to share the same minimum height for a stable layout
-- Updated footer version badge to read from generated version.json so it always matches the current release
-
-## [0.1.44] - 2025-12-11
-### Added
-
-### Changed
-
-### Fixed
-
-## [0.1.43] - 2025-12-11
-### Added
-
-### Changed
-
-### Fixed
-
-## [0.1.42] - 2025-12-11
-### Added
-
-### Changed
-
-### Fixed
-
-## [0.1.41] - 2025-12-11
-### Added
-
-- WalletConnect v3 integration using project ID env config and Ethereum provider
-- Advanced swap card and Join Movement swap flow improvements when wallet is connected
-
-### Changed
-
-- Refined wallet header and mobile wallet button UX for clearer connect/disconnect states
-
-### Fixed
-
-- Wallet connect modal not appearing due to missing WalletConnect provider setup
-
-## [0.1.40] - 2025-12-11
-### Added
-
-### Changed
-
-### Fixed
-
-## [0.1.39] - 2025-12-11
-### Added
-- Minor UI and copy updates for latest landing page tweaks
-
-### Changed
-
-### Fixed
-
-## [0.1.38] - 2025-12-11
-### Added
-
-### Changed
-
-### Fixed
-
-## [0.1.37] - 2025-12-11
-### Added
-
-### Changed
-
-### Fixed
-
-## [0.1.36] - 2025-12-11
-### Added
-
-### Changed
-
-### Fixed
-
-- Resolved React hook order warning on Currency page by making wallet hook usage consistent
-
-## [0.1.35] - 2025-12-10
-### Added
-
-### Changed
-
-### Fixed
-
-## [0.1.34] - 2025-12-10
-### Added
-
-### Changed
-
-- Added GitHub repository link to version badge in Footer component
-- Made version pill clickable with external link indicator
-
-### Fixed
-
-## [0.1.33] - 2025-12-10
-### Added
-
-### Changed
-
-### Fixed
-
-## [0.1.32] - 2025-12-10
-### Added
-
-### Changed
-
-### Fixed
-
-- Restricted orbiting currency cursor animation to first section only
-- Hidden orbiting animation completely when scrolling to second section
-
-## [0.1.31] - 2025-12-10
-### Added
-
-### Changed
-
-### Fixed
-
-## [0.1.30] - 2025-11-24
-### Added
-
-- Auto-commit and auto-push functionality to version bump script
-- Enhanced theme switching reliability in hero background animation
-
-### Changed
-
-- Improved version script to handle uncommitted changes automatically
-
-### Fixed
-
-## [0.1.29] - 2025-11-24
-### Added
-
-### Changed
-
-### Fixed
-
-## [0.1.28] - 2025-11-24
-### Added
-- Final version validation system
-- Prevention of empty releases
-- Enhanced changelog management
-
-### Fixed
-- Changelog cleanup removing unreleased entries
-- Version script workflow issues
-- Wallet button functionality restored with SSR-safe handling
-- Card interaction issues by removing interfering orbiting elements
-
-### Removed
-- Unused JoinMovementSectionStatic component
-- Redundant static component exports
-- Interfering orbiting elements from currency card
-
-### Reverted
-- OrbitingSkills and other interactive elements from DonutChartSection
-- Background effects that blocked card interactions
-
-## [0.1.26] - 2025-11-24
-### Added
-
-### Changed
-
-### Fixed
-
-## [0.1.25] - 2025-11-24
-### Added
-
-### Changed
-
-### Fixed
-
-## [0.1.24] - 2025-11-24
-### Added
-
-### Changed
-
-### Fixed
-
-## [0.1.23] - 2025-11-24
-### Added
-
-### Changed
-
-### Fixed
-
-## [0.1.22] - 2025-11-24
-### Added
-
-### Changed
-
-### Fixed
-
-## [0.1.21] - 2025-11-24
-### Added
-
-### Changed
-
-### Fixed
-
-## [0.1.20] - 2025-11-24
 ### Added
+- Direct contract detection from deployments.json for reliable network switching
+- Auto-switch to Polygon Amoy (default testnet) on wallet connection
 
 ### Changed
+- Improved contract detection to be reactive to network changes
+- Updated WalletConnect to use Polygon Amoy as primary chain with Sepolia as optional
+- Enhanced Web3SettingsDialog contract loading to respond to chainId changes
 
 ### Fixed
-
-## [0.1.19] - 2025-11-24
-### Added
+- Fixed contract detection not updating when switching networks
+- Fixed Live indicator showing incorrect status after network switch
+- Improved wallet provider network switching reliability
 
-### Changed
-
-### Fixed
+## [0.2.34] - 2025-12-19
 
-## [0.1.18] - 2025-11-24
 ### Added
+- Network-specific color coding for UI components (green for Ethereum, purple for Polygon Amoy, blue for Sepolia)
+- Independent Live indicator that shows green when contracts are deployed, grey when not
+- Network icons (Ξ for Ethereum, ◆ for Polygon) in wallet connect button and swap widget
+- Comprehensive network color system with tailwind class support
+- TODO documentation for contract detection logic improvements
 
 ### Changed
+- Updated SwapWidget to display network-aware UI with proper Live/Not Live status
+- Improved contract detection logic with better logging for debugging
+- Enhanced WalletConnectButton with network-specific background colors
+- Updated Web3SettingsDialog to show network icons in selection buttons
+- Refined LukasHeroAnimation coin colors to match selected network
+- Updated WalletHeader DitheringShader with network-specific colors
 
 ### Fixed
-
-## [0.1.17] - 2025-11-24
-### Added
-
-### Changed
+- Fixed hydration mismatch in Footer component with mounted state
+- Corrected network color application across all components
+- Improved contract address validation in SDK provider
 
-### Fixed
+## [0.2.33] - 2025-12-19
 
-## [0.1.16] - 2025-11-24
 ### Added
+- Comprehensive protocol documentation in Docusaurus (overview, tokenomics, architecture, roadmap, integrations)
+- Dynamic locale-based titles for Privacy and Terms pages
+- Translation keys for footer links in all locales (en, es, pt, cl)
 
 ### Changed
+- Updated Footer "Documentation" link to "Docs"
+- Updated SDK documentation to v0.2.22
+- Enhanced Docusaurus sidebar with protocol documentation section
 
 ### Fixed
-
-## [0.1.15] - 2025-11-24
-### Added
-
-### Changed
+- Fixed LukasSDKProvider context initialization for SSR
+- Fixed Footer hydration mismatch with mounted state for Dialog component
 
-### Fixed
+## [0.2.32] - 2025-12-19
 
-## [0.1.14] - 2025-11-24
 ### Added
 
 ### Changed
+- Reduced video modal size on mobile devices for better fit
+- Improved mobile video modal max-height constraints
 
 ### Fixed
+- Fixed video modal overflow on mobile by reducing viewport width usage
+- Improved scroll behavior prevention with overscroll-behavior
+- Better responsive sizing across all breakpoints
 
-## [0.1.13] - 2025-11-24
+## [0.2.31] - 2025-12-19
 
 ### Added
-- Shared HtmlLayout component for single source of truth HTML structure
-- Shared createMetadata function for centralized metadata generation
-- Proper wallet connection state handling in CurrencyPageClient
-- JoinMovementSectionStatic component for SSR compatibility
+- Video modal responsive sizing system
 
 ### Changed
-- Refactored layouts to eliminate duplicate HTML code
-- Increased wallet connect button size from 200px to 280px
-- Simplified Join now button by removing unnecessary hover effects
-- Updated DitheringShader dimensions to match button container
+- Improved video modal overflow prevention with aggressive CSS constraints
+- Enhanced dialog sizing for better mobile responsiveness
 
 ### Fixed
-- Wallet context SSR errors during static export
-- Wallet connect button cutoff on right side
-- TypeScript import errors (useSimpleWallet → useWallet)
-- Layout hierarchy following Next.js best practices
+- Fixed video modal x-axis overflow on mobile devices with !important overrides
+- Resolved video modal height constraints across all breakpoints
+- Fixed dialog content padding and gap for video display
 
+## [0.2.30] - 2025-12-19
 
-## [0.1.5] - 2025-11-24
-
 ### Added
-- Automatic language detection based on browser Accept-Language header
-- Middleware for locale-based routing and redirection
-- Cookie-based language preference persistence
-- Client-side language detection fallback
-- Dynamic theme switcher rope animation that expands with pull gesture
+- Network state verification in Web3SettingsDialog to detect and report stale state
+- Network sync status indicator showing "Synced" or "Verifying..." state
+- Error banner for network state mismatches with reload option
+- Better error handling for network switch failures
 
 ### Changed
-- Enhanced theme switcher with smooth rope expansion animation
-- Improved language switcher with Next.js router integration
-- Better user experience with automatic locale detection
+- Improved mobile responsiveness for video modal in hero section
+- Enhanced dialog component with better mobile constraints (95vw width, max-height)
+- Optimized changelog modal for mobile with responsive padding and text sizes
+- Improved Web3SettingsDialog with real-time network state tracking
+- Better error messages for network switching failures
 
 ### Fixed
-- Theme switcher rope positioning to attach properly to the circle
-- Prevented users from accessing site without locale prefix
-- Rope now expands smoothly instead of appearing cut
-
-
-## [0.1.2] - 2025-11-24
-
-### Added
-- Comprehensive versioning system with semantic versioning
-- Automated changelog management
-- Single source of truth for version (version.json)
-
+- Fixed video modal x-axis overflow on mobile devices
+- Fixed changelog modal overflow issues on small screens
+- Resolved stale network state being displayed in Web3SettingsDialog
+- Fixed dialog close button positioning on mobile
+- Improved text wrapping in changelog entries to prevent overflow
+- Better handling of network mismatches between UI and wallet
 
-## [0.1.0] - 2025-11-24
+## [0.2.29] - 2025-12-19
 
 ### Added
-- Initial release of $LUKAS landing page
-- Modern landing page with glassmorphism design
-- Dark/light mode theme support with next-themes
-- LightPullThemeSwitcher component with drag-to-toggle animation
-- OrbitingSkills animation with cursor tracking
-- Currency weights display with interactive progress bars
-- Responsive design for mobile and desktop
-- LukasGravityCenter shader background animation
-- Connect Wallet button
-- Support for 5 LatAm currencies: BRL, MXN, COP, CLP, ARS
+- Unified Pool Monitoring Dashboard with consolidated metrics, price chart, and transactions
+- Responsive transaction history integrated into dashboard tabs
 
 ### Changed
-- Improved light mode contrast and readability
-- Enhanced theme switcher with visual sun/moon states
-- Optimized orbiting animation to prevent click interference
+- Refactored MonitoringDashboard component with improved layout and mobile responsiveness
+- Updated PoolMetricsPanel to use CSS variables for proper theme support
+- Removed duplicate TransactionHistory component from PoolPageClient
+- Improved tab navigation with horizontal scroll on mobile devices
 
 ### Fixed
-- Click behavior on Connect Wallet button
-- Theme switcher animation pull-back behavior
-- Percentage display centered in progress bars
-- Orbit tracking stops over interactive elements
+- Dark/light theme switching now works properly using CSS variables
+- Fixed responsive design issues on mobile and tablet screens
+- Resolved duplicate metric displays across different views
+- Improved spacing and padding consistency across all screen sizes

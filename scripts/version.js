@@ -23,6 +23,7 @@ const ROOT_DIR = path.resolve(__dirname, '..');
 const VERSION_FILE = path.join(ROOT_DIR, 'version.json');
 const PUBLIC_VERSION_FILE = path.join(ROOT_DIR, 'apps/web/public/version.json');
 const CHANGELOG_FILE = path.join(ROOT_DIR, 'CHANGELOG.md');
+const PUBLIC_CHANGELOG_FILE = path.join(ROOT_DIR, 'apps/web/public/CHANGELOG.md');
 const ROOT_PACKAGE = path.join(ROOT_DIR, 'package.json');
 const WEB_PACKAGE = path.join(ROOT_DIR, 'apps/web/package.json');
 const DOCS_PACKAGE = path.join(ROOT_DIR, 'apps/docs/package.json');
@@ -305,6 +306,13 @@ function copyToPublic(versionData) {
     fs.writeFileSync(PUBLIC_VERSION_FILE, JSON.stringify(versionData, null, 2) + '\n');
 }
 
+// Copy CHANGELOG.md to public folder for web access
+function syncChangelogToPublic() {
+    const changelog = fs.readFileSync(CHANGELOG_FILE, 'utf8');
+    fs.writeFileSync(PUBLIC_CHANGELOG_FILE, changelog);
+    log('✓ Synced CHANGELOG.md to public folder', colors.green);
+}
+
 // Get current date in YYYY-MM-DD format
 function getCurrentDate() {
     const now = new Date();
@@ -507,6 +515,7 @@ function main() {
         // ignore if docs package is missing
     }
     copyToPublic(versionData);
+    syncChangelogToPublic();
     
     log('✓ Updated all version files', colors.green);
     

@@ -5,21 +5,20 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { 
-  ExternalLink, 
-  Network, 
-  Shield, 
-  Copy, 
-  Check, 
+import {
+  ExternalLink,
+  Network,
+  Shield,
+  Copy,
+  Check,
   Wallet,
   Loader2,
   CheckCircle2,
   XCircle,
 } from "lucide-react";
 import { useWallet } from "@/app/providers/wallet-provider";
-import { useLukasSDK } from "@/app/providers/lukas-sdk-provider";
 import { WEB3_NETWORKS, getNetworkByChainId } from "@/lib/web3-config";
-import { getNetworkColors, getNetworkEmoji, getNetworkName, getNetworkIcon } from "@/lib/network-colors";
+import { getNetworkColors, getNetworkName, getNetworkIcon } from "@/lib/network-colors";
 import { cn } from "@/lib/utils";
 
 type Props = {
@@ -30,11 +29,6 @@ type Props = {
 // Network icons mapping
 const NetworkIcon = ({ chainId, className }: { chainId: number; className?: string }) => {
   return <span className={className}>{getNetworkIcon(chainId)}</span>;
-};
-
-// Get human-readable chain name
-const getChainName = (chainId: number | null): string => {
-  return getNetworkName(chainId);
 };
 
 // Contract type with icon
@@ -87,7 +81,6 @@ async function getContractsForChain(chainId: number | null): Promise<ContractInf
 
 export function Web3SettingsDialog({ open, onOpenChange }: Props) {
   const { address, chainId, switchNetwork } = useWallet();
-  const { networkInfo, isInitialized } = useLukasSDK();
   const networkColors = getNetworkColors(chainId);
   const [copiedAddress, setCopiedAddress] = useState<string | null>(null);
   const [networkSyncError, setNetworkSyncError] = useState<string | null>(null);
@@ -248,12 +241,12 @@ export function Web3SettingsDialog({ open, onOpenChange }: Props) {
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-md w-[calc(100vw-1.5rem)] sm:w-full bg-white dark:bg-slate-900 backdrop-blur-2xl rounded-3xl border border-slate-200 dark:border-slate-700/50 shadow-2xl p-0 gap-0 overflow-hidden">
+      <DialogContent className="max-w-md w-[calc(100vw-1.5rem)] sm:w-full bg-background backdrop-blur-2xl rounded-3xl border border-border shadow-2xl p-0 gap-0 overflow-hidden">
         {/* Header with gradient */}
         <div className="relative px-4 sm:px-6 pt-5 sm:pt-6 pb-4">
           <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/10 via-transparent to-blue-500/10 dark:from-emerald-500/5 dark:to-blue-500/5 pointer-events-none" />
           <DialogHeader className="relative">
-            <DialogTitle className="text-lg sm:text-xl font-bold flex items-center gap-2.5 text-slate-900 dark:text-white">
+            <DialogTitle className="text-lg sm:text-xl font-bold flex items-center gap-2.5 text-foreground">
               <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-gradient-to-br from-emerald-500/20 to-emerald-500/5 dark:from-emerald-500/30 dark:to-emerald-500/10 flex items-center justify-center">
                 <Wallet className="w-4 h-4 sm:w-5 sm:h-5 text-emerald-600 dark:text-emerald-400" />
               </div>
@@ -289,19 +282,19 @@ export function Web3SettingsDialog({ open, onOpenChange }: Props) {
           </AnimatePresence>
 
           {/* Connected Account Card */}
-          <div className="rounded-2xl border border-slate-200 dark:border-slate-700/60 bg-gradient-to-br from-slate-50 to-white dark:from-slate-800/80 dark:to-slate-800/40 p-3 sm:p-4">
+          <div className="rounded-2xl border border-border bg-card p-3 sm:p-4">
             <div className="flex items-center gap-3">
               {/* Avatar */}
               <div className="relative">
                 {ensAvatar ? (
-                  <img 
-                    src={ensAvatar} 
+                  <img
+                    src={ensAvatar}
                     alt="ENS Avatar"
                     className="w-10 h-10 sm:w-12 sm:h-12 rounded-full object-cover"
                     onError={() => setEnsAvatar(null)}
                   />
                 ) : (
-                  <div 
+                  <div
                     className="w-10 h-10 sm:w-12 sm:h-12 rounded-full flex items-center justify-center text-white font-bold text-sm"
                     style={{ backgroundColor: address ? generateAvatar(address) : '#94a3b8' }}
                   >
@@ -309,18 +302,18 @@ export function Web3SettingsDialog({ open, onOpenChange }: Props) {
                   </div>
                 )}
                 {address && (
-                  <div className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-full bg-green-500 border-2 border-white dark:border-slate-900" />
+                  <div className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-full bg-green-500 border-2 border-background" />
                 )}
               </div>
-              
+
               {/* Address Info */}
               <div className="flex-1 min-w-0">
-                <p className="text-[10px] sm:text-xs text-slate-500 dark:text-slate-400 uppercase tracking-wider font-medium">
+                <p className="text-[10px] sm:text-xs text-muted-foreground uppercase tracking-wider font-medium">
                   {address ? 'Connected' : 'Not Connected'}
                 </p>
                 <div className="flex items-center gap-2">
                   <p className={cn(
-                    "text-sm sm:text-base font-semibold truncate text-slate-900 dark:text-white",
+                    "text-sm sm:text-base font-semibold truncate text-foreground",
                     ensName ? "" : "font-mono"
                   )}>
                     {loadingEns ? (
@@ -333,7 +326,7 @@ export function Web3SettingsDialog({ open, onOpenChange }: Props) {
                 </div>
                 {/* Show address below ENS name */}
                 {ensName && address && (
-                  <p className="text-[10px] sm:text-xs font-mono text-slate-400 dark:text-slate-500 truncate">
+                  <p className="text-[10px] sm:text-xs font-mono text-muted-foreground truncate">
                     {shortenAddress(address)}
                   </p>
                 )}
@@ -351,7 +344,7 @@ export function Web3SettingsDialog({ open, onOpenChange }: Props) {
                   {copiedAddress === address ? (
                     <Check className="w-4 h-4 text-green-500" />
                   ) : (
-                    <Copy className="w-4 h-4 text-slate-500 dark:text-slate-400" />
+                    <Copy className="w-4 h-4 text-muted-foreground" />
                   )}
                 </Button>
               )}
@@ -359,10 +352,15 @@ export function Web3SettingsDialog({ open, onOpenChange }: Props) {
 
             {/* Network Badge & Explorer Link */}
             {address && (
-              <div className="mt-3 pt-3 border-t border-slate-200 dark:border-slate-700/40 flex flex-wrap items-center gap-2">
-                <Badge 
-                  variant="secondary" 
-                  className={`text-[10px] sm:text-xs px-2 py-0.5 border-0 ${networkColors.tailwind.badge}`}
+              <div className="mt-3 pt-3 border-t border-border flex flex-wrap items-center gap-2">
+                <Badge
+                  variant="outline"
+                  className="text-[10px] sm:text-xs px-2 py-0.5"
+                  style={{
+                    backgroundColor: networkColors.bgLight,
+                    borderColor: networkColors.borderLight,
+                    color: networkColors.textLight,
+                  }}
                 >
                   <NetworkIcon chainId={chainId || 0} className="mr-1" />
                   {getNetworkName(chainId)}
@@ -372,7 +370,7 @@ export function Web3SettingsDialog({ open, onOpenChange }: Props) {
                     href={explorerAccountUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1 text-[10px] sm:text-xs text-slate-500 dark:text-slate-400 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors"
+                    className="inline-flex items-center gap-1 text-[10px] sm:text-xs text-muted-foreground hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors"
                   >
                     View on Explorer
                     <ExternalLink className="w-3 h-3" />
@@ -385,8 +383,8 @@ export function Web3SettingsDialog({ open, onOpenChange }: Props) {
           {/* Network Selection */}
           <div className="space-y-2.5 sm:space-y-3">
             <div className="flex items-center gap-2 px-1">
-              <Network className="w-4 h-4 text-slate-500 dark:text-slate-400" />
-              <span className="text-xs sm:text-sm font-semibold text-slate-900 dark:text-white">Select Network</span>
+              <Network className="w-4 h-4 text-muted-foreground" />
+              <span className="text-xs sm:text-sm font-semibold text-foreground">Select Network</span>
             </div>
 
             <div className="grid grid-cols-1 gap-2">
@@ -394,7 +392,7 @@ export function Web3SettingsDialog({ open, onOpenChange }: Props) {
                 const isActive = n.chainId === chainId;
                 const isSwitching = switchingTo === n.chainId;
                 const nColors = getNetworkColors(n.chainId);
-                
+
                 return (
                   <motion.button
                     key={n.chainId}
@@ -404,9 +402,9 @@ export function Web3SettingsDialog({ open, onOpenChange }: Props) {
                     whileTap={{ scale: address && !isActive ? 0.99 : 1 }}
                     className={cn(
                       "relative flex items-center gap-3 w-full p-3 sm:p-3.5 rounded-xl border transition-all duration-200",
-                      isActive 
-                        ? `border-opacity-50 shadow-sm` 
-                        : "border-slate-200 dark:border-slate-700/60 bg-white dark:bg-slate-800/50 hover:border-slate-300 dark:hover:border-slate-600 hover:bg-slate-50 dark:hover:bg-slate-800/80",
+                      isActive
+                        ? "border-opacity-50 shadow-sm"
+                        : "border-border bg-card hover:border-border/80 hover:bg-muted/50",
                       !address && "opacity-50 cursor-not-allowed",
                       isSwitching && "opacity-70"
                     )}
@@ -416,33 +414,39 @@ export function Web3SettingsDialog({ open, onOpenChange }: Props) {
                     } : {}}
                   >
                     {/* Network Icon */}
-                    <div 
-                      className="w-9 h-9 sm:w-10 sm:h-10 rounded-lg flex items-center justify-center text-lg sm:text-xl"
-                      style={{
-                        backgroundColor: isActive ? nColors.bgLight : 'rgb(241, 245, 249)'
-                      }}
+                    <div
+                      className={cn(
+                        "w-9 h-9 sm:w-10 sm:h-10 rounded-lg flex items-center justify-center text-lg sm:text-xl",
+                        !isActive && "bg-muted"
+                      )}
+                      style={isActive ? {
+                        backgroundColor: nColors.bgLight
+                      } : {}}
                     >
                       <NetworkIcon chainId={n.chainId} />
                     </div>
 
                     {/* Network Info */}
                     <div className="flex-1 text-left">
-                      <p 
-                        className="text-sm sm:text-base font-medium"
-                        style={{
-                          color: isActive ? nColors.textLight : 'rgb(15, 23, 42)'
-                        }}
+                      <p
+                        className={cn(
+                          "text-sm sm:text-base font-medium",
+                          !isActive && "text-foreground"
+                        )}
+                        style={isActive ? {
+                          color: nColors.primary
+                        } : {}}
                       >
                         {n.shortName}
                       </p>
-                      <p className="text-[10px] sm:text-xs text-slate-500 dark:text-slate-400">
+                      <p className="text-[10px] sm:text-xs text-muted-foreground">
                         {n.name}
                       </p>
                     </div>
 
                     {/* Status Indicator */}
                     <div className="flex items-center gap-2">
-                      <span className="text-[10px] sm:text-xs text-slate-500 dark:text-slate-400 font-medium">
+                      <span className="text-[10px] sm:text-xs text-muted-foreground font-medium">
                         {n.nativeCurrencySymbol}
                       </span>
                       {isSwitching ? (
@@ -460,7 +464,7 @@ export function Web3SettingsDialog({ open, onOpenChange }: Props) {
             </div>
 
             {!address && (
-              <p className="text-[10px] sm:text-xs text-slate-500 dark:text-slate-400 text-center py-1">
+              <p className="text-[10px] sm:text-xs text-muted-foreground text-center py-1">
                 Connect wallet to switch networks
               </p>
             )}
@@ -470,20 +474,20 @@ export function Web3SettingsDialog({ open, onOpenChange }: Props) {
           <div className="space-y-2.5 sm:space-y-3">
             <div className="flex items-center justify-between px-1">
               <div className="flex items-center gap-2">
-                <Shield className="w-4 h-4 text-slate-500 dark:text-slate-400" />
-                <span className="text-xs sm:text-sm font-semibold text-slate-900 dark:text-white">Protocol Contracts</span>
+                <Shield className="w-4 h-4 text-muted-foreground" />
+                <span className="text-xs sm:text-sm font-semibold text-foreground">Protocol Contracts</span>
               </div>
               {contracts.length > 0 && (
-                <Badge variant="outline" className="text-[10px] px-1.5 py-0 h-5 border-slate-300 dark:border-slate-600">
+                <Badge variant="outline" className="text-[10px] px-1.5 py-0 h-5">
                   {contracts.length}
                 </Badge>
               )}
             </div>
 
-            <div className="rounded-xl border border-slate-200 dark:border-slate-700/60 bg-white dark:bg-slate-800/30 overflow-hidden">
+            <div className="rounded-xl border border-border bg-card overflow-hidden">
               {contracts.length > 0 ? (
                 <div className="max-h-[300px] sm:max-h-[400px] overflow-y-auto">
-                  <div className="divide-y divide-slate-100 dark:divide-slate-700/40">
+                  <div className="divide-y divide-border">
                     <AnimatePresence>
                       {contracts.map((c, idx) => {
                         const url = network ? `${network.explorerBaseUrl}/address/${c.address}` : undefined;
@@ -494,37 +498,37 @@ export function Web3SettingsDialog({ open, onOpenChange }: Props) {
                             animate={{ opacity: 1, x: 0 }}
                             exit={{ opacity: 0, x: -10 }}
                             transition={{ delay: idx * 0.05 }}
-                            className="flex items-center gap-2.5 sm:gap-3 p-2.5 sm:p-3 hover:bg-slate-50 dark:hover:bg-slate-700/30 transition-colors"
+                            className="flex items-center gap-2.5 sm:gap-3 p-2.5 sm:p-3 hover:bg-muted/50 transition-colors"
                           >
                             <span className="text-base sm:text-lg flex-shrink-0">{c.icon}</span>
                             <div className="flex-1 min-w-0">
-                              <p className="text-xs sm:text-sm font-medium truncate text-slate-900 dark:text-white">{c.name}</p>
-                              <p className="text-[10px] sm:text-xs font-mono text-slate-500 dark:text-slate-400 truncate">
+                              <p className="text-xs sm:text-sm font-medium truncate text-foreground">{c.name}</p>
+                              <p className="text-[10px] sm:text-xs font-mono text-muted-foreground truncate">
                                 {shortenAddress(c.address)}
                               </p>
                             </div>
                             <div className="flex items-center gap-1 flex-shrink-0">
-                              <Button 
-                                type="button" 
-                                variant="ghost" 
-                                size="sm" 
+                              <Button
+                                type="button"
+                                variant="ghost"
+                                size="sm"
                                 onClick={() => onCopy(c.address)}
                                 className="h-7 w-7 sm:h-8 sm:w-8 p-0 rounded-lg hover:bg-emerald-500/10 transition-colors"
                               >
                                 {copiedAddress === c.address ? (
                                   <Check className="w-3.5 h-3.5 text-green-500" />
                                 ) : (
-                                  <Copy className="w-3.5 h-3.5 text-slate-500 dark:text-slate-400" />
+                                  <Copy className="w-3.5 h-3.5 text-muted-foreground" />
                                 )}
                               </Button>
                               {url && (
-                                <a 
-                                  href={url} 
-                                  target="_blank" 
-                                  rel="noopener noreferrer" 
+                                <a
+                                  href={url}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
                                   className="h-7 w-7 sm:h-8 sm:w-8 flex items-center justify-center rounded-lg hover:bg-emerald-500/10 transition-colors"
                                 >
-                                  <ExternalLink className="w-3.5 h-3.5 text-slate-500 dark:text-slate-400" />
+                                  <ExternalLink className="w-3.5 h-3.5 text-muted-foreground" />
                                 </a>
                               )}
                             </div>
@@ -540,7 +544,7 @@ export function Web3SettingsDialog({ open, onOpenChange }: Props) {
                   animate={{ opacity: 1 }}
                   className="p-4 text-center"
                 >
-                  <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400">
+                  <p className="text-xs sm:text-sm text-muted-foreground">
                     {loadingContracts ? 'Loading contracts...' : chainId ? 'No contracts deployed on this network' : 'Connect wallet to view contracts'}
                   </p>
                 </motion.div>
@@ -552,7 +556,7 @@ export function Web3SettingsDialog({ open, onOpenChange }: Props) {
               <motion.div
                 initial={{ opacity: 0, y: -5 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="flex items-center justify-center gap-1.5 text-[10px] sm:text-xs text-slate-500 dark:text-slate-400"
+                className="flex items-center justify-center gap-1.5 text-[10px] sm:text-xs text-muted-foreground"
               >
                 <div className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
                 <span>Network {chainId} • {contracts.length} contracts</span>
