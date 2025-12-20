@@ -125,26 +125,106 @@ export function WalletProvider({ children }: { children: ReactNode }) {
       throw new Error('WalletConnect project ID is not configured');
     }
 
-    const amoyRpc = process.env.NEXT_PUBLIC_AMOY_RPC_URL;
-    const mainnetRpc = process.env.NEXT_PUBLIC_MAINNET_RPC_URL;
+    const amoyRpc = process.env.NEXT_PUBLIC_AMOY_RPC_URL || 'https://rpc-amoy.polygon.technology';
     const sepoliaRpc = 'https://rpc.sepolia.org';
+    const mainnetRpc = process.env.NEXT_PUBLIC_MAINNET_RPC_URL || 'https://eth.llamarpc.com';
 
-    const rpcMap: Record<number, string> = {};
-    if (amoyRpc) rpcMap[80002] = amoyRpc;
-    if (mainnetRpc) rpcMap[1] = mainnetRpc;
-    rpcMap[11155111] = sepoliaRpc;
+    const rpcMap: Record<number, string> = {
+      80002: amoyRpc,
+      11155111: sepoliaRpc,
+      1: mainnetRpc,
+    };
 
     try {
+      // Disconnect any existing session first
+      if (providerRef.current?.disconnect) {
+        try {
+          await providerRef.current.disconnect();
+        } catch {
+          // Ignore disconnect errors
+        }
+      }
+
       const provider = await EthereumProvider.init({
         projectId,
         // Use Amoy as the primary chain (default), with Sepolia and mainnet available
         chains: [80002],
         optionalChains: [11155111, 1],
         showQrModal: true,
-        ...(Object.keys(rpcMap).length > 0 ? { rpcMap } : {}),
+        rpcMap,
+        // Mobile-friendly options
+        metadata: {
+          name: 'Lukas Protocol',
+          description: 'LatAm Basket Stablecoin',
+          url: typeof window !== 'undefined' ? window.location.origin : 'https://lukas.lat',
+          icons: ['https://lukas.lat/logo.png'],
+        },
       });
 
       providerRef.current = provider;
+
+      // Set up event listeners BEFORE enabling
+      const setupProviderListeners = () => {
+        provider.on('chainChanged', (chainIdHex: string | number) => {
+          const nextChainId = typeof chainIdHex === 'string' 
+            ? parseInt(chainIdHex, 16) 
+            : typeof chainIdHex === 'number' 
+              ? chainIdHex 
+              : null;
+          console.log('WalletConnect chainChanged event:', chainIdHex, '->', nextChainId);
+          updateWalletState(prev => ({
+            ...prev,
+            chainId: nextChainId,
+          }));
+        });
+
+        provider.on('accountsChanged', (accounts: string[]) => {
+          console.log('WalletConnect accountsChanged event:', accounts);
+          if (accounts.length === 0) {
+            disconnect();
+          } else {
+            updateWalletState(prev => ({
+              ...prev,
+              address: accounts[0],
+              isConnected: true,
+            }));
+          }
+        });
+
+        provider.on('disconnect', () => {
+          console.log('WalletConnect disconnect event');
+          disconnect();
+        });
+
+        // Additional events for mobile reliability
+        provider.on('session_event', (event: any) => {
+          console.log('WalletConnect session_event:', event);
+          if (event?.params?.event?.name === 'chainChanged') {
+            const chainId = event?.params?.event?.data;
+            if (chainId) {
+              updateWalletState(prev => ({
+                ...prev,
+                chainId: typeof chainId === 'number' ? chainId : parseInt(chainId, 16),
+              }));
+            }
+          }
+        });
+
+        provider.on('session_update', (event: any) => {
+          console.log('WalletConnect session_update:', event);
+          // Re-read chain ID on session update
+          readChainId().then(chainId => {
+            if (chainId) {
+              updateWalletState(prev => ({
+                ...prev,
+                chainId,
+              }));
+            }
+          });
+        });
+      };
+
+      setupProviderListeners();
 
       const accounts = await provider.enable();
 
@@ -185,6 +265,7 @@ export function WalletProvider({ children }: { children: ReactNode }) {
     }
 
     const isWalletConnect = providerRef.current && providerRef.current !== window.ethereum;
+    console.log(`Switching network to ${targetChainId}, isWalletConnect: ${isWalletConnect}`);
 
     try {
       // First, try to switch the network
@@ -193,16 +274,19 @@ export function WalletProvider({ children }: { children: ReactNode }) {
         params: [{ chainId: formatChainIdHex(targetChainId) }],
       });
     } catch (error: any) {
+      console.log('Switch network error:', error);
+      
       // Handle user rejection
       if (error?.code === 4001 || error?.message?.includes('User rejected')) {
         throw new Error('Network switch cancelled by user');
       }
       // Handle chain not added to wallet - try to add it
-      if (error?.code === 4902 || error?.message?.includes('Unrecognized chain')) {
+      if (error?.code === 4902 || error?.message?.includes('Unrecognized chain') || error?.message?.includes('wallet_addEthereumChain')) {
         // Try to add the network
         try {
           const networkParams = getNetworkParams(targetChainId);
           if (networkParams) {
+            console.log('Adding network:', networkParams);
             await provider.request({
               method: 'wallet_addEthereumChain',
               params: [networkParams],
@@ -211,6 +295,7 @@ export function WalletProvider({ children }: { children: ReactNode }) {
             throw new Error('Network not configured in wallet. Please add it manually.');
           }
         } catch (addError: any) {
+          console.log('Add network error:', addError);
           if (addError?.code === 4001) {
             throw new Error('Network add cancelled by user');
           }
@@ -221,45 +306,71 @@ export function WalletProvider({ children }: { children: ReactNode }) {
       }
     }
 
-    // Wait for the chain to actually switch (WalletConnect needs more time)
-    const waitTime = isWalletConnect ? 2000 : 1000;
+    // Wait for the chain to actually switch (WalletConnect/mobile needs more time)
+    const waitTime = isWalletConnect ? 3000 : 1000;
     await new Promise(resolve => setTimeout(resolve, waitTime));
 
     // Verify the switch was successful by reading the chain ID multiple times
     let verifiedChainId: number | null = null;
     let attempts = 0;
-    const maxAttempts = isWalletConnect ? 8 : 5;
+    const maxAttempts = isWalletConnect ? 10 : 5;
+    const retryDelay = isWalletConnect ? 800 : 500;
 
     while (attempts < maxAttempts) {
       verifiedChainId = await readChainId();
+      console.log(`Chain verification attempt ${attempts + 1}/${maxAttempts}: got ${verifiedChainId}, expected ${targetChainId}`);
+      
       if (verifiedChainId === targetChainId) {
         break;
       }
       attempts++;
       if (attempts < maxAttempts) {
-        await new Promise(resolve => setTimeout(resolve, 500));
+        await new Promise(resolve => setTimeout(resolve, retryDelay));
       }
     }
 
     // Update state with verified chain ID
     if (verifiedChainId === targetChainId) {
+      console.log(`Network switch verified: ${targetChainId}`);
       updateWalletState(prev => ({
         ...prev,
         chainId: verifiedChainId,
       }));
     } else {
-      // For WalletConnect, the chain might have switched but we couldn't verify
-      // Update state anyway and let the UI reflect the actual state
+      // For WalletConnect/mobile, the chain might have switched but we couldn't verify
+      // This is common on mobile where events are delayed
       if (isWalletConnect) {
-        console.warn(`WalletConnect: Could not verify chain switch. Expected ${targetChainId}, got ${verifiedChainId}`);
-        // Force a re-read after a delay
-        setTimeout(async () => {
-          const finalChainId = await readChainId();
-          updateWalletState(prev => ({
-            ...prev,
-            chainId: finalChainId,
-          }));
-        }, 1000);
+        console.warn(`WalletConnect: Could not verify chain switch. Expected ${targetChainId}, got ${verifiedChainId}. Will poll for update.`);
+        
+        // Update to target chain optimistically
+        updateWalletState(prev => ({
+          ...prev,
+          chainId: targetChainId,
+        }));
+        
+        // Start polling to verify the actual chain
+        let pollAttempts = 0;
+        const maxPollAttempts = 5;
+        const pollInterval = setInterval(async () => {
+          pollAttempts++;
+          const currentChainId = await readChainId();
+          console.log(`Poll attempt ${pollAttempts}: chainId = ${currentChainId}`);
+          
+          if (currentChainId) {
+            updateWalletState(prev => ({
+              ...prev,
+              chainId: currentChainId,
+            }));
+            
+            if (currentChainId === targetChainId || pollAttempts >= maxPollAttempts) {
+              clearInterval(pollInterval);
+            }
+          }
+          
+          if (pollAttempts >= maxPollAttempts) {
+            clearInterval(pollInterval);
+          }
+        }, 2000);
       } else {
         throw new Error(`Network switch failed. Expected chain ${targetChainId}, got ${verifiedChainId}`);
       }
@@ -609,56 +720,38 @@ export function WalletProvider({ children }: { children: ReactNode }) {
     };
   }, []);
 
-  // Separate effect to handle WalletConnect provider events
+  // Separate effect to handle WalletConnect provider reconnection and session events
   useEffect(() => {
     const provider = providerRef.current;
     if (!provider || provider === window.ethereum) return;
 
-    const handleChainChanged = (chainIdHex: string | number) => {
-      const nextChainId = typeof chainIdHex === 'string' 
-        ? parseInt(chainIdHex, 16) 
-        : typeof chainIdHex === 'number' 
-          ? chainIdHex 
-          : null;
-      console.log('WalletConnect chain changed:', chainIdHex, '->', nextChainId);
-      updateWalletState(prev => ({
-        ...prev,
-        chainId: nextChainId,
-      }));
-    };
-
-    const handleAccountsChanged = (accounts: string[]) => {
-      console.log('WalletConnect accounts changed:', accounts);
-      if (accounts.length === 0) {
-        disconnect();
-      } else {
-        updateWalletState(prev => ({
-          ...prev,
-          address: accounts[0],
-          isConnected: true,
-        }));
-      }
-    };
-
-    const handleDisconnect = () => {
-      console.log('WalletConnect disconnected');
-      disconnect();
-    };
-
-    if (typeof provider.on === 'function') {
-      provider.on('chainChanged', handleChainChanged);
-      provider.on('accountsChanged', handleAccountsChanged);
-      provider.on('disconnect', handleDisconnect);
+    // Poll for chain ID changes as a fallback for mobile
+    // This helps when events don't fire properly
+    let pollInterval: NodeJS.Timeout | null = null;
+    
+    if (walletState.isConnected && walletState.connectedWalletId === 'walletconnect') {
+      pollInterval = setInterval(async () => {
+        try {
+          const currentChainId = await readChainId();
+          if (currentChainId && currentChainId !== walletState.chainId) {
+            console.log('Poll detected chain change:', walletState.chainId, '->', currentChainId);
+            updateWalletState(prev => ({
+              ...prev,
+              chainId: currentChainId,
+            }));
+          }
+        } catch (error) {
+          // Ignore polling errors
+        }
+      }, 5000); // Poll every 5 seconds
     }
 
     return () => {
-      if (typeof provider.removeListener === 'function') {
-        provider.removeListener('chainChanged', handleChainChanged);
-        provider.removeListener('accountsChanged', handleAccountsChanged);
-        provider.removeListener('disconnect', handleDisconnect);
+      if (pollInterval) {
+        clearInterval(pollInterval);
       }
     };
-  }, [walletState.connectedWalletId]); // Re-run when wallet type changes
+  }, [walletState.isConnected, walletState.connectedWalletId, walletState.chainId]);
 
   return (
     <WalletContext.Provider value={{ ...walletState, connect, disconnect, switchNetwork, availableWallets }}>
