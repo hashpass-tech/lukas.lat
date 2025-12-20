@@ -13,7 +13,7 @@ The LUKAS Protocol development timeline and milestones.
 ║                        LUKAS PROTOCOL ROADMAP                                 ║
 ╠═══════════════════════════════════════════════════════════════════════════════╣
 ║                                                                               ║
-║  2024 Q4          2025 Q1          2025 Q2          2025 Q3          2025 Q4 ║
+║  2025 Q4          2026 Q1          2026 Q2          2026 Q3          2026 Q4 ║
 ║  ────────         ────────         ────────         ────────         ──────── ║
 ║                                                                               ║
 ║  PHASE 1 ✅       PHASE 2 ✅       PHASE 3 🔄       PHASE 4 🚀                ║
@@ -31,7 +31,7 @@ The LUKAS Protocol development timeline and milestones.
 
 ## Phase 1: Foundation ✅
 
-**Status: Complete (Dec 2024)**
+**Status: Complete (Dec 2025)**
 
 ### Achievements
 - ✅ LukasToken ERC-20 contract deployed
@@ -45,14 +45,14 @@ The LUKAS Protocol development timeline and milestones.
 ### Deliverables
 | Item | Status | Date |
 |------|--------|------|
-| Token Contract | ✅ Deployed | Dec 17, 2024 |
-| Oracle Contract | ✅ Deployed | Dec 18, 2024 |
-| Vault Contract | ✅ Deployed | Dec 17, 2024 |
-| SDK npm Package | ✅ Published | Dec 2024 |
+| Token Contract | ✅ Deployed | Dec 17, 2025 |
+| Oracle Contract | ✅ Deployed | Dec 18, 2025 |
+| Vault Contract | ✅ Deployed | Dec 17, 2025 |
+| SDK npm Package | ✅ Published | Dec 2025 |
 
 ## Phase 2: DEX Integration ✅
 
-**Status: Complete (Dec 2024)**
+**Status: Complete (Dec 2025)**
 
 ### Achievements
 - ✅ LukasHook (Simplified) for peg stabilization
@@ -76,15 +76,15 @@ The LUKAS Protocol development timeline and milestones.
 
 | Item | Status | Date |
 |------|--------|--------|
-| LukasHook (Simplified) | ✅ Complete | Dec 18, 2024 |
-| Sepolia Deployment | ✅ Complete | Dec 19, 2024 |
-| LUKAS/USDC Pool | ✅ Complete | Dec 18, 2024 |
-| Swap Widget | ✅ Complete | Dec 19, 2024 |
-| Multi-Network UI | ✅ Complete | Dec 19, 2024 |
+| LukasHook (Simplified) | ✅ Complete | Dec 18, 2025 |
+| Sepolia Deployment | ✅ Complete | Dec 19, 2025 |
+| LUKAS/USDC Pool | ✅ Complete | Dec 18, 2025 |
+| Swap Widget | ✅ Complete | Dec 19, 2025 |
+| Multi-Network UI | ✅ Complete | Dec 19, 2025 |
 
 ## Phase 3: Advanced Features 🔄
 
-**Status: In Progress (Q1 2025)**
+**Status: In Progress (Q1 2026)**
 
 ### Current Progress
 
@@ -102,10 +102,10 @@ The LUKAS Protocol development timeline and milestones.
 
 | Item | Status | Target |
 |------|--------|--------|
-| Full V4 Hook Integration | 🔄 In Progress | Jan 2025 |
-| Fhenix FHE Research | 📋 Planned | Q1 2025 |
-| EigenLayer AVS Design | 📋 Planned | Q1 2025 |
-| Mainnet Preparation | 📋 Planned | Q2 2025 |
+| Full V4 Hook Integration | 🔄 In Progress | Q1 2026 |
+| Fhenix FHE Research | 📋 Planned | Q1 2026 |
+| EigenLayer AVS Design | 📋 Planned | Q2 2026 |
+| Mainnet Preparation | 📋 Planned | Q2 2026 |
 
 ### Fhenix FHE Integration
 
@@ -184,15 +184,15 @@ Actively Validated Services for enhanced security:
 
 ## Phase 4: Production Launch 🚀
 
-**Status: Planned (Q2 2025)**
+**Status: Planned (Q3 2026)**
 
 ### Mainnet Deployment
 
 | Network | Target | Priority |
 |---------|--------|----------|
-| Polygon | Q2 2025 | Primary |
-| Ethereum | Q3 2025 | Secondary |
-| Arbitrum | Q4 2025 | Expansion |
+| Polygon | Q3 2026 | Primary |
+| Ethereum | Q4 2026 | Secondary |
+| Arbitrum | Q1 2027 | Expansion |
 
 ### Governance Launch
 

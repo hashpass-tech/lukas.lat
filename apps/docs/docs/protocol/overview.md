@@ -90,7 +90,7 @@ Governance decisions are made by token holders, ensuring the protocol evolves wi
 
 - **Protocol**: v0.2.35
 - **SDK**: @lukas-protocol/sdk v0.2.35
-- **Last Updated**: December 19, 2024
+- **Last Updated**: December 19, 2025
 
 ## Quick Links
 
