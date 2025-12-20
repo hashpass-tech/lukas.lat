@@ -184,6 +184,8 @@ export function WalletProvider({ children }: { children: ReactNode }) {
       throw new Error('No wallet provider available');
     }
 
+    const isWalletConnect = providerRef.current && providerRef.current !== window.ethereum;
+
     try {
       // First, try to switch the network
       await provider.request({
@@ -195,20 +197,38 @@ export function WalletProvider({ children }: { children: ReactNode }) {
       if (error?.code === 4001 || error?.message?.includes('User rejected')) {
         throw new Error('Network switch cancelled by user');
       }
-      // Handle chain not added to wallet
-      if (error?.code === 4902) {
-        throw new Error('Network not configured in wallet. Please add it manually.');
+      // Handle chain not added to wallet - try to add it
+      if (error?.code === 4902 || error?.message?.includes('Unrecognized chain')) {
+        // Try to add the network
+        try {
+          const networkParams = getNetworkParams(targetChainId);
+          if (networkParams) {
+            await provider.request({
+              method: 'wallet_addEthereumChain',
+              params: [networkParams],
+            });
+          } else {
+            throw new Error('Network not configured in wallet. Please add it manually.');
+          }
+        } catch (addError: any) {
+          if (addError?.code === 4001) {
+            throw new Error('Network add cancelled by user');
+          }
+          throw new Error('Failed to add network. Please add it manually.');
+        }
+      } else {
+        throw error;
       }
-      throw error;
     }
 
-    // Wait for the chain to actually switch
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    // Wait for the chain to actually switch (WalletConnect needs more time)
+    const waitTime = isWalletConnect ? 2000 : 1000;
+    await new Promise(resolve => setTimeout(resolve, waitTime));
 
     // Verify the switch was successful by reading the chain ID multiple times
     let verifiedChainId: number | null = null;
     let attempts = 0;
-    const maxAttempts = 5;
+    const maxAttempts = isWalletConnect ? 8 : 5;
 
     while (attempts < maxAttempts) {
       verifiedChainId = await readChainId();
@@ -228,8 +248,50 @@ export function WalletProvider({ children }: { children: ReactNode }) {
         chainId: verifiedChainId,
       }));
     } else {
-      throw new Error(`Network switch failed. Expected chain ${targetChainId}, got ${verifiedChainId}`);
+      // For WalletConnect, the chain might have switched but we couldn't verify
+      // Update state anyway and let the UI reflect the actual state
+      if (isWalletConnect) {
+        console.warn(`WalletConnect: Could not verify chain switch. Expected ${targetChainId}, got ${verifiedChainId}`);
+        // Force a re-read after a delay
+        setTimeout(async () => {
+          const finalChainId = await readChainId();
+          updateWalletState(prev => ({
+            ...prev,
+            chainId: finalChainId,
+          }));
+        }, 1000);
+      } else {
+        throw new Error(`Network switch failed. Expected chain ${targetChainId}, got ${verifiedChainId}`);
+      }
     }
+  };
+
+  // Get network parameters for adding to wallet
+  const getNetworkParams = (chainId: number) => {
+    const networks: Record<number, any> = {
+      80002: {
+        chainId: formatChainIdHex(80002),
+        chainName: 'Polygon Amoy Testnet',
+        nativeCurrency: { name: 'MATIC', symbol: 'MATIC', decimals: 18 },
+        rpcUrls: ['https://rpc-amoy.polygon.technology'],
+        blockExplorerUrls: ['https://amoy.polygonscan.com'],
+      },
+      11155111: {
+        chainId: formatChainIdHex(11155111),
+        chainName: 'Sepolia Testnet',
+        nativeCurrency: { name: 'Sepolia ETH', symbol: 'ETH', decimals: 18 },
+        rpcUrls: ['https://rpc.sepolia.org'],
+        blockExplorerUrls: ['https://sepolia.etherscan.io'],
+      },
+      1: {
+        chainId: formatChainIdHex(1),
+        chainName: 'Ethereum Mainnet',
+        nativeCurrency: { name: 'Ether', symbol: 'ETH', decimals: 18 },
+        rpcUrls: ['https://eth.llamarpc.com'],
+        blockExplorerUrls: ['https://etherscan.io'],
+      },
+    };
+    return networks[chainId] || null;
   };
 
   const connectAlchemy = async () => {
@@ -445,7 +507,7 @@ export function WalletProvider({ children }: { children: ReactNode }) {
     },
   ];
 
-  // Check wallet connection on mount
+  // Check wallet connection on mount and set up event listeners
   useEffect(() => {
     if (typeof window === 'undefined') return;
 
@@ -526,34 +588,77 @@ export function WalletProvider({ children }: { children: ReactNode }) {
 
     const handleChainChanged = (chainIdHex: string) => {
       const nextChainId = typeof chainIdHex === 'string' ? parseInt(chainIdHex, 16) : null;
+      console.log('Chain changed event:', chainIdHex, '->', nextChainId);
       updateWalletState(prev => ({
         ...prev,
         chainId: nextChainId,
       }));
     };
 
-    if (window.ethereum?.on && window.ethereum?.removeListener) {
+    // Set up listeners for window.ethereum (MetaMask, etc.)
+    if (window.ethereum && typeof window.ethereum.on === 'function') {
       window.ethereum.on('accountsChanged', handleAccountsChanged);
       window.ethereum.on('chainChanged', handleChainChanged);
-
-      return () => {
-        if (window.ethereum?.removeListener) {
-          window.ethereum.removeListener('accountsChanged', handleAccountsChanged);
-          window.ethereum.removeListener('chainChanged', handleChainChanged);
-        }
-      };
     }
 
-    // Also listen for chain changes on the provider ref (for WalletConnect)
-    if (providerRef.current?.on && providerRef.current?.removeListener) {
-      providerRef.current.on('chainChanged', handleChainChanged);
-      return () => {
-        if (providerRef.current?.removeListener) {
-          providerRef.current.removeListener('chainChanged', handleChainChanged);
-        }
-      };
-    }
+    return () => {
+      if (window.ethereum && typeof window.ethereum.removeListener === 'function') {
+        window.ethereum.removeListener('accountsChanged', handleAccountsChanged);
+        window.ethereum.removeListener('chainChanged', handleChainChanged);
+      }
+    };
   }, []);
+
+  // Separate effect to handle WalletConnect provider events
+  useEffect(() => {
+    const provider = providerRef.current;
+    if (!provider || provider === window.ethereum) return;
+
+    const handleChainChanged = (chainIdHex: string | number) => {
+      const nextChainId = typeof chainIdHex === 'string' 
+        ? parseInt(chainIdHex, 16) 
+        : typeof chainIdHex === 'number' 
+          ? chainIdHex 
+          : null;
+      console.log('WalletConnect chain changed:', chainIdHex, '->', nextChainId);
+      updateWalletState(prev => ({
+        ...prev,
+        chainId: nextChainId,
+      }));
+    };
+
+    const handleAccountsChanged = (accounts: string[]) => {
+      console.log('WalletConnect accounts changed:', accounts);
+      if (accounts.length === 0) {
+        disconnect();
+      } else {
+        updateWalletState(prev => ({
+          ...prev,
+          address: accounts[0],
+          isConnected: true,
+        }));
+      }
+    };
+
+    const handleDisconnect = () => {
+      console.log('WalletConnect disconnected');
+      disconnect();
+    };
+
+    if (typeof provider.on === 'function') {
+      provider.on('chainChanged', handleChainChanged);
+      provider.on('accountsChanged', handleAccountsChanged);
+      provider.on('disconnect', handleDisconnect);
+    }
+
+    return () => {
+      if (typeof provider.removeListener === 'function') {
+        provider.removeListener('chainChanged', handleChainChanged);
+        provider.removeListener('accountsChanged', handleAccountsChanged);
+        provider.removeListener('disconnect', handleDisconnect);
+      }
+    };
+  }, [walletState.connectedWalletId]); // Re-run when wallet type changes
 
   return (
     <WalletContext.Provider value={{ ...walletState, connect, disconnect, switchNetwork, availableWallets }}>
