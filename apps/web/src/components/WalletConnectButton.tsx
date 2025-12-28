@@ -152,15 +152,15 @@ export function WalletConnectButton() {
           )}
         </button>
       </DialogTrigger>
-      <DialogContent className="bg-card/95 dark:bg-card/95 backdrop-blur-2xl rounded-3xl p-8 max-w-md w-full border border-border shadow-2xl">
+      <DialogContent className="bg-card/95 dark:bg-card/95 backdrop-blur-2xl rounded-3xl p-4 sm:p-6 lg:p-8 w-full max-w-xs sm:max-w-sm md:max-w-md lg:max-w-md xl:max-w-md mx-4 border border-border shadow-2xl">
         {/* Visually hidden DialogTitle for accessibility */}
         <DialogTitle className="sr-only">
           Connect Wallet
         </DialogTitle>
         
         <div className="text-center mb-6">
-          <h2 className="text-2xl font-bold text-foreground flex items-center justify-center gap-3">
-            <span className="text-3xl">🔗</span>
+          <h2 className="text-xl sm:text-2xl font-bold text-foreground flex items-center justify-center gap-3">
+            <span className="text-2xl sm:text-3xl">🔗</span>
             Connect Wallet
           </h2>
         </div>
@@ -179,19 +179,19 @@ export function WalletConnectButton() {
               key={wallet.id}
               onClick={() => !wallet.disabled && handleWalletConnect(wallet.id)}
               disabled={isConnecting || wallet.disabled}
-              className={`group flex items-center justify-between w-full px-6 py-4 text-foreground font-medium rounded-2xl border border-border bg-background/20 hover:bg-background/30 backdrop-blur-md transition-all duration-300 ${
+              className={`group flex items-center justify-between w-full px-3 py-2.5 sm:px-4 sm:py-3 lg:px-6 lg:py-4 text-foreground font-medium rounded-xl sm:rounded-2xl border border-border bg-background/20 hover:bg-background/30 backdrop-blur-md transition-all duration-300 ${
                 wallet.disabled 
                   ? 'opacity-50 cursor-not-allowed' 
                   : 'hover:shadow-xl hover:-translate-y-0.5'
               }`}
             >
               <div className="flex items-center gap-4">
-                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-slate-100 to-slate-200 dark:from-slate-800 dark:to-slate-700 flex items-center justify-center shadow-lg group-hover:shadow-xl transition-shadow">
-                  <wallet.icon className="h-8 w-8" />
+                <div className="w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 rounded-lg sm:rounded-xl bg-gradient-to-br from-slate-100 to-slate-200 dark:from-slate-800 dark:to-slate-700 flex items-center justify-center shadow-lg group-hover:shadow-xl transition-shadow">
+                  <wallet.icon className="h-4 w-4 sm:h-6 sm:w-6 lg:h-8 lg:w-8" />
                 </div>
                 <div className="text-left">
-                  <div className="font-semibold text-lg">{wallet.name}</div>
-                  <div className="text-sm text-muted-foreground">
+                  <div className="font-semibold text-sm sm:text-base lg:text-lg">{wallet.name}</div>
+                  <div className="text-xs sm:text-xs lg:text-sm text-muted-foreground">
                     {wallet.id === 'metamask' && wallet.disabled 
                       ? 'MetaMask not detected - install extension' 
                       : wallet.id === 'alchemy'
@@ -206,13 +206,13 @@ export function WalletConnectButton() {
                 </div>
               </div>
               {isConnecting && selectedWallet === wallet.id ? (
-                <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
+                <Loader2 className="h-4 w-4 sm:h-5 sm:w-5 animate-spin text-muted-foreground" />
               ) : wallet.disabled ? (
                 <div className="h-5 w-5 text-muted-foreground opacity-50">
                   ⚠️
                 </div>
               ) : (
-                <ArrowRightIcon className="h-5 w-5 text-muted-foreground opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all duration-300" />
+                 <ArrowRightIcon className="h-4 w-4 sm:h-5 sm:w-5 text-muted-foreground opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all duration-300" />
               )}
             </button>
           ))}

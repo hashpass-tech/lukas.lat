@@ -80,10 +80,10 @@ export function ConnectWalletModal({
 
   return (
     <Dialog {...props}>
-      <DialogContent className="bg-card/95 dark:bg-card/95 backdrop-blur-2xl rounded-3xl p-6 sm:p-8 max-w-md w-full mx-4 sm:mx-auto border border-border shadow-2xl">
+      <DialogContent className="bg-card/95 dark:bg-card/95 backdrop-blur-2xl rounded-3xl p-4 sm:p-6 lg:p-8 w-full max-w-xs sm:max-w-sm md:max-w-md lg:max-w-md xl:max-w-md mx-4 border border-border shadow-2xl">
         <DialogHeader className="text-center mb-6">
-            <DialogTitle className="text-xl sm:text-2xl font-bold text-foreground flex items-center justify-center gap-3">
-            <span className="text-3xl">🔗</span>
+            <DialogTitle className="text-lg sm:text-xl lg:text-2xl font-bold text-foreground flex items-center justify-center gap-3">
+            <span className="text-2xl sm:text-3xl">🔗</span>
             Connect Wallet
           </DialogTitle>
         </DialogHeader>
@@ -101,21 +101,21 @@ export function ConnectWalletModal({
               key={wallet.id}
               variants={itemVariants}
               onClick={wallet.onConnect}
-              className="group flex items-center justify-between w-full px-4 py-3 sm:px-6 sm:py-4 text-foreground font-medium rounded-2xl border border-border bg-background/20 hover:bg-background/30 backdrop-blur-md transition-all duration-300 hover:shadow-xl hover:-translate-y-0.5"
+              className="group flex items-center justify-between w-full px-3 py-2.5 sm:px-4 sm:py-3 lg:px-6 lg:py-4 text-foreground font-medium rounded-xl sm:rounded-2xl border border-border bg-background/20 hover:bg-background/30 backdrop-blur-md transition-all duration-300 hover:shadow-xl hover:-translate-y-0.5"
               aria-label={`Connect with ${wallet.name}`}
             >
               <div className="flex items-center gap-4">
-                <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-gradient-to-br from-slate-100 to-slate-200 dark:from-slate-800 dark:to-slate-700 flex items-center justify-center shadow-lg group-hover:shadow-xl transition-shadow">
-                  <wallet.icon className="h-6 w-6 sm:h-8 sm:w-8" />
+                <div className="w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 rounded-lg sm:rounded-xl bg-gradient-to-br from-slate-100 to-slate-200 dark:from-slate-800 dark:to-slate-700 flex items-center justify-center shadow-lg group-hover:shadow-xl transition-shadow">
+                  <wallet.icon className="h-4 w-4 sm:h-6 sm:w-6 lg:h-8 lg:w-8" />
                 </div>
                 <div className="text-left">
-                  <div className="font-semibold text-base sm:text-lg">{wallet.name}</div>
-                  <div className="text-xs sm:text-sm text-muted-foreground">
+                  <div className="font-semibold text-sm sm:text-base lg:text-lg">{wallet.name}</div>
+                  <div className="text-xs sm:text-xs lg:text-sm text-muted-foreground">
                     {wallet.id === 'metamask' ? 'Most popular wallet' : 'Connect mobile wallets'}
                   </div>
                 </div>
               </div>
-              <ArrowRightIcon className="h-5 w-5 text-muted-foreground opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all duration-300" />
+              <ArrowRightIcon className="h-4 w-4 sm:h-5 sm:w-5 text-muted-foreground opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all duration-300" />
             </motion.button>
           ))}
         </motion.div>
