@@ -13,6 +13,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+## [0.2.39] - 2025-12-28
+
+### Added
+
+### Changed
+
+### Fixed
+- Fixed wallet connect modal responsiveness on wide screens
+- Improved modal width constraints and responsive design
+- Enhanced wallet button scaling and spacing across all screen sizes
+- Added better proportional padding and typography for wallet connection UI
+
+
+
+
+
 ## [0.2.38] - 2025-12-20
 ### Added
 
