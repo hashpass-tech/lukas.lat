@@ -25,6 +25,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Improve wallet connect modal responsiveness on wide screens (e7f6ea5)
+
+
+
+## [0.2.39] - 2025-12-28
+
+### Added
+
+
+
+### Changed
+
+
+
+### Fixed
+
 
 
 
